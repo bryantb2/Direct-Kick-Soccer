@@ -5,6 +5,11 @@
     <UserSecretsId>aspnet-dropShippingApp-EC61B252-5FA5-40A6-B495-F02313AC52A6</UserSecretsId>
   </PropertyGroup>
 
+  <ItemGroup>
+    <Content Remove="Views\Account\ResetPassword.cshtml" />
+    <Content Remove="Views\Account\Signup.cshtml" />
+  </ItemGroup>
+
 
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="3.1.1" />
@@ -18,6 +23,12 @@
 
   <ItemGroup>
     <Folder Include="Repositories\" />
+  </ItemGroup>
+
+
+  <ItemGroup>
+    <None Include="Views\Account\ResetPassword.cshtml" />
+    <None Include="Views\Account\Signup.cshtml" />
   </ItemGroup>
 
 </Project>
