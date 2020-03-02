@@ -1,11 +1,12 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Identity;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
 namespace dropShippingApp.Models
 {
-    public class AppUser
+    public class AppUser : IdentityUser
     {
         // private fields
         private List<QuestionMessage> askedQuestions = new List<QuestionMessage>();
@@ -13,7 +14,6 @@ namespace dropShippingApp.Models
         private List<TeamCreationRequest> creationReqHistory = new List<TeamCreationRequest>();
         
         // public properties
-        public int UserID { get; set; }
         public DateTime DateJoined { get; set; }
         public String FirstName { get; set; }
         public String LastName { get; set; }
@@ -29,30 +29,54 @@ namespace dropShippingApp.Models
             QuestionMessage removedQuestion = null;
             foreach(QuestionMessage q in askedQuestions)
             {
-                if(q.)
+                if(q.QuestionMessageID == question.QuestionMessageID)
+                {
+                    removedQuestion = q;
+                    askedQuestions.Remove(q);
+                    return removedQuestion;
+                }
             }
+            return removedQuestion;
         }
         public void AddInvoice(Invoice inv) => invoiceHistory.Add(inv);
         public Invoice RemoveInvoice(Invoice inv)
         {
             Invoice removedInv = null;
-            foreach(Invoice inv in invoiceHistory)
+            foreach(Invoice i in invoiceHistory)
             {
-
+                if (inv.InvoiceID == i.InvoiceID)
+                {
+                    removedInv = i;
+                    invoiceHistory.Remove(i);
+                    return removedInv;
+                }
             }
+            return removedInv;
         }
         public void AddCreationRequest(TeamCreationRequest request) => creationReqHistory.Add(request);
         public TeamCreationRequest RemoveCreationRequest(TeamCreationRequest creationReq)
         {
-            Invoice removedRequest = null;
+            TeamCreationRequest removedRequest = null;
             foreach (TeamCreationRequest req in creationReqHistory)
             {
-
+                if(req.TeamCreationRequestID == creationReq.TeamCreationRequestID)
+                {
+                    removedRequest = req;
+                    creationReqHistory.Remove(req);
+                    return removedRequest;
+                }
             }
+            return removedRequest;
         }
         public decimal CalculateTotalSpending()
         {
-
+            // loop through invoice history
+            decimal totalPrice = 0.00m;
+            foreach(Invoice inv in invoiceHistory)
+            {
+                totalPrice += inv.CalculateGrandTotal();
+            }
+            return totalPrice;
         }
     }
 }

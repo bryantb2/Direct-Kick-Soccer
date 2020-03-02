@@ -28,9 +28,12 @@ namespace dropShippingApp.Models
             ProductColor removedColor = null;
             foreach(ProductColor c in baseColors)
             {
-                removedColor = c;
-                baseColors.Remove(c);
-                return removedColor;
+                if(c.ProductColorID == color.ProductColorID)
+                {
+                    removedColor = c;
+                    baseColors.Remove(c);
+                    return removedColor;
+                }
             }
             return removedColor;
         }
@@ -41,9 +44,12 @@ namespace dropShippingApp.Models
             ProductSize removedSize = null;
             foreach (ProductSize s in baseSizes)
             {
-                removedSize = s;
-                baseSizes.Remove(s);
-                return removedSize;
+                if (s.ProductSizeID == size.ProductSizeID)
+                {
+                    removedSize = s;
+                    baseSizes.Remove(s);
+                    return removedSize;
+                }
             }
             return removedSize;
         }

@@ -7,5 +7,8 @@ namespace dropShippingApp.Models
 {
     public class Order
     {
+        public int OrderID { get; set; }
+        public String PackageTrackingLink { get; set; }
+        public bool HasShipped { get; set; }
     }
 }
