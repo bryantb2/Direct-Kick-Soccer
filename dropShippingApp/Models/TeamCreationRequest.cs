@@ -14,6 +14,7 @@ namespace dropShippingApp.Models
         public String StreetAddress { get; set; }
         public String ZipCode { get; set; }
         public Country Country { get; set; }
+        public Providence Providence { get; set; }
         public String CorporatePageURL { get; set; }
         public String BusinessEmail { get; set; }
         public int PhoneNumber { get; set; }
