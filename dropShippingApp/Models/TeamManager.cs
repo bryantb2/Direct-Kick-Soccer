@@ -14,6 +14,7 @@ namespace dropShippingApp.Models
         // public properties
         public int TeamManagerID { get; set; }
         public Team ManagedTeam { get; set; }
+        public AppUser BaseUser { get; set; }
         public List<CustomProduct> CreatedCustomProducts { get { return createdCustomProducts; } }
         public List<ActivityLog> ActivityLog { get { return activityLog; } }
 
