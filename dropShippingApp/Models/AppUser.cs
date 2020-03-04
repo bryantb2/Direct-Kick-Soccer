@@ -12,8 +12,9 @@ namespace dropShippingApp.Models
         private List<QuestionMessage> askedQuestions = new List<QuestionMessage>();
         private List<Invoice> invoiceHistory = new List<Invoice>();
         private List<TeamCreationRequest> creationReqHistory = new List<TeamCreationRequest>();
-        
+
         // public properties
+        public TeamManager TeamManager { get; set; }
         public DateTime DateJoined { get; set; }
         public String FirstName { get; set; }
         public String LastName { get; set; }
