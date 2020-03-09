@@ -13,7 +13,6 @@ namespace dropShippingApp.Models
         // public properties
         public int InvoiceID { get; set; }
         public DateTime DatePlaced { get; set; }
-        public AppUser Recipient { get; set; }
         public List<InvoiceItem> InvoiceItems { get { return invoiceItems; } }
 
         // methods

@@ -22,13 +22,13 @@
 
 
   <ItemGroup>
-    <Folder Include="Repositories\" />
+    <None Include="Views\Account\ResetPassword.cshtml" />
+    <None Include="Views\Account\Signup.cshtml" />
   </ItemGroup>
 
 
   <ItemGroup>
-    <None Include="Views\Account\ResetPassword.cshtml" />
-    <None Include="Views\Account\Signup.cshtml" />
+    <Folder Include="Repositories\" />
   </ItemGroup>
 
 </Project>
