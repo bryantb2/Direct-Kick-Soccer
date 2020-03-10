@@ -16,6 +16,7 @@ namespace dropShippingApp.Models
         public String TeamName { get; set; }
         public String TeamDescription { get; set; }
         public Country Country { get; set; }
+        public Providence Providence { get; set; }
         public String StreetAddress { get; set; }
         public int ZipCode { get; set; }
         public String CorporatePageURL { get; set; }
