@@ -8,7 +8,7 @@ namespace dropShippingApp.Models
     public class RosterProduct
     {
         // private fields
-        private List<PricingHistory> pricingHistory = new List<PricingHistory>;
+        private List<PricingHistory> pricingHistory = new List<PricingHistory>();
         
         // public properties
         public int RosterProductID { get; set; }
