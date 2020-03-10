@@ -18,6 +18,7 @@ namespace dropShippingApp.Models
         public String CustomImagePNG { get; set; }
         public String CustomImageSVG { get; set; }
         public bool IsProductActive { get; set; }
+        public List<PricingHistory> PricingHistory { get { return this.pricingHistory; } }
 
         // methods
         public void AddPricingHistory(PricingHistory history) => pricingHistory.Add(history);
