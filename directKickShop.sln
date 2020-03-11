@@ -1,11 +1,14 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.28307.902
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29806.167
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "dropShippingApp", "dropShippingApp\dropShippingApp.csproj", "{2B8E851D-2FCE-4186-A93C-DC70CE7E67EC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProductTests", "ProductTests\ProductTests.csproj", "{DF2A335E-4157-41BC-A72A-7493FE0D81A6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ProductTests", "ProductTests\ProductTests.csproj", "{DF2A335E-4157-41BC-A72A-7493FE0D81A6}"
+	ProjectSection(ProjectDependencies) = postProject
+		{2B8E851D-2FCE-4186-A93C-DC70CE7E67EC} = {2B8E851D-2FCE-4186-A93C-DC70CE7E67EC}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
