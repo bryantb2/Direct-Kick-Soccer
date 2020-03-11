@@ -14,14 +14,14 @@ using Xunit;
 
 namespace ProductTests
 {
-    public class UnitTest1
+    public class RProductRepoTests
     {
         FakeRProductRepo fr;
         ProductController controller;
         PricingHistory ph;
         
         
-        public  UnitTest1()
+        public  RProductRepoTests()
         {
             fr = new FakeRProductRepo();
            // var controller = new ProductController(fr);
