@@ -9,7 +9,6 @@ namespace dropShippingApp.Models
     {
         public int ProductSizeID { get; set; }
         public String SizeName { get; set; }
-        public decimal AddOnPrice { get; set; }
         public bool IsSizeActive { get; set; }
     }
 }
