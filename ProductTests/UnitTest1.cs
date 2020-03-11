@@ -16,14 +16,14 @@ namespace ProductTests
 {
     public class UnitTest1
     {
-        FakeRepository fr;
+        FakeRProductRepo fr;
         ProductController controller;
         PricingHistory ph;
         
         
         public  UnitTest1()
         {
-            fr = new FakeRepository();
+            fr = new FakeRProductRepo();
            // var controller = new ProductController(fr);
 
 

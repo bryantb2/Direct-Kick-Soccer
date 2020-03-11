@@ -6,9 +6,9 @@ using dropShippingApp.Models;
 
 namespace dropShippingApp.Data.Repositories
 {
-    public class FakeRepository : IRepository
+    public class FakeRProductRepo : IRProductRepo
     {
-        public FakeRepository()
+        public FakeRProductRepo()
         {
         }
 

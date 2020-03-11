@@ -14,9 +14,9 @@ namespace dropShippingApp.Controllers
 {
     public class ProductController : Controller
     {
-        public IRepository Repository { get; set; }
+        public IRProductRepo Repository { get; set; }
 
-        public ProductController(IRepository repo)
+        public ProductController(IRProductRepo repo)
         {
             Repository = repo;
         }
