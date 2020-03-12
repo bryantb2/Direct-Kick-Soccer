@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace dropShippingApp.Controllers
 {
-    public class TeamManagementController
+    public class TeamManagementController : Controller
     {
         ITeamRepo teamRepo;
         public TeamManagementController(ITeamRepo t)
