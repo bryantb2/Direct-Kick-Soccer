@@ -14,12 +14,14 @@ namespace ProductTests
         // private fields
         private ITeamRepo teamRepo;
         private TeamController teamController;
+        private TeamManagementController teamManagementController;
 
         // setup
         public TeamRepoTests()
         {
             teamRepo = new FakeTeamRepo();
             teamController = new TeamController(teamRepo);
+            teamManagementController = new TeamManagementController(teamRepo);
         }
 
         // cleanup and dispose
@@ -59,22 +61,52 @@ namespace ProductTests
             await teamRepo.AddTeam(testTeam);
 
             // act
-            List<Team> deletedTeam = (List<Team>)teamController.().Result.ViewData.Model;
+            await teamController.RemoveTeam(testTeam.TeamID);
 
             // assert
-
+            Assert.DoesNotContain(testTeam, await teamRepo.GetTeams);
         }
 
         [Fact]
         public async Task TestUpdateTeam()
         {
+            // arrange 
+            var testTeam = new Team()
+            {
+                TeamID = 32,
+                TeamName = "test"
+            };
+            var updatedTeam = new Team()
+            {
+                TeamID = 32,
+                TeamName = "notTest"
+            };
+            await teamRepo.AddTeam(testTeam);
 
+            // act
+            await teamManagementController.UpdateTeamSettings(updatedTeam);
+
+            // assert
+            Assert.DoesNotContain(testTeam, await teamRepo.GetTeams);
+            Assert.Contains(updatedTeam, await teamRepo.GetTeams);
         }
 
         [Fact]
         public async Task TestFindTeamById()
         {
+            // arrange 
+            var testTeam = new Team()
+            {
+                TeamID = 32,
+                TeamName = "test"
+            };
+            await teamRepo.AddTeam(testTeam);
 
+            // act
+            var team = (Team)teamController.ViewTeam(32).Result.ViewData.Model;
+
+            // assert
+            Assert.Equal(testTeam, team);
         }
 
         [Fact]

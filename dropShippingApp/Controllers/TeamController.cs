@@ -24,12 +24,21 @@ namespace dropShippingApp.Controllers
             return View(team);
         }
 
-        // only admins will have access to think
+        // only admins will have access to this
         public async Task<ViewResult> MarkTeamInactive(int teamId)
         {
             // TODO
             // returns redirect to browse teams
             await teamRepo.MarkInactiveById(teamId);
+            return View();
+        }
+
+        // only admins will have access to this
+        public async Task<ViewResult> RemoveTeam(int teamId)
+        {
+            // TODO
+            // returns redirect to browse teams
+            await teamRepo.RemoveTeam(teamId);
             return View();
         }
 

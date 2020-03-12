@@ -41,7 +41,8 @@ namespace dropShippingApp.Data.Repositories
         public async Task UpdateTeam(Team team)
         {
             // remove team and then add it back
-            teams.Remove(team);
+            var foundTeam = teams.Find(tm => tm.TeamID == team.TeamID);
+            teams.Remove(foundTeam);
             teams.Add(team);
         }
 

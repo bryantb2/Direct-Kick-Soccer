@@ -1,4 +1,5 @@
 ﻿using dropShippingApp.Data.Repositories;
+using dropShippingApp.Models;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -46,10 +47,13 @@ namespace dropShippingApp.Controllers
             return View();
         }
 
-        public async Task<IActionResult> UpdateTeamSettings()
+        public async Task<IActionResult> UpdateTeamSettings(Team updatedTeam)
         {
+            // CHECK TO MAKE SURE SENDER HAS THE TEAM IN THEIR APPROVED HISTORY 
+            // otherwise they could change the team id and f*** up another person's team
             // TODO: will take in settings view model
             // redirect to home management page
+            await teamRepo.UpdateTeam(updatedTeam);
             return View();
         }
 
