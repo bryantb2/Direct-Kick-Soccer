@@ -110,6 +110,25 @@ namespace ProductTests
         }
 
         [Fact]
+        public async Task TestTeamSearch()
+        {
+            // arrange 
+            var testTeam = new Team()
+            {
+                TeamID = 32,
+                TeamName = "test"
+            };
+            await teamRepo.AddTeam(testTeam);
+            const string searchTerm = "test";
+
+            // act
+            var searchResults = (List<Team>)teamController.SearchTeams(searchTerm).Result.ViewData.Model;
+
+            // assert
+            Assert.Contains(testTeam, searchResults);
+        }
+
+        [Fact]
         public async Task TestFindTeamByProduct()
         {
             // arrange
