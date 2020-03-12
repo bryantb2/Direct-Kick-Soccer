@@ -13,6 +13,7 @@ namespace dropShippingApp.Data.Repositories
         Task UpdateTeam(Team team);
         Task<Team> FindTeamById(int teamId);
         Task<Team> FindTeamByProductId(int productId);
+        Task MarkInactiveById(int teamId);
         Task<List<Team>> GetTeams { get; }
     }
 }

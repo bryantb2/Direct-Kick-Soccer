@@ -16,6 +16,23 @@ namespace dropShippingApp.Controllers
             teamRepo = t;
         }
 
+        public async Task<ViewResult> BuildTeam(Team team)
+        {
+            // TODO
+            // returns redirect to view team
+            await teamRepo.AddTeam(team);
+            return View(team);
+        }
+
+        // only admins will have access to think
+        public async Task<ViewResult> MarkTeamInactive(int teamId)
+        {
+            // TODO
+            // returns redirect to browse teams
+            await teamRepo.MarkInactiveById(teamId);
+            return View();
+        }
+
         public async Task<ViewResult> ViewTeam(int teamId)
         {
             // TODO

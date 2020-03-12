@@ -24,6 +24,7 @@ namespace dropShippingApp.Models
         public int PhoneNumber { get; set; }
         public List<CustomProduct> TeamProducts { get { return teamProducts; } }
         public List<TeamTag> TeamTags { get { return teamTags; } }
+        public bool IsTeamInactive { get; set; }
 
         // methods
         public void AddTag(TeamTag tag) => teamTags.Add(tag);

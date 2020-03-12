@@ -50,6 +50,18 @@ namespace ProductTests
         [Fact]
         public async Task TestRemoveTeam()
         {
+            // arrange 
+            var testTeam = new Team()
+            {
+                TeamID = 32,
+                TeamName = "test"
+            };
+            await teamRepo.AddTeam(testTeam);
+
+            // act
+            List<Team> deletedTeam = (List<Team>)teamController.().Result.ViewData.Model;
+
+            // assert
 
         }
 

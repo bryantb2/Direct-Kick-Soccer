@@ -77,5 +77,14 @@ namespace dropShippingApp.Data.Repositories
             }
             return await Task.FromResult<Team>(foundTeam);
         }
+
+        public async Task MarkInactiveById(int teamId)
+        {
+            var foundTeam = teams.Find(team => team.TeamID == teamId);
+            if (foundTeam != null)
+            {
+                foundTeam.IsTeamInactive = true;
+            }
+        }
     }
 }
