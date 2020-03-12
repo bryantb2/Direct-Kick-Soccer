@@ -16,7 +16,7 @@ namespace ProductTests
 {
     public class RProductRepoTests
     {
-        FakeRProductRepo fr;
+        /*FakeRProductRepo fr;
         ProductController controller;
         PricingHistory ph;
         
@@ -50,7 +50,7 @@ namespace ProductTests
             int x = await controller.AddPricingHistory(ph);
             PricingHistory pxh = await controller.RemovePricingHistory(1);
             Assert.False(fr.Ph.Exists(x => x.PricingHistoryID == 1));
-        }
+        }*/
 
     }
 }

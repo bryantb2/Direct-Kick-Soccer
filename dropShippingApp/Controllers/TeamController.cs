@@ -16,7 +16,7 @@ namespace dropShippingApp.Controllers
             teamRepo = t;
         }
 
-        public async Task<IActionResult> ViewTeam(int teamId)
+        public async Task<ViewResult> ViewTeam(int teamId)
         {
             // TODO
             // returns specific team page
@@ -24,7 +24,7 @@ namespace dropShippingApp.Controllers
             return View(team);
         }
 
-        public async Task<IActionResult> BrowseTeams()
+        public async Task<ViewResult> BrowseTeams()
         {
             // TODO
             // returns team results page 
@@ -32,7 +32,7 @@ namespace dropShippingApp.Controllers
             return View(teamList);
         }
 
-        public async Task<IActionResult> SearchTeams(string searchTerm)
+        public async Task<ViewResult> SearchTeams(string searchTerm)
         {
             // TODO
             // returns team results page (will have view model with search term)

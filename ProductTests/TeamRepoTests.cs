@@ -16,22 +16,35 @@ namespace ProductTests
         private TeamController teamController;
 
         // setup
-        public TeamRepoTests(ITeamRepo t)
+        public TeamRepoTests()
         {
-            teamRepo = t;
-            teamController = new TeamController(t);
+            teamRepo = new FakeTeamRepo();
+            teamController = new TeamController(teamRepo);
         }
 
         // cleanup and dispose
-        public void Dispose()
+        public void Dispose() 
         {
-
+            teamRepo = null;
+            teamController = null;
         }
 
         [Fact]
         public async Task TestAddTeam()
         {
+            // arrange 
+            var testTeam = new Team()
+            {
+                TeamID = 32,
+                TeamName = "test"
+            };
+            await teamRepo.AddTeam(testTeam);
 
+            // act
+            List<Team> returnedTeams = (List<Team>)teamController.BrowseTeams().Result.ViewData.Model;
+
+            // asert
+            Assert.Equal(testTeam, returnedTeams.Find(team => team == testTeam));
         }
 
         [Fact]

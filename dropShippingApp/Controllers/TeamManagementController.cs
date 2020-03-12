@@ -15,6 +15,9 @@ namespace dropShippingApp.Controllers
             teamRepo = t;
         }
 
+        // TODO 
+        // DO NOT WRITE CODE FOR THESE UNTIL BOTH THE PRODUCT AND TEAM REPOS ARE FINISHED...
+
         public async Task<IActionResult> ManageTeamProducts()
         {
             // TODO
