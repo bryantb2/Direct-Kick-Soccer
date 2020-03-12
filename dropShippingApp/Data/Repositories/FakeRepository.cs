@@ -12,47 +12,48 @@ namespace dropShippingApp.Data.Repositories
         {
         }
 
-        private List<PricingHistory> ph = new List<PricingHistory>();
-        public List<PricingHistory> Ph { get { return ph; } }
+        private List<RosterProduct> rp = new List<RosterProduct>();
+        public List<RosterProduct> Rp { get { return rp; } }
 
-        public  Task<int> AddPriceHistAsync(PricingHistory prh)
+        public  Task<int> AddRosterProdAsync(RosterProduct prh)
         {
             int success = 0;
             if (prh != null)
             {
-                Ph.Add(prh);
+                Rp.Add(prh);
                 success = 1;
             }
 
             return Task.FromResult<int>(success);
         }
 
-        public Task<PricingHistory> RemovePriceHistAsync(int? id)
+        public Task<RosterProduct> RemoveRosterProdAsync(int? id)
         {
-           
-            PricingHistory oldprice = new PricingHistory();
+
+            RosterProduct oldproduct = new RosterProduct();
             if (id.HasValue)
             {
-                oldprice = Ph.Find(l => l.PricingHistoryID == id) ;
-                Ph.RemoveAll(x => x.PricingHistoryID == id);
+                oldproduct = Rp.Find(l => l.RosterProductID == id) ;
+                Rp.RemoveAll(x => x.RosterProductID == id);
                
-            } 
-           
-            
-               
-            
+            }
 
-            return Task.FromResult<PricingHistory>(oldprice);
+
+            return Task.FromResult<RosterProduct>(oldproduct);
+
+
+
+
 
         }
 
-        public Task<IQueryable<PricingHistory>> GetAllPriceHistAsync()
+        public Task<IQueryable<RosterProduct>> GetAllRosterProdAsync()
         {
-            return Task.FromResult<IQueryable<PricingHistory>>(ph.AsQueryable<PricingHistory>());
+            return Task.FromResult<IQueryable<RosterProduct>>(rp.AsQueryable<RosterProduct>());
         }
-        public bool PriceHistExists(int id)
+        public bool RosterProdExists(int id)
         {
-            return Ph.Exists(l => l.PricingHistoryID == id);
+            return Rp.Exists(l => l.RosterProductID == id);
         }
 
     }

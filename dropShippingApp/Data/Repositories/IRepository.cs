@@ -6,12 +6,12 @@ namespace dropShippingApp.Data
 {
     public interface IRepository
     {
-        public Task<int> AddPriceHistAsync(PricingHistory ph);
-        public Task<PricingHistory> RemovePriceHistAsync(int? id);
+        public Task<int> AddRosterProdAsync(RosterProduct rp);
+        public Task<RosterProduct> RemoveRosterProdAsync(int? id);
 
-        public Task<IQueryable<PricingHistory>> GetAllPriceHistAsync();
+        public Task<IQueryable<RosterProduct>> GetAllRosterProdAsync();
 
-        public bool PriceHistExists(int id);
+        public bool RosterProdExists(int id);
 
     }
 }

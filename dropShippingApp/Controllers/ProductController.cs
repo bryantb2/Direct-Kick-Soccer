@@ -23,18 +23,18 @@ namespace dropShippingApp.Controllers
 
         public async Task<IActionResult> Index()
         {
-            IQueryable<PricingHistory> result = await Repository.GetAllPriceHistAsync();
+            IQueryable<RosterProduct> result = await Repository.GetAllRosterProdAsync();
             return View(result.ToList());
         }
 
-        public async Task<int> AddPricingHistory(PricingHistory history) => await Repository.AddPriceHistAsync(history);
-        public async Task<PricingHistory> RemovePricingHistory(int historyId)
+        public async Task<int> AddRosterProduct(RosterProduct rosterProduct) => await Repository.AddRosterProdAsync(rosterProduct);
+        public async Task<RosterProduct> RemoveRosterProduct(int rosterId)
         {
-            PricingHistory removedHistory;
-            removedHistory = await Repository.RemovePriceHistAsync(historyId);
+             RosterProduct roster;
+             roster = await Repository.RemoveRosterProdAsync(rosterId);
           //  var removedHistory = this.pricingHistory.Find(hstry => hstry.PricingHistoryID == historyId);
           //  this.pricingHistory.Remove(removedHistory);
-            return removedHistory;
+            return roster;
         }
 
     }

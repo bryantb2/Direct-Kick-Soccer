@@ -18,38 +18,36 @@ namespace ProductTests
     {
         FakeRepository fr;
         ProductController controller;
+        RosterProduct rosterProduct;
         PricingHistory ph;
         
         
         public  UnitTest1()
         {
             fr = new FakeRepository();
-           // var controller = new ProductController(fr);
-
-
+            controller = new ProductController(fr);
+            ph = new PricingHistory { PricingHistoryID = 1, DateChanged = new DateTime(2020, 3, 10, 6, 30, 0), NewPrice = 100.00m };
+            rosterProduct = new RosterProduct { AddOnPrice = 100.00m, BaseColor = new ProductColor { ColorName = "red", IsColorActive = true, ProductColorID = 230 }, BaseSize = new ProductSize { IsSizeActive = true, SizeName = "10w", ProductSizeID = 135 }, BasePrice = 50.00m, IsProductActive = true, ModelNumber = 123, ProductName = "sports shirt", ProductDescription = "sports", RosterProductID = 5, SKU = 80 };
         }
 
         [Fact]
         public async Task TestAdd()
         {
-            controller = new ProductController(fr);
-            ph = new PricingHistory { PricingHistoryID = 1, DateChanged = new DateTime(2020, 3, 10, 6, 30, 0), NewPrice = 100.00m };
-            int x = await controller.AddPricingHistory(ph);
-           // var result = await controller.Index();
-           // var viewResult = (ViewResult)result;
-            //var pricelist = (List<PricingHistory>)viewResult.Model;
-            //Assert.Equal(1,x);
-            Assert.Equal(ph, fr.Ph.Find(x => x.PricingHistoryID == 1));
+            rosterProduct.AddPricingHistory(ph);
+            Assert.True(rosterProduct.PricingHistory.Exists(x => x.PricingHistoryID == 1));
+            int x = await controller.AddRosterProduct(rosterProduct);
+          
+            Assert.True( fr.Rp.Exists(x => x.RosterProductID == 5));
         }
 
         [Fact]
         public async Task TestRemove()
         {
-            controller = new ProductController(fr);
-            ph = new PricingHistory { PricingHistoryID = 1, DateChanged = new DateTime(2020, 3, 10, 6, 30, 0), NewPrice = 100.00m };
-            int x = await controller.AddPricingHistory(ph);
-            PricingHistory pxh = await controller.RemovePricingHistory(1);
-            Assert.False(fr.Ph.Exists(x => x.PricingHistoryID == 1));
+            rosterProduct.RemovePricingHistory(1);
+            Assert.False(rosterProduct.PricingHistory.Exists(x => x.PricingHistoryID == 1));
+            int x = await controller.AddRosterProduct(rosterProduct);
+            RosterProduct rp = await controller.RemoveRosterProduct(5);
+            Assert.False(fr.Rp.Exists(x => x.RosterProductID == 5));
         }
 
     }
