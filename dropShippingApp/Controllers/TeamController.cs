@@ -20,7 +20,8 @@ namespace dropShippingApp.Controllers
         {
             // TODO
             // returns specific team page
-            return View();
+            var team = await teamRepo.FindTeamById(teamId);
+            return View(team);
         }
 
         public async Task<IActionResult> BrowseTeams()
