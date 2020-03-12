@@ -112,7 +112,17 @@ namespace ProductTests
         [Fact]
         public async Task TestFindTeamByProduct()
         {
+            // arrange
 
+
+            // act
+
+
+            // assert
+
+            // TODO
+
+            Assert.Equal(true, false);
         }
     }
 }
