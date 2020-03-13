@@ -12,6 +12,10 @@ namespace dropShippingApp.Models
         private List<ProductSize> offeredSizes = new List<ProductSize>();
         private List<PricingHistory> pricingHistory = new List<PricingHistory>();
 
+        private List<ProductColor> OfferedColors { get; set; }
+        private List<ProductSize> OfferedSizes { get; set; }
+        private List<PricingHistory> PricingHistory { get; set; }
+
         // public properties
         public int CustomProductID { get; set; }
         public int SKU { get; set; }

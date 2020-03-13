@@ -19,10 +19,12 @@ namespace dropShippingApp.Repositories
         public List<ProductColor> offeredColors = new List<ProductColor>();
         public List<ProductSize> offeredSizes = new List<ProductSize>();
         public List<PricingHistory> pricingHistory = new List<PricingHistory>();
+        public List<CustomProduct> customProducts = new List<CustomProduct>();
 
         public List<ProductColor> OfferedColors { get { return offeredColors; } }
         public List<ProductSize> OfferedSizes { get { return offeredSizes; } }
         public List<PricingHistory> PricingHistory { get { return pricingHistory; } }
+        public List<CustomProduct> CustomProducts { get { return customProducts; } }
 
         // methods
         public void AddColor(ProductColor color) => OfferedColors.Add(color);
@@ -77,6 +79,11 @@ namespace dropShippingApp.Repositories
             }
             return removedLog;
             //throw new NotImplementedException();
+        }
+
+        public CustomProduct GetProductBySKU(int id)
+        {
+            return CustomProducts.First(p => p.SKU == id);
         }
 
         public CustomProduct AddCustomImage(CustomProduct Image)

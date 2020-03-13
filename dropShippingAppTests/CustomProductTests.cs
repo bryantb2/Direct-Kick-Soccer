@@ -2,22 +2,43 @@ using System;
 using Xunit;
 using dropShippingApp.Models;
 using dropShippingApp.Repositories;
+using dropShippingApp.Controllers;
 
 namespace dropShippingAppTests
 {
 	public class CustomProductTests
 	{
 		FakeCustomProductRepo repo;
-		bool pass;
+		bool pass = false;
 
+		[Fact]
+		public void GetProductBySKU()
+		{
+			// Not working yet, will adjust later
+			//// Arrange
+			//CustomProduct product = new CustomProduct();
+			//repo = new FakeCustomProductRepo();
+			//var controller = new CustomProductController(repo);
+
+			//// Act
+			//product.SKU = 1234;
+			//repo.AddCustomProduct(product);
+			//controller.GetProductBySKU(1234);
+
+			//// Assert
+			//if (repo.CustomProducts[0].SKU == product.SKU)
+			//{
+			//	pass = true;
+			//}
+			//Assert.True(pass);
+		}
 
 		[Fact]
 		public void AddColorTest()
 		{
 			// Arrange
-			var repo = new FakeCustomProductRepo();
+			repo = new FakeCustomProductRepo();
 			ProductColor colorTest = new ProductColor();
-			bool pass = false;
 
 			// Act
 			colorTest.ColorName = "blue";
@@ -36,9 +57,8 @@ namespace dropShippingAppTests
 		public void RemoveColorTest()
 		{
 			// Arrange
-			var repo = new FakeCustomProductRepo();
+			repo = new FakeCustomProductRepo();
 			ProductColor colorTest = new ProductColor();
-			bool pass = false;
 
 			// Act
 			colorTest.ColorName = "blue";
@@ -56,9 +76,8 @@ namespace dropShippingAppTests
 		public void AddSizeTest()
 		{
 			// Arrange
-			var repo = new FakeCustomProductRepo();
+			repo = new FakeCustomProductRepo();
 			ProductSize sizeTest = new ProductSize();
-			bool pass = false;
 
 			// Act
 			sizeTest.SizeName = "Large";
@@ -76,9 +95,8 @@ namespace dropShippingAppTests
 		public void RemoveSizeTest()
 		{
 			// Arrange
-			var repo = new FakeCustomProductRepo();
+			repo = new FakeCustomProductRepo();
 			ProductSize sizeTest = new ProductSize();
-			bool pass = false;
 
 			// Act
 			repo.RemoveSize(sizeTest);
@@ -95,9 +113,8 @@ namespace dropShippingAppTests
 		public void AddPriceChangeTest()
 		{
 			// Arrange
-			var repo = new FakeCustomProductRepo();
+			repo = new FakeCustomProductRepo();
 			PricingHistory priceTest = new PricingHistory();
-			bool pass = false;
 
 			// Act
 			priceTest.NewPrice = 13.99m;
@@ -115,9 +132,8 @@ namespace dropShippingAppTests
 		public void RemovePriceChangeTest()
 		{
 			// Arrange
-			var repo = new FakeCustomProductRepo();
+			repo = new FakeCustomProductRepo();
 			PricingHistory priceTest = new PricingHistory();
-			bool pass = false;
 
 			// Act
 			priceTest.NewPrice = 13.99m;
@@ -131,56 +147,55 @@ namespace dropShippingAppTests
 			Assert.True(pass);
 		}
 
-		[Fact]
-		public void AddCustomImageTest()
-		{
-			// Arrange
-			var repo = new FakeCustomProductRepo();
-			CustomProduct imageTest = new CustomProduct();
-			bool pass = false;
+		//[Fact]
+		//public void AddCustomImageTest()
+		//{
+		//	// Not fully implemented yet...
 
-			// Act
-			imageTest.CustomImageSVG = "asdfasdfas";
-			imageTest.CustomImagePNG = "jkkkjjijk";
-			repo.AddCustomImage(imageTest);
+		//	// Arrange
+		//	repo = new FakeCustomProductRepo();
+		//	CustomProduct imageTest = new CustomProduct();
 
-			// Assert
-		}
+		//	// Act
+		//	imageTest.CustomImageSVG = "asdfasdfas";
+		//	imageTest.CustomImagePNG = "jkkkjjijk";
+		//	repo.AddCustomImage(imageTest);
 
-		[Fact]
-		public void RemoveCustomImageTest()
-		{
-			// Arrange
-			var repo = new FakeCustomProductRepo();
-			bool pass = false;
+		//	// Assert
+		//	if ()
+		//}
 
-			// Act
+		//[Fact]
+		//public void RemoveCustomImageTest()
+		//{
+		//	// Arrange
+		//	repo = new FakeCustomProductRepo();
 
-			// Assert
-		}
+		//	// Act
 
-		[Fact]
-		public void AddCustomProductTest()
-		{
-			// Arrange
-			var repo = new FakeCustomProductRepo();
-			bool pass = false;
+		//	// Assert
+		//}
 
-			// Act
+		//[Fact]
+		//public void AddCustomProductTest()
+		//{
+		//	// Arrange
+		//	repo = new FakeCustomProductRepo();
 
-			// Assert
-		}
+		//	// Act
 
-		[Fact]
-		public void RemoveCustomProductTest()
-		{
-			// Arrange
-			var repo = new FakeCustomProductRepo();
-			bool pass = false;
+		//	// Assert
+		//}
 
-			// Act
+		//[Fact]
+		//public void RemoveCustomProductTest()
+		//{
+		//	// Arrange
+		//	repo = new FakeCustomProductRepo();
 
-			// Assert
-		}
+		//	// Act
+
+		//	// Assert
+		//}
 	}
 }
