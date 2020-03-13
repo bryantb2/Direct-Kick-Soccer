@@ -3,6 +3,7 @@ using Xunit;
 using dropShippingApp.Models;
 using dropShippingApp.Repositories;
 using dropShippingApp.Controllers;
+using System.Collections.Generic;
 
 namespace dropShippingAppTests
 {
@@ -12,25 +13,147 @@ namespace dropShippingAppTests
 		bool pass = false;
 
 		[Fact]
-		public void GetProductBySKU()
+		public void GetProductBySKUTest()
 		{
-			// Not working yet, will adjust later
-			//// Arrange
-			//CustomProduct product = new CustomProduct();
-			//repo = new FakeCustomProductRepo();
-			//var controller = new CustomProductController(repo);
+			// Arrange
+			CustomProduct product;
+			RosterProduct rosterProduct;
+			ProductColor black;
+			ProductColor red;
+			ProductSize small; 
+			repo = new FakeCustomProductRepo();
+			var controller = new CustomProductController(repo);
 
-			//// Act
-			//product.SKU = 1234;
-			//repo.AddCustomProduct(product);
-			//controller.GetProductBySKU(1234);
+			// Act
+			black = new ProductColor()
+			{
+				ProductColorID = 2,
+				ColorName = "red",
+				AddOnPrice = 0.00m,
+				IsColorActive = true,
+			};
+			red = new ProductColor()
+			{
+				ProductColorID = 1,
+				ColorName = "black",
+				AddOnPrice = 0.00m,
+				IsColorActive = true,
+			};
+			repo.AddColor(black);
+			repo.AddColor(red);
+			small = new ProductSize()
+			{
+				ProductSizeID = 2,
+				SizeName = "small",
+				AddOnPrice = 0.00m,
+				IsSizeActive = true,
+			};
+			repo.AddSize(small);
+			rosterProduct = new RosterProduct()
+			{
+				RosterProductID = 98765,
+				ModelNumber = 2345,
+				ProductName = "Atheltic Cotton Tee",
+				ProductDescription = "Cotton Tee for all your work needs",
+				BaseColors = repo.OfferedColors,
+				BaseSizes = repo.OfferedSizes,
+				BasePrice = 12.99m,
+				AddOnPrice = 0.00m,
+			};
+			product = new CustomProduct()
+			{
+				CustomProductID = 12345,
+				SKU = 1234,
+				ModelNumber = 2345,
+				BaseProduct = rosterProduct,
+				ProductTitle = "Test Cotton Tee",
+				ProductDescription = "This is a Test for a CustomProduct",
+				AddOnPrice = 0.00m,
+				CustomImagePNG = "jijkki",
+				CustomImageSVG = "fhfyfhfyfh",
+				IsProductActive = true,
+			};
+			repo.AddCustomProduct(product);
+			controller.GetProductBySKU(1234);
 
-			//// Assert
-			//if (repo.CustomProducts[0].SKU == product.SKU)
-			//{
-			//	pass = true;
-			//}
-			//Assert.True(pass);
+			// Assert
+			if (repo.CustomProducts[0].SKU == product.SKU)
+			{
+				pass = true;
+			}
+			Assert.True(pass);
+		}
+
+		[Fact]
+		public void GetProductByModelNumberTest()
+		{
+			// Arrange
+			CustomProduct product;
+			RosterProduct rosterProduct;
+			ProductColor black;
+			ProductColor red;
+			ProductSize small;
+			repo = new FakeCustomProductRepo();
+			var controller = new CustomProductController(repo);
+
+			// Act
+			black = new ProductColor()
+			{
+				ProductColorID = 2,
+				ColorName = "red",
+				AddOnPrice = 0.00m,
+				IsColorActive = true,
+			};
+			red = new ProductColor()
+			{
+				ProductColorID = 1,
+				ColorName = "black",
+				AddOnPrice = 0.00m,
+				IsColorActive = true,
+			};
+			repo.AddColor(black);
+			repo.AddColor(red);
+			small = new ProductSize()
+			{
+				ProductSizeID = 2,
+				SizeName = "small",
+				AddOnPrice = 0.00m,
+				IsSizeActive = true,
+			};
+			repo.AddSize(small);
+			rosterProduct = new RosterProduct()
+			{
+				RosterProductID = 98765,
+				ModelNumber = 2345,
+				ProductName = "Atheltic Cotton Tee",
+				ProductDescription = "Cotton Tee for all your work needs",
+				BaseColors = repo.OfferedColors,
+				BaseSizes = repo.OfferedSizes,
+				BasePrice = 12.99m,
+				AddOnPrice = 0.00m,
+			};
+			product = new CustomProduct()
+			{
+				CustomProductID = 12345,
+				SKU = 1234,
+				ModelNumber = 2345,
+				BaseProduct = rosterProduct,
+				ProductTitle = "Test Cotton Tee",
+				ProductDescription = "This is a Test for a CustomProduct",
+				AddOnPrice = 0.00m,
+				CustomImagePNG = "jijkki",
+				CustomImageSVG = "fhfyfhfyfh",
+				IsProductActive = true,
+			};
+			repo.AddCustomProduct(product);
+			controller.GetProductBySKU(1234);
+
+			// Assert
+			if (repo.CustomProducts[0].ModelNumber == product.ModelNumber)
+			{
+				pass = true;
+			}
+			Assert.True(pass);
 		}
 
 		[Fact]

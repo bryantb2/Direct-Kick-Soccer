@@ -11,24 +11,23 @@ namespace dropShippingApp.Controllers
     public class CustomProductController : Controller
     {
         private ICustomProductRepo repo;
-        private FakeCustomProductRepo repo1;
 
         public CustomProductController(ICustomProductRepo r)
         {
             repo = r;
         }
 
-        // just for testing... ICustomProductRepo is having issues
-        // will fix later
-        public CustomProductController(FakeCustomProductRepo repo1)
-        {
-            this.repo1 = repo1;
-        }
-
         public ViewResult GetProductBySKU(int SKU)
         {
             CustomProduct product = new CustomProduct();
-            product = repo.GetProductBySKU(SKU);
+            product = repo.CustomProducts.First(p => p.SKU == SKU);
+            return View(product);
+        }
+
+        public ViewResult GetProductByModelNumber(int productNum)
+        {
+            CustomProduct product = new CustomProduct();
+            product = repo.CustomProducts.First(p => p.ModelNumber == productNum);
             return View(product);
         }
     }

@@ -9,6 +9,7 @@ namespace dropShippingApp.Repositories
         List<ProductColor> OfferedColors { get; }
         List<ProductSize> OfferedSizes { get; }
         List<PricingHistory> PricingHistory { get; }
+        List<CustomProduct> CustomProducts { get; }
 
         void AddColor(ProductColor color);
         ProductColor RemoveColor(ProductColor color);
@@ -18,13 +19,11 @@ namespace dropShippingApp.Repositories
         void AddPriceChange(PricingHistory historyLog);
         PricingHistory RemovePriceChange(PricingHistory historyLog);
 
-        CustomProduct AddCustomImage(CustomProduct Image);
-        CustomProduct RemoveCustomImage(CustomProduct Image);
+        void AddCustomImage(string image);
+        void RemoveCustomImage(string image);
 
-        CustomProduct AddCustomProduct(CustomProduct product);
+        void AddCustomProduct(CustomProduct product);
 
-        CustomProduct RemoveCustomProduct(CustomProduct product);
-
-        CustomProduct GetProductBySKU(int id);
+        void RemoveCustomProduct(CustomProduct product);
     }
 }

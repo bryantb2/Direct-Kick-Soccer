@@ -19,6 +19,7 @@ namespace dropShippingApp.Models
         // public properties
         public int CustomProductID { get; set; }
         public int SKU { get; set; }
+        public int ModelNumber { get; set; }
         public RosterProduct BaseProduct { get; set; }
         public string ProductTitle { get; set; }
         public string ProductDescription { get; set; }

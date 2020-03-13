@@ -7,7 +7,7 @@ using dropShippingApp.Models;
 
 namespace dropShippingApp.Repositories
 {
-	public class FakeCustomProductRepo
+	public class FakeCustomProductRepo : ICustomProductRepo
 	{
         // need to implement a DBContext
         //private AppDbContext context;
@@ -16,10 +16,10 @@ namespace dropShippingApp.Repositories
         //public List<ProductColor> OfferedColors { get { return context.OfferedColors.ToList(); } }
         //public List<ProductSize> OfferedSizes { get { return context.OfferedSizes.ToList(); } }
         //public List<PricingHistory> PricingHistory { get { return context.PricingHistory.ToList(); } }
-        public List<ProductColor> offeredColors = new List<ProductColor>();
-        public List<ProductSize> offeredSizes = new List<ProductSize>();
-        public List<PricingHistory> pricingHistory = new List<PricingHistory>();
-        public List<CustomProduct> customProducts = new List<CustomProduct>();
+        private List<ProductColor> offeredColors = new List<ProductColor>();
+        private List<ProductSize> offeredSizes = new List<ProductSize>();
+        private List<PricingHistory> pricingHistory = new List<PricingHistory>();
+        private List<CustomProduct> customProducts = new List<CustomProduct>();
 
         public List<ProductColor> OfferedColors { get { return offeredColors; } }
         public List<ProductSize> OfferedSizes { get { return offeredSizes; } }
@@ -30,7 +30,6 @@ namespace dropShippingApp.Repositories
         public void AddColor(ProductColor color) => OfferedColors.Add(color);
         public ProductColor RemoveColor(ProductColor color)
         {
-            //Commented out until DB is set up
             ProductColor removedColor = null;
             foreach (ProductColor c in OfferedColors)
             {
@@ -42,13 +41,11 @@ namespace dropShippingApp.Repositories
                 }
             }
             return removedColor;
-            //throw new NotImplementedException();
         }
 
         public void AddSize(ProductSize size) => OfferedSizes.Add(size);
         public ProductSize RemoveSize(ProductSize size)
         {
-            // Commented out until DB is set up
             ProductSize removedSize = null;
             foreach (ProductSize s in OfferedSizes)
             {
@@ -60,7 +57,6 @@ namespace dropShippingApp.Repositories
                 }
             }
             return removedSize;
-            //throw new NotImplementedException();
         }
 
         public void AddPriceChange(PricingHistory historyLog) => PricingHistory.Add(historyLog);
@@ -78,33 +74,28 @@ namespace dropShippingApp.Repositories
                 }
             }
             return removedLog;
-            //throw new NotImplementedException();
         }
 
-        public CustomProduct GetProductBySKU(int id)
-        {
-            return CustomProducts.First(p => p.SKU == id);
-        }
-
-        public CustomProduct AddCustomImage(CustomProduct Image)
-        {
+        public void AddCustomImage(string image)
+        { 
+            // Not implemented yet
             throw new NotImplementedException();
         }
 
-        public CustomProduct RemoveCustomImage(CustomProduct Image)
+        public void RemoveCustomImage(string image)
         {
+            // Not implemented yet
             throw new NotImplementedException();
         }
 
         public void AddCustomProduct(CustomProduct product)
         {
-           CustomProducts.Add(product);
+            CustomProducts.Add(product);
         }
 
         public void RemoveCustomProduct(CustomProduct product)
         {
-            throw new NotImplementedException();
+            CustomProducts.Remove(product);
         }
-
     }
 }
