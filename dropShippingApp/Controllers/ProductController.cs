@@ -14,9 +14,9 @@ namespace dropShippingApp.Controllers
 {
     public class ProductController : Controller
     {
-        public IRepository Repository { get; set; }
+        public IRProductRepo Repository { get; set; }
 
-        public ProductController(IRepository repo)
+        public ProductController(IRProductRepo repo)
         {
             Repository = repo;
         }
@@ -27,7 +27,9 @@ namespace dropShippingApp.Controllers
             return View(result.ToList());
         }
 
-        public async Task<int> AddPricingHistory(PricingHistory history) => await Repository.AddPriceHistAsync(history);
+        /*
+         * NOT CORRECT... NEEDS TO BE REWRITTEN
+         * public async Task<int> AddPricingHistory(PricingHistory history) => await Repository.AddPriceHistAsync(history);
         public async Task<PricingHistory> RemovePricingHistory(int historyId)
         {
             PricingHistory removedHistory;
@@ -35,7 +37,13 @@ namespace dropShippingApp.Controllers
           //  var removedHistory = this.pricingHistory.Find(hstry => hstry.PricingHistoryID == historyId);
           //  this.pricingHistory.Remove(removedHistory);
             return removedHistory;
-        }
+        }*/
 
+        public async Task<IActionResult> PopularItems()
+        {
+            // TODO
+            // returns team results page 
+            return View();
+        }
     }
 }

@@ -4,7 +4,7 @@ using dropShippingApp.Models;
 namespace dropShippingApp.Data
 
 {
-    public interface IRepository
+    public interface IRProductRepo
     {
         public Task<int> AddPriceHistAsync(PricingHistory ph);
         public Task<PricingHistory> RemovePriceHistAsync(int? id);

@@ -14,16 +14,16 @@ using Xunit;
 
 namespace ProductTests
 {
-    public class UnitTest1
+    public class RProductRepoTests
     {
-        FakeRepository fr;
+        /*FakeRProductRepo fr;
         ProductController controller;
         PricingHistory ph;
         
         
-        public  UnitTest1()
+        public  RProductRepoTests()
         {
-            fr = new FakeRepository();
+            fr = new FakeRProductRepo();
            // var controller = new ProductController(fr);
 
 
@@ -50,7 +50,7 @@ namespace ProductTests
             int x = await controller.AddPricingHistory(ph);
             PricingHistory pxh = await controller.RemovePricingHistory(1);
             Assert.False(fr.Ph.Exists(x => x.PricingHistoryID == 1));
-        }
+        }*/
 
     }
 }
