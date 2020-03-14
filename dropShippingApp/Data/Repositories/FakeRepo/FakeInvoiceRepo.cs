@@ -34,7 +34,10 @@ namespace dropShippingApp.Repositories
             return Task.FromResult<bool>(flag);
         }
 
-
+        public void AddInvoice(Invoice i)
+        {
+            Invoices.Add(i);
+        }
 
 
 
@@ -62,7 +65,27 @@ namespace dropShippingApp.Repositories
             return Task.FromResult<InvoiceItem>(list[0]);
         }
 
-        public Task<bool> UpdateInvoiceItem(InvoiceItem newItem)
+ 
+        public InvoiceItem AddInvoiceItem(InvoiceItem item, int id)
+        {
+
+            if (item!=null && id!=0)
+            {
+                var i = (from invoice in invoices
+                         where invoice.InvoiceID == id
+                         select invoice).ToList().FirstOrDefault();
+
+                i.InvoiceItems.Add(item);
+                return item;
+            }
+            else
+                return null;
+
+        }
+
+     
+
+        public InvoiceItem RemoveInvoiceItem(InvoiceItem item)
         {
             throw new NotImplementedException();
         }
@@ -72,7 +95,7 @@ namespace dropShippingApp.Repositories
             throw new NotImplementedException();
         }
 
-        public Task<InvoiceItem> RemoveInvoiceItem(InvoiceItem item)
+        public Task<bool> UpdateInvoiceItem(InvoiceItem newItem)
         {
             throw new NotImplementedException();
         }

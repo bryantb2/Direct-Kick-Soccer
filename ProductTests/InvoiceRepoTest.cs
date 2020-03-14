@@ -3,6 +3,7 @@ using dropShippingApp.Models;
 using dropShippingApp.Repositories;
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using Xunit;
 
 namespace InvoiceRepoTest
@@ -31,7 +32,11 @@ namespace InvoiceRepoTest
             p2.DateChanged = DateTime.Parse("3/1/2020");
             List<PricingHistory> pList = new List<PricingHistory>();
             pList.Add(p);
-
+            Invoice i = new Invoice();
+            i.InvoiceID = 1;
+            Invoice i2 = new Invoice();
+            repo.Invoices.Add(i);
+            repo.Invoices.Add(i);
             user = new AppUser
             {
                 FirstName = "Test",
@@ -76,18 +81,18 @@ namespace InvoiceRepoTest
         }
 
 
-        [Fact]
-        public async void AddInvoiceItem()
-        {
-            // Arrange
-            // Done in the constructor
+        //[Fact]
+        //public async void AddInvoiceItem()
+        //{
+        //    // Arrange
+        //    // Done in the constructor
 
-            //Act
-            await repo.AddInvoiceItem(invoiceItem);
+        //    //Act
+        //    await repo.AddInvoiceItem(invoiceItem);
 
-            //Assert
-            Assert.Contains<InvoiceItem>(invoiceItem, repo.InvoiceItems);
-        }
+        //    //Assert
+        //    Assert.Contains<InvoiceItem>(invoiceItem, repo.InvoiceItems);
+        //}
         [Fact]
         public void CalculateGrandTotal()
         {
@@ -104,6 +109,16 @@ namespace InvoiceRepoTest
             Assert.Equal(30, total);
         }
         [Fact]
+        public async Task CreateInvoice()
+        {
+            //arrange
+            Invoice invoice = new Invoice();
+            //act
+            await controller.Create(invoice);
+            //assert
+            Assert.Contains<Invoice>(invoice, repo.Invoices);
+        }
+        [Fact]
         public void RemoveInvoiceItem()
         {
             // Arrange
@@ -113,6 +128,24 @@ namespace InvoiceRepoTest
             InvoiceItem myInvoice = invoice.RemoveInvoiceItem(1);
             //Assert
             Assert.Equal(invoiceItem, myInvoice);
+        }
+        [Fact]
+        public void AddInvoiceItem()
+        {
+            //arrange
+
+            //act
+            InvoiceItem i= controller.CreateInvoiceItem(prod, 1, 1,1);
+               
+            //assert
+            foreach(InvoiceItem item in invoice.InvoiceItems)
+            {
+                if(i.PurchasedProduct==item.PurchasedProduct)
+                {
+                    Assert.Equal(i, item);
+                }
+            }
+                 
         }
 
 

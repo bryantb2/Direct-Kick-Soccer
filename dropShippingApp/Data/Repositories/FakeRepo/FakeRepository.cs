@@ -45,6 +45,7 @@ namespace dropShippingApp.Data.Repositories
             return Task.FromResult<PricingHistory>(oldprice);
 
         }
+      
 
         public Task<IQueryable<PricingHistory>> GetAllPriceHistAsync()
         {

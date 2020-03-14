@@ -10,10 +10,11 @@ namespace dropShippingApp.Repositories
     {
         public IQueryable<Invoice> Invoices { get; }
 
-        Task<bool> AddInvoiceItem(InvoiceItem item);
-        Task<InvoiceItem> RemoveInvoiceItem(InvoiceItem item);
+        public InvoiceItem AddInvoiceItem(InvoiceItem item, int id);
+        InvoiceItem RemoveInvoiceItem(InvoiceItem item);
         public Task<decimal> CalculateGrandTotal();
         public Task<bool> UpdateInvoiceItem(InvoiceItem newItem);
+        public void AddInvoice(Invoice i);
 
     }
 }
