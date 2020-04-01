@@ -79,20 +79,6 @@ namespace InvoiceRepoTest
 
             };
         }
-
-
-        //[Fact]
-        //public async void AddInvoiceItem()
-        //{
-        //    // Arrange
-        //    // Done in the constructor
-
-        //    //Act
-        //    await repo.AddInvoiceItem(invoiceItem);
-
-        //    //Assert
-        //    Assert.Contains<InvoiceItem>(invoiceItem, repo.InvoiceItems);
-        //}
         [Fact]
         public void CalculateGrandTotal()
         {
