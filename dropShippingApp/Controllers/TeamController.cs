@@ -23,12 +23,6 @@ namespace dropShippingApp.Controllers
             await teamRepo.AddTeam(team);
             return View(team);
         }
-
-<<<<<<< HEAD
-        // only admins will have access to thi
-=======
-        // only admins will have access to this
->>>>>>> fad9355c9461e56da3ead665aefc97fe449f3aef
         public async Task<ViewResult> MarkTeamInactive(int teamId)
         {
             // TODO
