@@ -5,11 +5,10 @@ using System.Threading.Tasks;
 
 namespace dropShippingApp.Models
 {
-    public class ProductColor
+    public class ProductColor 
     {
         public int ProductColorID { get; set; }
         public String ColorName { get; set; }
-        public decimal AddOnPrice { get; set; }
         public bool IsColorActive { get; set; }
     }
 }

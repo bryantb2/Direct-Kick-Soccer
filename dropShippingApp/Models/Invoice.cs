@@ -37,7 +37,7 @@ namespace dropShippingApp.Models
             decimal finalPrice = 0.00m;
             foreach(InvoiceItem item in invoiceItems)
             {
-                finalPrice += item.CalulateSubtotal();
+                finalPrice += item.CalulateSubtotal(DatePlaced);
             }
             return finalPrice;
         }
