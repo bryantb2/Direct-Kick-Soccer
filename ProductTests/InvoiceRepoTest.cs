@@ -18,33 +18,36 @@ namespace InvoiceRepoTest
         CustomProduct prod2;
         public InvoiceTests()
         {
+            // repo and controller setup
             repo = new FakeInvoiceRepo();
             controller = new InvoicesController(repo);
+
+            // pricing history setup
             PricingHistory p = new PricingHistory();
             PricingHistory p2 = new PricingHistory();
             p.NewPrice = 15;
             p.DateChanged = DateTime.Parse("3/1/2020");
             p2.NewPrice = 15;
             p2.DateChanged = DateTime.Parse("3/1/2020");
-            List<PricingHistory> pList = new List<PricingHistory>();
-            pList.Add(p);
-            Invoice i = new Invoice();
-            i.InvoiceID = 1;
-            Invoice i2 = new Invoice();
+            List<PricingHistory> pList = new List<PricingHistory>() { p };
+
+            // product 1 setup
             prod = new CustomProduct
             {
                 CustomProductID = 1,
-                ProductTitle = "A Prod",
-
+                ProductTitle = "A Prod"
             };
             prod.AddPricingHistory(p);
+
+            // product 2 setup
             prod2 = new CustomProduct
             {
                 CustomProductID = 2,
-                ProductTitle = "A Prod2",
-
+                ProductTitle = "A Prod2"
             };
             prod2.AddPricingHistory(p2);
+
+            // create invoice items
             invoiceItem = new InvoiceItem
             {
                 InvoiceItemID = 1,
@@ -63,10 +66,9 @@ namespace InvoiceRepoTest
             {
                 InvoiceID = 1,
                 DatePlaced = DateTime.Now,
-
-
             };
         }
+
         [Fact]
         public void CalculateGrandTotal()
         {
@@ -82,6 +84,7 @@ namespace InvoiceRepoTest
             //Assert
             Assert.Equal(30, total);
         }
+
         [Fact]
         public async Task CreateInvoice()
         {
@@ -92,6 +95,7 @@ namespace InvoiceRepoTest
             //assert
             Assert.Contains<Invoice>(invoice, repo.Invoices);
         }
+
         [Fact]
         public void RemoveInvoiceItem()
         {
@@ -103,6 +107,7 @@ namespace InvoiceRepoTest
             //Assert
             Assert.Equal(invoiceItem, myInvoice);
         }
+
         [Fact]
         public void AddInvoiceItem()
         {
@@ -121,7 +126,5 @@ namespace InvoiceRepoTest
             }
                  
         }
-
-
     }
 }
