@@ -1,63 +1,62 @@
-using dropShippingApp.Controllers;
+﻿using dropShippingApp.Controllers;
 using dropShippingApp.Models;
 using dropShippingApp.Repositories;
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using Xunit;
 
 namespace InvoiceRepoTest
 {
-    public class InvoiceTests
+    public class InvoiceTests : IDisposable
     {
-        FakeInvoiceRepo repo;
+        IInvoiceRepo repo;
         InvoicesController controller;
         Invoice invoice;
         InvoiceItem invoiceItem, invoiceItem2;
-        AppUser user;
         CustomProduct prod;
         CustomProduct prod2;
-        /// <summary>
-        /// setup for tests
-        /// </summary>
         public InvoiceTests()
         {
+            // repo and controller setup
             repo = new FakeInvoiceRepo();
             controller = new InvoicesController(repo);
-            PricingHistory p = new PricingHistory();
-            PricingHistory p2 = new PricingHistory();
-            p.NewPrice = 15;
-            p.DateChanged = DateTime.Parse("3/1/2020");
-            p2.NewPrice = 15;
-            p2.DateChanged = DateTime.Parse("3/1/2020");
-            List<PricingHistory> pList = new List<PricingHistory>();
-            pList.Add(p);
 
-            user = new AppUser
+            // pricing history setup
+            PricingHistory p = new PricingHistory()
             {
-                FirstName="Test",
-                LastName="McTesterson",
-                Email="test@test.com"
+                NewPrice = 15,
+                DateChanged = DateTime.Parse("3/1/2020")
             };
+            PricingHistory p2 = new PricingHistory()
+            {
+                NewPrice = 15,
+                DateChanged = DateTime.Parse("3/1/2020")
+            };
+
+            // product 1 setup
             prod = new CustomProduct
             {
                 CustomProductID = 1,
-                ProductTitle = "A Prod",
-                
+                ProductTitle = "A Prod"
             };
             prod.AddPricingHistory(p);
+
+            // product 2 setup
             prod2 = new CustomProduct
             {
                 CustomProductID = 2,
-                ProductTitle = "A Prod2",
-                
+                ProductTitle = "A Prod2"
             };
             prod2.AddPricingHistory(p2);
+
+            // create invoice items
             invoiceItem = new InvoiceItem
             {
                 InvoiceItemID = 1,
-                PurchasedProduct=prod,
-                ProductUnitPrice=25,
-                ItemQuantity=1
+                PurchasedProduct = prod,
+                ProductUnitPrice = 25,
+                ItemQuantity = 1
             };
             invoiceItem2 = new InvoiceItem
             {
@@ -70,24 +69,20 @@ namespace InvoiceRepoTest
             {
                 InvoiceID = 1,
                 DatePlaced = DateTime.Now,
-               
-
             };
         }
 
-
-        [Fact]
-        public async void AddInvoiceItem()
+        public void Dispose()
         {
-            // Arrange
-            // Done in the constructor
-
-            //Act
-            await repo.AddInvoiceItem(invoiceItem);
-
-            //Assert
-            Assert.Contains<InvoiceItem>(invoiceItem, repo.InvoiceItems);
+            repo = null;
+            controller = null;
+            invoice = null;
+            invoiceItem = null;
+            invoiceItem2 = null;
+            prod = null;
+            prod2 = null;
         }
+
         [Fact]
         public void CalculateGrandTotal()
         {
@@ -103,6 +98,16 @@ namespace InvoiceRepoTest
             //Assert
             Assert.Equal(30, total);
         }
+
+        [Fact]
+        public async Task CreateInvoice()
+        {
+            //act
+            await controller.CreateInvoice(invoice);
+            //assert
+            Assert.Contains<Invoice>(invoice, repo.Invoices);
+        }
+
         [Fact]
         public void RemoveInvoiceItem()
         {
@@ -114,7 +119,24 @@ namespace InvoiceRepoTest
             //Assert
             Assert.Equal(invoiceItem, myInvoice);
         }
- 
- 
+
+        /*[Fact]
+        public void AddInvoiceItem()
+        {
+            //arrange
+
+            //act
+            InvoiceItem i= controller.CreateInvoice(prod, 1, 1,1);
+               
+            //assert
+            foreach(InvoiceItem item in invoice.InvoiceItems)
+            {
+                if(i.PurchasedProduct==item.PurchasedProduct)
+                {
+                    Assert.Equal(i, item);
+                }
+            }
+                 
+        }*/
     }
 }

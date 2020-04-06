@@ -34,15 +34,5 @@ namespace dropShippingApp.Controllers
             }
             return View(invoice);
         }
-
-        private readonly ApplicationDbContext _context;
-        IInvoiceRepo iRepo;
-
-        public InvoicesController(IInvoiceRepo i)
-        {
-            iRepo = i;
-           
-        }
-
     }
 }
