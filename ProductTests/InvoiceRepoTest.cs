@@ -10,16 +10,12 @@ namespace InvoiceRepoTest
 {
     public class InvoiceTests
     {
-        FakeInvoiceRepo repo;
+        IInvoiceRepo repo;
         InvoicesController controller;
         Invoice invoice;
         InvoiceItem invoiceItem, invoiceItem2;
-        AppUser user;
         CustomProduct prod;
         CustomProduct prod2;
-        /// <summary>
-        /// setup for tests
-        /// </summary>
         public InvoiceTests()
         {
             repo = new FakeInvoiceRepo();
@@ -35,14 +31,6 @@ namespace InvoiceRepoTest
             Invoice i = new Invoice();
             i.InvoiceID = 1;
             Invoice i2 = new Invoice();
-            repo.Invoices.Add(i);
-            repo.Invoices.Add(i);
-            user = new AppUser
-            {
-                FirstName = "Test",
-                LastName = "McTesterson",
-                Email = "test@test.com"
-            };
             prod = new CustomProduct
             {
                 CustomProductID = 1,

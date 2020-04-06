@@ -9,14 +9,13 @@ using dropShippingApp.Models;
 using dropShippingApp.Controllers;
 
 using Xunit;
-
-
+using dropShippingApp.Repositories;
 
 namespace ProductTests
 {
     public class UnitTest1
     {
-        FakeRepository fr;
+        IInvoiceRepo fr;
         ProductController controller;
         PricingHistory ph;
         
@@ -24,9 +23,6 @@ namespace ProductTests
         public  UnitTest1()
         {
             fr = new FakeRepository();
-           // var controller = new ProductController(fr);
-
-
         }
 
         [Fact]
