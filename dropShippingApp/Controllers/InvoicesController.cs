@@ -13,31 +13,13 @@ namespace dropShippingApp.Controllers
 {
     public class InvoicesController : Controller
     {
+
         IInvoiceRepo invoiceRepo;
 
         public InvoicesController(IInvoiceRepo i)
         {
             invoiceRepo = i;
         }
-
-        /*public InvoiceItem CreateInvoiceItem(CustomProduct prod, decimal price, int qtny, int id)
-        {
-
-            if (prod != null && id != 0 && qtny != 0 && price != 0)
-            {
-
-                InvoiceItem item = new InvoiceItem
-                {
-                    PurchasedProduct = prod,
-                    ProductUnitPrice = price,
-                    ItemQuantity = qtny,
-
-                };
-               InvoiceItem i=iRepo.AddInvoiceItem(item, id);
-                return i;
-            }
-            return null;
-        }*/
 
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -52,5 +34,15 @@ namespace dropShippingApp.Controllers
             }
             return View(invoice);
         }
+
+        private readonly ApplicationDbContext _context;
+        IInvoiceRepo iRepo;
+
+        public InvoicesController(IInvoiceRepo i)
+        {
+            iRepo = i;
+           
+        }
+
     }
 }
