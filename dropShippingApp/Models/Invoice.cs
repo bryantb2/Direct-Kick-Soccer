@@ -14,6 +14,7 @@ namespace dropShippingApp.Models
         public int InvoiceID { get; set; }
         public DateTime DatePlaced { get; set; }
         public List<InvoiceItem> InvoiceItems { get { return invoiceItems; } }
+        public Boolean IsReturned { get; set; }
 
         // methods
         public void AddInvoiceItem(InvoiceItem item) => invoiceItems.Add(item);
