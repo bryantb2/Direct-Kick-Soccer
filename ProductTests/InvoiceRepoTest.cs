@@ -23,13 +23,16 @@ namespace InvoiceRepoTest
             controller = new InvoicesController(repo);
 
             // pricing history setup
-            PricingHistory p = new PricingHistory();
-            PricingHistory p2 = new PricingHistory();
-            p.NewPrice = 15;
-            p.DateChanged = DateTime.Parse("3/1/2020");
-            p2.NewPrice = 15;
-            p2.DateChanged = DateTime.Parse("3/1/2020");
-            List<PricingHistory> pList = new List<PricingHistory>() { p };
+            PricingHistory p = new PricingHistory()
+            {
+                NewPrice = 15,
+                DateChanged = DateTime.Parse("3/1/2020")
+            };
+            PricingHistory p2 = new PricingHistory()
+            {
+                NewPrice = 15,
+                DateChanged = DateTime.Parse("3/1/2020")
+            };
 
             // product 1 setup
             prod = new CustomProduct
