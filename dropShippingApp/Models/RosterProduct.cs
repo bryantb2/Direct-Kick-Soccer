@@ -8,9 +8,14 @@ namespace dropShippingApp.Models
     public class RosterProduct
     {
         // private fields
+<<<<<<< Updated upstream
         private List<ProductColor> baseColors = new List<ProductColor>();
         private List<ProductSize> baseSizes = new List<ProductSize>();
 
+=======
+        private List<PricingHistory> pricingHistory = new List<PricingHistory>();
+        
+>>>>>>> Stashed changes
         // public properties
         public int RosterProductID { get; set; }
         public int ModelNumber { get; set; }
