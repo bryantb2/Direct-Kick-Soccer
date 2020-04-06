@@ -102,10 +102,8 @@ namespace InvoiceRepoTest
         [Fact]
         public async Task CreateInvoice()
         {
-            //arrange
-            Invoice invoice = new Invoice();
             //act
-            await controller.Create(invoice);
+            await controller.CreateInvoice(invoice);
             //assert
             Assert.Contains<Invoice>(invoice, repo.Invoices);
         }

@@ -42,4 +42,10 @@
     <None Include="Views\Account\Signup.cshtml" />
   </ItemGroup>
 
+
+  <ItemGroup>
+    <Folder Include="..\..\..\..\Random %2528HDD%2529\LCC-CS\capstone\dropShippingApp\NewFolder\" />
+    <Folder Include="DataParseModel\" />
+  </ItemGroup>
+
 </Project>
