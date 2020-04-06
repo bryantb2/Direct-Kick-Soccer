@@ -18,12 +18,12 @@ namespace dropShippingApp.Models
 
         // methods
         public void AddInvoiceItem(InvoiceItem item) => invoiceItems.Add(item);
-        public InvoiceItem RemoveInvoiceItem(InvoiceItem item)
+        public InvoiceItem RemoveInvoiceItem(int id)
         {
             InvoiceItem removedItem = null;
             foreach(InvoiceItem i in invoiceItems)
             {
-                if(i.InvoiceItemID == item.InvoiceItemID)
+                if(i.InvoiceItemID == id)
                 {
                     removedItem = i;
                     invoiceItems.Remove(i);

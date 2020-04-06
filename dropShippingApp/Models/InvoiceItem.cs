@@ -22,7 +22,7 @@ namespace dropShippingApp.Models
             PricingHistory correctHistory = null;
             for(var i = (pricingHistory.Count - 1); i >= 0; i--)
             {
-                if(correctHistory != null) // prevents val from being set again
+                if(correctHistory == null) // prevents val from being set again
                 {
                     var currentHist = pricingHistory[i];
                     if (currentHist.DateChanged <= purchaseDate)
