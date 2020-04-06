@@ -8,7 +8,7 @@ using Xunit;
 
 namespace InvoiceRepoTest
 {
-    public class InvoiceTests
+    public class InvoiceTests : IDisposable
     {
         IInvoiceRepo repo;
         InvoicesController controller;
@@ -70,6 +70,17 @@ namespace InvoiceRepoTest
                 InvoiceID = 1,
                 DatePlaced = DateTime.Now,
             };
+        }
+
+        public void Dispose()
+        {
+            repo = null;
+            controller = null;
+            invoice = null;
+            invoiceItem = null;
+            invoiceItem2 = null;
+            prod = null;
+            prod2 = null;
         }
 
         [Fact]
