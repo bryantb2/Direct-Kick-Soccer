@@ -14,17 +14,15 @@ namespace dropShippingApp.Models
         public int ItemQuantity { get; set; }
 
         // methods
-        public decimal CalulateSubtotal()
+        public decimal CalulateSubtotal(DateTime purchaseDate)
         {
-
             // use pricing history of purchased product to determine what the price was
             var pricingHistory = PurchasedProduct.PricingHistory
                 .OrderBy(hist=>hist.DateChanged).ToList(); // put history list into ascending order
             PricingHistory correctHistory = null;
             for(var i = (pricingHistory.Count - 1); i >= 0; i--)
             {
-                
-                if (correctHistory == null) // prevents val from being set again
+                if(correctHistory == null) // prevents val from being set again
                 {
                     var currentHist = pricingHistory[i];
                     if (currentHist.DateChanged <= purchaseDate)
@@ -39,7 +37,6 @@ namespace dropShippingApp.Models
                 // will find the one that has a date changed that is less than the purchase data
                 // ability to set pricing history is locked after first less-than DateTime is found
                 // NOTE: I reversed the pricing history order because, otherwise, you would get the first value in history as the selected date EVERYTIME
-
         }
     }
 }

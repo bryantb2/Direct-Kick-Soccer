@@ -19,5 +19,14 @@ namespace dropShippingApp.Models
         public String BusinessEmail { get; set; }
         public int PhoneNumber { get; set; }
         public bool IsApproved { get; set; }
+
+        // methods
+        public String GenerateRequestParagraph()
+        {
+            return "Request to build team " + TeamName + ", described as " + TeamDescription + ". " +
+                "Business is located in " + Providence + ", " + Country + ". Company can be reached at " +
+                BusinessEmail + " or by phone at " + PhoneNumber + ". Here is the business main site: "
+                + CorporatePageURL;
+        }
     }
 }
