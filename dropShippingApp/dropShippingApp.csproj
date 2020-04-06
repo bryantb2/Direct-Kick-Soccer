@@ -41,5 +41,4 @@
     <None Include="Views\Account\ResetPassword.cshtml" />
     <None Include="Views\Account\Signup.cshtml" />
   </ItemGroup>
-
 </Project>
