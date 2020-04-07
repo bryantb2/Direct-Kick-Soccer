@@ -10,11 +10,23 @@ namespace dropShippingApp.Models
         // private fields
         private List<PricingHistory> pricingHistory = new List<PricingHistory>();
 
-        private List<ProductColor> OfferedColors { get; set; }
-        private List<ProductSize> OfferedSizes { get; set; }
-        private List<PricingHistory> PricingHistory { get; set; }
-
         // public properties
         public int CustomProductID { get; set; }
+        public RosterProduct BaseProduct { get; set; }
+        public string ProductTitle { get; set; }
+        public string ProductDescription { get; set; }
+        public string CustomImagePNG { get; set; }
+        public string CustomImageSVG { get; set; }
+        public bool IsProductActive { get; set; }
+        public List<PricingHistory> PricingHistory { get { return this.pricingHistory; } }
+
+        // methods
+        public void AddPricingHistory(PricingHistory history) => pricingHistory.Add(history);
+        public PricingHistory RemovePricingHistory(int historyId)
+        {
+            var removedHistory = this.pricingHistory.Find(hstry => hstry.PricingHistoryID == historyId);
+            this.pricingHistory.Remove(removedHistory);
+            return removedHistory;
+        }
     }
 }

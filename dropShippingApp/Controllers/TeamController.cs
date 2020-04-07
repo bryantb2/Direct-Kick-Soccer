@@ -23,8 +23,6 @@ namespace dropShippingApp.Controllers
             await teamRepo.AddTeam(team);
             return View(team);
         }
-
-        // only admins will have access to this
         public async Task<ViewResult> MarkTeamInactive(int teamId)
         {
             // TODO
@@ -71,12 +69,12 @@ namespace dropShippingApp.Controllers
         private List<Team> SearchListForMatches(List<Team> teams, string searchTerm)
         {
             List<Team> searchResults = new List<Team>();
-            foreach(Team t in teams)
+            foreach (Team t in teams)
             {
                 // search on team name
                 if (t.TeamName.ToUpper().Contains(searchTerm.ToUpper()))
                     searchResults.Add(t);
-                foreach(TeamTag tag in t.TeamTags)
+                foreach (TeamTag tag in t.TeamTags)
                 {
                     // search on product tags
                     if (tag.TagLine.ToUpper().Contains(searchTerm.ToUpper()))

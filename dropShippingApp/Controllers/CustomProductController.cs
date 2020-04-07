@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using dropShippingApp.Repositories;
+using dropShippingApp.Data.Repositories;
 using dropShippingApp.Models;
 
 namespace dropShippingApp.Controllers
@@ -17,18 +17,20 @@ namespace dropShippingApp.Controllers
             repo = r;
         }
 
-        public ViewResult GetProductBySKU(int SKU)
-        {
-            CustomProduct product = new CustomProduct();
-            product = repo.CustomProducts.First(p => p.SKU == SKU);
-            return View(product);
-        }
+        // Not currently implemented
 
-        public ViewResult GetProductByModelNumber(int productNum)
-        {
-            CustomProduct product = new CustomProduct();
-            product = repo.CustomProducts.First(p => p.ModelNumber == productNum);
-            return View(product);
-        }
+        //public ViewResult GetProductBySKU(int SKU)
+        //{
+        //    CustomProduct product = new CustomProduct();
+        //    product = repo.CustomProducts.First(p => p.SKU == SKU);
+        //    return View(product);
+        //}
+
+        //public ViewResult GetProductByModelNumber(int productNum)
+        //{
+        //    CustomProduct product = new CustomProduct();
+        //    product = repo.CustomProducts.First(p => p.ModelNumber == productNum);
+        //    return View(product);
+        //}
     }
 }
