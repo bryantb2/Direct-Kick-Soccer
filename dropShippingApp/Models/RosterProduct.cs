@@ -13,11 +13,6 @@ namespace dropShippingApp.Models
         // public properties
         public int RosterProductID { get; set; }
         public int ModelNumber { get; set; }
-        public int SKU { get; set; }
-        public String ProductName { get; set; }
-        public String ProductDescription { get; set; }
-        public ProductColor BaseColor { get; set; }
-        public ProductSize BaseSize { get; set; }
         public decimal BasePrice { get; set; }
         public decimal AddOnPrice { get; set; }
         public bool IsProductActive { get; set; }
