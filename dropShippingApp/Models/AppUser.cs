@@ -9,7 +9,6 @@ namespace dropShippingApp.Models
     public class AppUser : IdentityUser
     {
         // private fields
-        private List<Invoice> invoiceHistory = new List<Invoice>();
         private List<TeamCreationRequest> creationReqHistory = new List<TeamCreationRequest>();
         private List<CustomProduct> createdCustomProducts = new List<CustomProduct>();
         private List<RosterProduct> createdRosterProducts = new List<RosterProduct>();
@@ -25,7 +24,6 @@ namespace dropShippingApp.Models
         public String LastName { get; set; }
 
         // user properties
-        public List<Invoice> InvoiceHistory { get { return this.invoiceHistory; } }
         public List<TeamCreationRequest> CreationRequestHistory { get { return this.creationReqHistory; } }
         public bool hasApprovedRequest { get; set; }
 
@@ -148,23 +146,6 @@ namespace dropShippingApp.Models
             return removedProduct;
         }
 
-        // invoicing methods
-        public void AddInvoice(Invoice inv) => invoiceHistory.Add(inv);
-        public Invoice RemoveInvoice(Invoice inv)
-        {
-            Invoice removedInv = null;
-            foreach(Invoice i in invoiceHistory)
-            {
-                if (inv.InvoiceID == i.InvoiceID)
-                {
-                    removedInv = i;
-                    invoiceHistory.Remove(i);
-                    return removedInv;
-                }
-            }
-            return removedInv;
-        }
-
         // creation request methods
         public void AddCreationRequest(TeamCreationRequest request) => creationReqHistory.Add(request);
         public TeamCreationRequest RemoveCreationRequest(TeamCreationRequest creationReq)
@@ -180,16 +161,6 @@ namespace dropShippingApp.Models
                 }
             }
             return removedRequest;
-        }
-        public decimal CalculateTotalSpending()
-        {
-            // loop through invoice history
-            decimal totalPrice = 0.00m;
-            foreach(Invoice inv in invoiceHistory)
-            {
-                totalPrice += inv.CalculateGrandTotal();
-            }
-            return totalPrice;
         }
 
         // activity log methods
