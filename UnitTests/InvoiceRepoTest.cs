@@ -8,7 +8,7 @@ using Xunit;
 
 namespace InvoiceRepoTest
 {
-    public class InvoiceTests : IDisposable
+    /*public class InvoiceTests : IDisposable
     {
         IInvoiceRepo repo;
         InvoicesController controller;
@@ -138,5 +138,5 @@ namespace InvoiceRepoTest
             }
                  
         }*/
-    }
+    //}
 }

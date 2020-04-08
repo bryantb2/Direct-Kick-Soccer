@@ -4,10 +4,11 @@ using dropShippingApp.Models;
 using dropShippingApp.Repositories;
 using dropShippingApp.Controllers;
 using System.Collections.Generic;
+using dropShippingApp.Data.Repositories;
 
 namespace dropShippingAppTests
 {
-	public class CustomProductTests
+	/*public class CustomProductTests
 	{
 		FakeCustomProductRepo repo;
 		bool pass = false;
@@ -320,5 +321,5 @@ namespace dropShippingAppTests
 
 		//	// Assert
 		//}
-	}
+	}*/
 }
