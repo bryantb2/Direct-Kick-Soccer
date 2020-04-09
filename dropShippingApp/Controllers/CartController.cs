@@ -14,13 +14,6 @@ namespace dropShippingApp.Controllers
             return View();
         }
 
-        // checkout
-        [HttpPost]
-        public async Task<IActionResult> Checkout(/* WTF will we do? */)
-        {
-            // will bundle a user order together (ship engine tracking number, paypal transaction id, ect.)
-        }
-
         // remove item from cart
         public async Task<IActionResult> RemoveFromCart(/* cart item id */)
         {
@@ -42,8 +35,17 @@ namespace dropShippingApp.Controllers
         {
             // TODO
             // check cart for item id
-                // if exists, update
+            // if exists, update
             // return cart index with error message
+            throw new NotImplementedException();
+        }
+
+        // checkout
+        [HttpPost]
+        public async Task<IActionResult> Checkout(/* WTF will we do? */)
+        {
+            // will bundle a user order together (ship engine tracking number, paypal transaction id, ect.)
+            throw new NotImplementedException();
         }
     }
 }
