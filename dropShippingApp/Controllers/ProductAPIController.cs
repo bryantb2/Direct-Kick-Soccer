@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using dropShippingApp.Models;
 using dropShippingApp.Data.Repositories;
-using dropShippingApp.APIModels;
+//using dropShippingApp.APIModels;
 
 namespace dropShippingApp.Controllers
 {
@@ -26,7 +26,7 @@ namespace dropShippingApp.Controllers
             return NotFound("Custom product with Id of " + productId.ToString() + " does not exist");
         }
 
-        [HttpPost]
+        /*[HttpPost]
         [Route("CalculateCartTotal")]
         public async Task<IActionResult> CalculateCartTotal([FromBody] CartItem[] cartItems)
         {
@@ -38,6 +38,6 @@ namespace dropShippingApp.Controllers
                 var productData = await customProductRepo.GetCustomProductById(currentItem.CustomProductId);
                 runningTotal += (productData.)
             }
-        }
+        }*/
     }
 }
