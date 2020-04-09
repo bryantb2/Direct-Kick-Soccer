@@ -13,7 +13,7 @@ namespace dropShippingApp.Models
         // public properties
         public int RosterProductID { get; set; }
         public int ModelNumber { get; set; }
-        public decimal BasePrice { get; set; }
+        public decimal BasePrice { get; set; } // <--- Raza sets this
         public decimal AddOnPrice { get; set; }
         public bool IsProductActive { get; set; }
         public List<PricingHistory> PricingHistory { get { return this.pricingHistory; } }
