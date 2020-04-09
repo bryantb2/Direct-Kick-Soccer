@@ -14,36 +14,36 @@ namespace dropShippingApp.Controllers
 {
     public class ProductController : Controller
     {
-        public IRProductRepo Repository { get; set; }
+    //    public IRProductRepo Repository { get; set; }
 
-        public ProductController(IRProductRepo repo)
-        {
-            Repository = repo;
-        }
+    //    public ProductController(IRProductRepo repo)
+    //    {
+    //        Repository = repo;
+    //    }
 
-        public async Task<IActionResult> Index()
-        {
-            IQueryable<PricingHistory> result = await Repository.GetAllPriceHistAsync();
-            return View(result.ToList());
-        }
+    //    public async Task<IActionResult> Index()
+    //    {
+    //        IQueryable<PricingHistory> result = await Repository.GetAllPriceHistAsync();
+    //        return View(result.ToList());
+    //    }
 
-        /*
-         * NOT CORRECT... NEEDS TO BE REWRITTEN
-         * public async Task<int> AddPricingHistory(PricingHistory history) => await Repository.AddPriceHistAsync(history);
-        public async Task<PricingHistory> RemovePricingHistory(int historyId)
-        {
-            PricingHistory removedHistory;
-            removedHistory = await Repository.RemovePriceHistAsync(historyId);
-          //  var removedHistory = this.pricingHistory.Find(hstry => hstry.PricingHistoryID == historyId);
-          //  this.pricingHistory.Remove(removedHistory);
-            return removedHistory;
-        }*/
+    //    /*
+    //     * NOT CORRECT... NEEDS TO BE REWRITTEN
+    //     * public async Task<int> AddPricingHistory(PricingHistory history) => await Repository.AddPriceHistAsync(history);
+    //    public async Task<PricingHistory> RemovePricingHistory(int historyId)
+    //    {
+    //        PricingHistory removedHistory;
+    //        removedHistory = await Repository.RemovePriceHistAsync(historyId);
+    //      //  var removedHistory = this.pricingHistory.Find(hstry => hstry.PricingHistoryID == historyId);
+    //      //  this.pricingHistory.Remove(removedHistory);
+    //        return removedHistory;
+    //    }*/
 
-        public async Task<IActionResult> PopularItems()
-        {
-            // TODO
-            // returns team results page 
-            return View();
-        }
+    //    public async Task<IActionResult> PopularItems()
+    //    {
+    //        // TODO
+    //        // returns team results page 
+    //        return View();
+    //    }
     }
 }
