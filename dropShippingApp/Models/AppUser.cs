@@ -9,23 +9,25 @@ namespace dropShippingApp.Models
     public class AppUser : IdentityUser
     {
         // private fields
-        private List<TeamCreationRequest> creationReqHistory = new List<TeamCreationRequest>();
+        private List<TeamCreationRequest> userCreationReqHistory = new List<TeamCreationRequest>();
+        private List<Order> userOrderHistory = new List<Order>();
+        private List<Order> adminOrdersFulfilled = new List<Order>();
+        private List<TeamCreationRequest> adminApprovedTeamRequests = new List<TeamCreationRequest>();
+        private List<QuestionResponse> adminQuestionResponses = new List<QuestionResponse>();
         private List<CustomProduct> createdCustomProducts = new List<CustomProduct>();
-        private List<RosterProduct> createdRosterProducts = new List<RosterProduct>();
-        private List<Order> ordersFulfilled = new List<Order>();
-        private List<TeamCreationRequest> approvedTeamRequests = new List<TeamCreationRequest>();
-        private List<QuestionResponse> questionResponses = new List<QuestionResponse>();
+        private List<RosterProduct> adminCreatedRosterProducts = new List<RosterProduct>();
         private List<QuestionMessage> askedQuestions = new List<QuestionMessage>();
         private List<ActivityLog> activityLog = new List<ActivityLog>();
 
         // universal properties
-        public DateTime DateJoined { get; set; }
+        public Int64 DateJoined { get; set; }
         public String FirstName { get; set; }
         public String LastName { get; set; }
 
         // user properties
-        public List<TeamCreationRequest> CreationRequestHistory { get { return this.creationReqHistory; } }
+        public List<TeamCreationRequest> CreationRequestHistory { get { return this.userCreationReqHistory; } }
         public bool hasApprovedRequest { get; set; }
+        public List<Order> UserOrderHistory { get { return this.userOrderHistory; } }
 
         // team manager properties
         public Team ManagedTeam { get; set; }
@@ -35,26 +37,26 @@ namespace dropShippingApp.Models
         public List<QuestionMessage> AskedQuestions { get { return this.askedQuestions; } }
 
         // admin properties
-        public List<QuestionResponse> AnsweredQuestions { get { return questionResponses; } }
-        public List<RosterProduct> RosterProducts { get { return createdRosterProducts; } }
-        public List<TeamCreationRequest> ApprovedTeamRequests { get { return approvedTeamRequests; } }
-        public List<Order> ApprovedOrders { get { return ordersFulfilled; } }
+        public List<QuestionResponse> AnsweredQuestions { get { return adminQuestionResponses; } }
+        public List<RosterProduct> RosterProducts { get { return adminCreatedRosterProducts; } }
+        public List<TeamCreationRequest> ApprovedTeamRequests { get { return adminApprovedTeamRequests; } }
+        public List<Order> ApprovedOrders { get { return adminOrdersFulfilled; } }
 
         // team manager AND admin properties
         public List<ActivityLog> ActivityLog { get { return activityLog; } }
 
 
         // approved request methods
-        public void AddApprovedRequest(TeamCreationRequest request) => approvedTeamRequests.Add(request);
+        public void AddApprovedRequest(TeamCreationRequest request) => adminApprovedTeamRequests.Add(request);
         public TeamCreationRequest RemoveApprovedRequest(TeamCreationRequest request)
         {
             TeamCreationRequest removedRequest = null;
-            foreach (TeamCreationRequest r in approvedTeamRequests)
+            foreach (TeamCreationRequest r in adminApprovedTeamRequests)
             {
                 if (r.TeamCreationRequestID == request.TeamCreationRequestID)
                 {
                     removedRequest = r;
-                    approvedTeamRequests.Remove(r);
+                    adminApprovedTeamRequests.Remove(r);
                     return removedRequest;
                 }
             }
@@ -62,16 +64,16 @@ namespace dropShippingApp.Models
         }
 
         // question response methods
-        public void AddQuestionResponse(QuestionResponse question) => questionResponses.Add(question);
+        public void AddQuestionResponse(QuestionResponse question) => adminQuestionResponses.Add(question);
         public QuestionResponse RemoveQuestionResponse(QuestionResponse question)
         {
             QuestionResponse removedQuestion = null;
-            foreach (QuestionResponse qr in questionResponses)
+            foreach (QuestionResponse qr in adminQuestionResponses)
             {
                 if (qr.QuestionResponseID == question.QuestionResponseID)
                 {
                     removedQuestion = qr;
-                    questionResponses.Remove(qr);
+                    adminQuestionResponses.Remove(qr);
                     return removedQuestion;
                 }
             }
@@ -79,16 +81,16 @@ namespace dropShippingApp.Models
         }
 
         // approved order methods
-        public void AddApprovedOrder(Order order) => ordersFulfilled.Add(order);
+        public void AddApprovedOrder(Order order) => adminOrdersFulfilled.Add(order);
         public Order RemoveApprovedOrder(Order order)
         {
             Order removedOrder = null;
-            foreach (Order o in ordersFulfilled)
+            foreach (Order o in adminOrdersFulfilled)
             {
                 if (order.OrderID == o.OrderID)
                 {
                     removedOrder = o;
-                    ordersFulfilled.Remove(o);
+                    adminOrdersFulfilled.Remove(o);
                     return removedOrder;
                 }
             }
@@ -113,16 +115,16 @@ namespace dropShippingApp.Models
         }
 
         // roster product methods
-        public void AddRosterProduct(RosterProduct product) => createdRosterProducts.Add(product);
+        public void AddRosterProduct(RosterProduct product) => adminCreatedRosterProducts.Add(product);
         public RosterProduct RemoveRosterProduct(RosterProduct product)
         {
             RosterProduct removedProduct = null;
-            foreach (RosterProduct p in createdRosterProducts)
+            foreach (RosterProduct p in adminCreatedRosterProducts)
             {
                 if (p.RosterProductID == product.RosterProductID)
                 {
                     removedProduct = p;
-                    createdRosterProducts.Remove(p);
+                    adminCreatedRosterProducts.Remove(p);
                     return removedProduct;
                 }
             }
@@ -147,16 +149,16 @@ namespace dropShippingApp.Models
         }
 
         // creation request methods
-        public void AddCreationRequest(TeamCreationRequest request) => creationReqHistory.Add(request);
+        public void AddCreationRequest(TeamCreationRequest request) => userCreationReqHistory.Add(request);
         public TeamCreationRequest RemoveCreationRequest(TeamCreationRequest creationReq)
         {
             TeamCreationRequest removedRequest = null;
-            foreach (TeamCreationRequest req in creationReqHistory)
+            foreach (TeamCreationRequest req in userCreationReqHistory)
             {
                 if(req.TeamCreationRequestID == creationReq.TeamCreationRequestID)
                 {
                     removedRequest = req;
-                    creationReqHistory.Remove(req);
+                    userCreationReqHistory.Remove(req);
                     return removedRequest;
                 }
             }

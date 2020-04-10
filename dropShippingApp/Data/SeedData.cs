@@ -1,4 +1,6 @@
 ﻿using dropShippingApp.Models;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,10 +10,72 @@ namespace dropShippingApp.Data
 {
     public class SeedData
     {
-        public static void Seed(ApplicationDbContext context)
+        public static async void Seed(ApplicationDbContext context, IServiceProvider prov)
         {
+            // check context
+            context.Database.EnsureCreated();
+
+            // get services
+            UserManager<AppUser> userManager = prov.GetRequiredService<UserManager<AppUser>>();
+            RoleManager<IdentityRole> roleManager = prov.GetRequiredService<RoleManager<IdentityRole>>(); 
+
             if (!context.RosterProducts.Any())
             {
+                // ------------------------------------------- ADDING APP USERS AND ROLES ------------------------------------------- //
+                var user1 = new AppUser
+                {
+                    UserName = "NoobSlayer",
+                    NormalizedUserName = "NOOBSLAYER",
+                    Email = "abc123@gmail.com",
+                    NormalizedEmail = "ABC123@GMAIL.COM",
+                    DateJoined = DateTimeOffset.UtcNow.ToUnixTimeSeconds()
+                };
+                var user2 = new AppUser
+                {
+                    UserName = "Kalashnikov",
+                    NormalizedUserName = "KALASHNIKOV",
+                    Email = "ak47@yahoo.com",
+                    NormalizedEmail = "AK47@YAHOO.COM",
+                    DateJoined = DateTimeOffset.UtcNow.ToUnixTimeSeconds()
+                };
+                var user3 = new AppUser
+                {
+                    UserName = "ItalianCowboy",
+                    NormalizedUserName = "ITALIANCOWBODY",
+                    Email = "cowboy@gmail.com",
+                    NormalizedEmail = "COWBOY@GMAIL.COM",
+                    DateJoined = DateTimeOffset.UtcNow.ToUnixTimeSeconds()
+                };
+
+                var userArr = new AppUser[3] { user1, user2, user3 };
+                var userPasswordArr = new String[3] { "WhoaDude123!", "MotherRussia123!", "MeatBallRevolver123!" };
+                var roles = new string[3] { "standard", "manager", "admin" };
+
+                // assign passwords and add users to DB
+                for (var i = 0; i < userPasswordArr.Length; i++)
+                {
+                    // hash and assign password
+                    var hasher = new PasswordHasher<AppUser>();
+                    var hashedPassword = hasher.HashPassword(userArr[i], userPasswordArr[i]);
+                    userArr[i].PasswordHash = hashedPassword;
+                    // add user
+                    await userManager.CreateAsync(userArr[i]);
+                }
+
+                // adding roles to DB
+                for (var i = 0; i < roles.Length; i++)
+                {
+                    // add role if it doesn't exist
+                    if (await roleManager.FindByNameAsync(roles[i]) == null)
+                        await roleManager.CreateAsync(new IdentityRole(roles[i]));
+                }
+
+                // add role to users
+                await userManager.AddToRoleAsync(user1, roles[0]);
+                await userManager.AddToRoleAsync(user2, roles[1]);
+                await userManager.AddToRoleAsync(user3, roles[2]);
+
+
                 // ------------------------------------------- ADDING ROSTER PRODUCTS ------------------------------------------- //
                 RosterProduct product1 = new RosterProduct
                 {
@@ -264,6 +328,58 @@ namespace dropShippingApp.Data
                 context.CustomProducts.Add(customProduct5);
                 context.CustomProducts.Add(customProduct6);
                 context.CustomProducts.Add(customProduct7);
+
+
+                // ------------------------------------------- ADDING AND ASSIGNMENT CARTS TO USERS ------------------------------------------- //
+                CartItem item1 = new CartItem()
+                {
+                    ProductSelection = customProduct,
+                    Quantity = 2
+                };
+                CartItem item2 = new CartItem()
+                {
+                    ProductSelection = customProduct5,
+                    Quantity = 1
+                };
+                Cart cart1 = new Cart()
+                {
+
+                };
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
                 /*customProduct = new CustomProduct
