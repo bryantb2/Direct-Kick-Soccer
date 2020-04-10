@@ -35,6 +35,7 @@ namespace dropShippingApp.Models
 
         // team manager AND user properties
         public List<QuestionMessage> AskedQuestions { get { return this.askedQuestions; } }
+        public Cart Cart { get; set; }
 
         // admin properties
         public List<QuestionResponse> AnsweredQuestions { get { return adminQuestionResponses; } }

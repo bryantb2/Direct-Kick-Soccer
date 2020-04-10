@@ -341,44 +341,39 @@ namespace dropShippingApp.Data
                     ProductSelection = customProduct5,
                     Quantity = 1
                 };
-                Cart cart1 = new Cart()
+                CartItem item3 = new CartItem()
                 {
-
+                    ProductSelection = customProduct,
+                    Quantity = 2
+                };
+                CartItem item4 = new CartItem()
+                {
+                    ProductSelection = customProduct5,
+                    Quantity = 1
                 };
 
+                // save cart items to context
+                context.CartItems.Add(item1);
+                context.CartItems.Add(item2);
+                context.CartItems.Add(item3);
+                context.CartItems.Add(item4);
 
+                Cart cart1 = new Cart();
+                Cart cart2 = new Cart();
+                cart1.AddItem(item1);
+                cart1.AddItem(item2);
+                cart2.AddItem(item3);
+                cart2.AddItem(item4);
 
+                // save carts to context
+                context.Carts.Add(cart1);
+                context.Carts.Add(cart2);
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+                // save charts to appuser
+                user1.Cart = cart1;
+                user2.Cart = cart2;
+                await userManager.UpdateAsync(user1);
+                await userManager.UpdateAsync(user2);
 
 
 

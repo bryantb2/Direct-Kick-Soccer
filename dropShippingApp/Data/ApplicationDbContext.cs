@@ -26,5 +26,7 @@ namespace dropShippingApp.Data
         public DbSet<Team> Teams { get; set; }
         public DbSet<TeamCreationRequest> TeamCreationRequests { get; set; }
         public DbSet<TeamTag> TeamTags { get; set; }
+        public DbSet<Cart> Carts { get; set; }
+        public DbSet<CartItem> CartItems { get; set; }
     }
 }
