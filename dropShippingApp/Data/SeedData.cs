@@ -12,9 +12,9 @@ namespace dropShippingApp.Data
         {
             if (!context.RosterProducts.Any())
             {
+                // ------------------------------------------- ADDING ROSTER PRODUCTS ------------------------------------------- //
                 RosterProduct product1 = new RosterProduct
                 {
-                    
                     ModelNumber = 1,
                     BasePrice = 10,
                     AddOnPrice = 15,
@@ -22,272 +22,251 @@ namespace dropShippingApp.Data
                 };
                 PricingHistory pricingHistory = new PricingHistory
                 {
-                   
                     DateChanged = new DateTime(2020, 1, 25),
                     NewPrice = 25
                 };
-                product1.AddPricingHistory(pricingHistory);
-                 pricingHistory = new PricingHistory
+                PricingHistory pricingHistory2 = new PricingHistory
                 {
-                    
                     DateChanged = new DateTime(2020, 2, 20),
                     NewPrice = 30
                 };
                 product1.AddPricingHistory(pricingHistory);
-                context.Add(product1);
+                product1.AddPricingHistory(pricingHistory2);
 
+                
                 RosterProduct product2 = new RosterProduct
                 {
-                   
                     ModelNumber = 2,
                     BasePrice = 30,
                     AddOnPrice = 0,
                     IsProductActive = true,
                 };
-                pricingHistory = new PricingHistory
+                PricingHistory pricingHistory3 = new PricingHistory
                 {
-                    
                     DateChanged = new DateTime(2019, 5, 25),
                     NewPrice = 50
                 };
-                product2.AddPricingHistory(pricingHistory);
-                pricingHistory = new PricingHistory
+                PricingHistory pricingHistory4 = new PricingHistory
                 {
-                   
                     DateChanged = new DateTime(2020, 4, 8),
                     NewPrice = 80
                 };
-                product2.AddPricingHistory(pricingHistory);
-                context.Add(product2);
-                //
+                product2.AddPricingHistory(pricingHistory3);
+                product2.AddPricingHistory(pricingHistory4);
+
+
                 RosterProduct product3 = new RosterProduct
                 {
-                    
                     ModelNumber = 3,
                     BasePrice = 80,
                     AddOnPrice = 10,
                     IsProductActive = true,
                 };
-                pricingHistory = new PricingHistory
+                PricingHistory pricingHistory5 = new PricingHistory
                 {
-                    
                     DateChanged = new DateTime(2019, 12, 25),
                     NewPrice = 70
                 };
-                product3.AddPricingHistory(pricingHistory);
-                pricingHistory = new PricingHistory
+                PricingHistory pricingHistory6 = new PricingHistory
                 {
-                    
                     DateChanged = new DateTime(2020, 3, 8),
                     NewPrice = 120
                 };
-                product3.AddPricingHistory(pricingHistory);
-                context.Add(product3);
-                //
+                product3.AddPricingHistory(pricingHistory5);
+                product3.AddPricingHistory(pricingHistory6);
+
+
                 RosterProduct product4 = new RosterProduct
                 {
-                  
                     ModelNumber = 4,
                     BasePrice = 80,
                     AddOnPrice = 0,
                     IsProductActive = false,
                 };
-                pricingHistory = new PricingHistory
+                PricingHistory pricingHistory7 = new PricingHistory
                 {
-                   
                     DateChanged = new DateTime(2019, 12, 25),
                     NewPrice = 75
                 };
-                product4.AddPricingHistory(pricingHistory);
-                pricingHistory = new PricingHistory
+                PricingHistory pricingHistory8 = new PricingHistory
                 {
-                    
                     DateChanged = new DateTime(2020, 3, 8),
                     NewPrice = 60
                 };
-                product4.AddPricingHistory(pricingHistory);
-                context.Add(product4);
+                product4.AddPricingHistory(pricingHistory7);
+                product4.AddPricingHistory(pricingHistory8);
 
-                //
+                // SAVING ROSTER PRODUCTS TO CONTEXT
+                context.RosterProducts.Add(product1);
+                context.RosterProducts.Add(product2);
+                context.RosterProducts.Add(product3);
+                context.RosterProducts.Add(product4);
+
+                // ------------------------------------------- ADDING CUSTOM PRODUCTS ------------------------------------------- //
                 CustomProduct customProduct = new CustomProduct
                 {
-                    
                     BaseProduct = product1,
                     ProductTitle = "Socks",
                     ProductDescription = "These socks make you run so fast!",
                     CustomImagePNG = "http://placekitten.com/200/300",
                     IsProductActive = true,
                 };
-                pricingHistory = new PricingHistory
+                PricingHistory pricingHistory9 = new PricingHistory
                 {
-                   
                     DateChanged = new DateTime(2020, 2, 25),
                     NewPrice = 75
                 };
-                customProduct.AddPricingHistory(pricingHistory);
-                pricingHistory = new PricingHistory
+                PricingHistory pricingHistory10 = new PricingHistory
                 {
-                    
                     DateChanged = new DateTime(2020, 4, 5),
                     NewPrice = 100
                 };
-                customProduct.AddPricingHistory(pricingHistory);
-                context.Add(customProduct);
+                customProduct.AddPricingHistory(pricingHistory9);
+                customProduct.AddPricingHistory(pricingHistory10);
 
-                 customProduct = new CustomProduct
+
+                CustomProduct customProduct2 = new CustomProduct
                 {
-                    
                     BaseProduct = product1,
                     ProductTitle = "Team Goats Socks",
                     ProductDescription = "Official Unofficial socks for the Eugene Goats!",
                     CustomImagePNG = "http://placekitten.com/200/300",
                     IsProductActive = true,
                 };
-                pricingHistory = new PricingHistory
+                PricingHistory pricingHistory11 = new PricingHistory
                 {
-                    
                     DateChanged = new DateTime(2020, 2, 19),
                     NewPrice = 75
                 };
-                customProduct.AddPricingHistory(pricingHistory);
-                pricingHistory = new PricingHistory
+                PricingHistory pricingHistory12 = new PricingHistory
                 {
-                    
                     DateChanged = new DateTime(2020, 4, 1),
                     NewPrice = 100
                 };
-                customProduct.AddPricingHistory(pricingHistory);
-                context.Add(customProduct);
+                customProduct2.AddPricingHistory(pricingHistory);
+                customProduct2.AddPricingHistory(pricingHistory);
 
-                customProduct = new CustomProduct
+
+                CustomProduct customProduct3 = new CustomProduct
                 {
-                    
                     BaseProduct = product1,
                     ProductTitle = "Ice Squid Socks",
                     ProductDescription = "Unofficial Official socks for the Eugene NHL team the Ice Squids!",
                     CustomImagePNG = "http://placekitten.com/200/300",
                     IsProductActive = true,
                 };
-                pricingHistory = new PricingHistory
+                PricingHistory pricingHistory13 = new PricingHistory
                 {
-                   
                     DateChanged = new DateTime(2020, 3, 5),
                     NewPrice = 75
                 };
-                customProduct.AddPricingHistory(pricingHistory);
-                pricingHistory = new PricingHistory
+                PricingHistory pricingHistory14 = new PricingHistory
                 {
-                    
                     DateChanged = new DateTime(2020, 4, 2),
                     NewPrice = 100
                 };
-                customProduct.AddPricingHistory(pricingHistory);
-                context.Add(customProduct);
+                customProduct3.AddPricingHistory(pricingHistory13);
+                customProduct3.AddPricingHistory(pricingHistory14);
 
 
-                customProduct = new CustomProduct
+                CustomProduct customProduct4 = new CustomProduct
                 {
-                    
                     BaseProduct = product2,
                     ProductTitle = "Hat",
                     ProductDescription = "Great for keeping the sun out of your eyes, can also be used to hold stuff!",
                     CustomImagePNG = "http://placekitten.com/200/300",
                     IsProductActive = true,
                 };
-                pricingHistory = new PricingHistory
+                PricingHistory pricingHistory15 = new PricingHistory
                 {
-                    
                     DateChanged = new DateTime(2020, 3, 7),
                     NewPrice = 25
                 };
-                customProduct.AddPricingHistory(pricingHistory);
-                pricingHistory = new PricingHistory
+                PricingHistory pricingHistory16 = new PricingHistory
                 {
-                   
                     DateChanged = new DateTime(2020, 4, 8),
                     NewPrice = 30
                 };
-                customProduct.AddPricingHistory(pricingHistory);
-                context.Add(customProduct);
+                customProduct4.AddPricingHistory(pricingHistory15);
+                customProduct4.AddPricingHistory(pricingHistory16);
 
-                customProduct = new CustomProduct
+
+                CustomProduct customProduct5 = new CustomProduct
                 {
-                    
                     BaseProduct = product2,
                     ProductTitle = "Fighting Honey Badgers Hat",
                     ProductDescription = "Hat supporting the local junior baseball team, the Fighting Honey Badgers",
                     CustomImagePNG = "http://placekitten.com/200/300",
                     IsProductActive = true,
                 };
-                pricingHistory = new PricingHistory
+                PricingHistory pricingHistory17 = new PricingHistory
                 {
-                    
                     DateChanged = new DateTime(2020, 3, 11),
                     NewPrice = 20
                 };
-                customProduct.AddPricingHistory(pricingHistory);
-                pricingHistory = new PricingHistory
+                PricingHistory pricingHistory18 = new PricingHistory
                 {
-                    
                     DateChanged = new DateTime(2020, 4, 8),
                     NewPrice = 35
                 };
-                customProduct.AddPricingHistory(pricingHistory);
-                context.Add(customProduct);
+                customProduct5.AddPricingHistory(pricingHistory17);
+                customProduct5.AddPricingHistory(pricingHistory18);
 
-                customProduct = new CustomProduct
+
+                CustomProduct customProduct6 = new CustomProduct
                 {
-                    
                     BaseProduct = product2,
                     ProductTitle = "Jumping Jellybeans Hat",
                     ProductDescription = "Hat for parents of the local stickball team the Jumping Jellybeans!",
                     CustomImagePNG = "http://placekitten.com/200/300",
                     IsProductActive = true,
                 };
-                pricingHistory = new PricingHistory
+                PricingHistory pricingHistory19 = new PricingHistory
                 {
-                    
                     DateChanged = new DateTime(2020, 3, 12),
                     NewPrice = 15
                 };
-                customProduct.AddPricingHistory(pricingHistory);
-                pricingHistory = new PricingHistory
+                PricingHistory pricingHistory20 = new PricingHistory
                 {
-                    
                     DateChanged = new DateTime(2020, 4, 7),
                     NewPrice = 25
                 };
-                customProduct.AddPricingHistory(pricingHistory);
-                context.Add(customProduct);
+                customProduct6.AddPricingHistory(pricingHistory19);
+                customProduct6.AddPricingHistory(pricingHistory20);
 
-                customProduct = new CustomProduct
+
+                CustomProduct customProduct7 = new CustomProduct
                 {
-                   
                     BaseProduct = product2,
                     ProductTitle = "Jets Hat",
                     ProductDescription = "Hat for team members of the Jets Power Walking Team",
                     CustomImagePNG = "http://placekitten.com/200/300",
                     IsProductActive = true,
                 };
-                pricingHistory = new PricingHistory
+                PricingHistory pricingHistory21 = new PricingHistory
                 {
-                    
                     DateChanged = new DateTime(2020, 3, 13),
                     NewPrice = 15
                 };
-                customProduct.AddPricingHistory(pricingHistory);
-                pricingHistory = new PricingHistory
+                PricingHistory pricingHistory22 = new PricingHistory
                 {
-                    
                     DateChanged = new DateTime(2020, 4, 6),
                     NewPrice = 25
                 };
-                customProduct.AddPricingHistory(pricingHistory);
-                context.Add(customProduct);
+                customProduct7.AddPricingHistory(pricingHistory21);
+                customProduct7.AddPricingHistory(pricingHistory22);
 
-               
+                // SAVING CUSTOM PRODUCTS TO CONTEXT
+                context.CustomProducts.Add(customProduct);
+                context.CustomProducts.Add(customProduct2);
+                context.CustomProducts.Add(customProduct3);
+                context.CustomProducts.Add(customProduct4);
+                context.CustomProducts.Add(customProduct5);
+                context.CustomProducts.Add(customProduct6);
+                context.CustomProducts.Add(customProduct7);
 
-                customProduct = new CustomProduct
+
+                /*customProduct = new CustomProduct
                 {
                     
                     BaseProduct = product3,
@@ -405,7 +384,7 @@ namespace dropShippingApp.Data
                 };
 
                 customProduct.AddPricingHistory(pricingHistory);
-                context.Add(customProduct);
+                context.Add(customProduct);*/
                 context.SaveChanges();
             }
 
