@@ -8,21 +8,21 @@ namespace dropShippingApp.Models
     public class Country
     {
         // private fields
-        private List<Providence> providences = new List<Providence>();
+        private List<Province> providences = new List<Province>();
         
         // public properties
         public int CountryID { get; set; }
         public String CountryName { get; set; }
-        public List<Providence> Providences { get { return providences; } }
+        public List<Province> Providences { get { return providences; } }
 
         // methods
-        public void AddProvidence(Providence prov) => providences.Add(prov);
-        public Providence RemoveProvidence(Providence prov)
+        public void AddProvidence(Province prov) => providences.Add(prov);
+        public Province RemoveProvidence(Province prov)
         {
-            Providence removedProv = null;
-            foreach(Providence p in providences)
+            Province removedProv = null;
+            foreach(Province p in providences)
             {
-                if(p.ProvidenceID == prov.ProvidenceID)
+                if(p.ProvinceID == prov.ProvinceID)
                 {
                     removedProv = p;
                     providences.Remove(prov);

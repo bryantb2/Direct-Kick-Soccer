@@ -5,9 +5,9 @@ using System.Threading.Tasks;
 
 namespace dropShippingApp.Models
 {
-    public class Providence
+    public class Province
     {
-        public int ProvidenceID { get; set; }
-        public String ProvidenceName { get; set; }
+        public int ProvinceID { get; set; }
+        public String ProvinceName { get; set; }
     }
 }
