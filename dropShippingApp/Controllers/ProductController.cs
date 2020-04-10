@@ -8,12 +8,31 @@ using Microsoft.EntityFrameworkCore;
 using System.Web;
 using dropShippingApp.Data;
 using dropShippingApp.Models;
-
+using dropShippingApp.Data.Repositories;
 
 namespace dropShippingApp.Controllers
 {
     public class ProductController : Controller
     {
-    
+        public IRProductRepo Repository { get; set; }
+
+        public ProductController(IRProductRepo repo)
+        {
+            Repository = repo;
+        }
+
+        public async Task<IActionResult> Index()
+        {
+            //IQueryable<PricingHistory> result = await Repository.GetAllPriceHistAsync();
+            //return View(result.ToList());
+            throw new NotImplementedException();
+        }
+
+        public async Task<IActionResult> PopularItems()
+        {
+            // TODO
+            // returns team results page 
+            return View();
+        }
     }
 }
