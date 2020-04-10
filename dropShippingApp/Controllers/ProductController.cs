@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using System.Web;
 using dropShippingApp.Data;
 using dropShippingApp.Models;
-
+using dropShippingApp.Data.Repositories;
 
 namespace dropShippingApp.Controllers
 {
@@ -23,21 +23,10 @@ namespace dropShippingApp.Controllers
 
         public async Task<IActionResult> Index()
         {
-            IQueryable<PricingHistory> result = await Repository.GetAllPriceHistAsync();
-            return View(result.ToList());
+            //IQueryable<PricingHistory> result = await Repository.GetAllPriceHistAsync();
+            //return View(result.ToList());
+            throw new NotImplementedException();
         }
-
-        /*
-         * NOT CORRECT... NEEDS TO BE REWRITTEN
-         * public async Task<int> AddPricingHistory(PricingHistory history) => await Repository.AddPriceHistAsync(history);
-        public async Task<PricingHistory> RemovePricingHistory(int historyId)
-        {
-            PricingHistory removedHistory;
-            removedHistory = await Repository.RemovePriceHistAsync(historyId);
-          //  var removedHistory = this.pricingHistory.Find(hstry => hstry.PricingHistoryID == historyId);
-          //  this.pricingHistory.Remove(removedHistory);
-            return removedHistory;
-        }*/
 
         public async Task<IActionResult> PopularItems()
         {
