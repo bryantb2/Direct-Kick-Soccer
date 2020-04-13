@@ -1,11 +1,22 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
-namespace dropShippingApp.Views.Cart
-{
-    public class Index
-    {
-    }
+﻿@{ 
+    Layout = "_Layout";
+    ViewData["Title"] = "Cart";
 }
+@model CartViewModel;
+
+    <section>
+        <h1>Your Cart</h1>
+        @foreach (var item in Model.CartItems)
+        {
+            <article class="row">
+                <div class="col-3">
+                    <img width="50" height="50" src=@item.BaseProduct.CustomImagePNG />
+                </div>
+                <div class="col-3">
+                    <h3>@item.BaseProduct.ProductTitle</h3>
+                    <p>Selected @item.BaseProduct.BaseProduct.</p>
+                </div>
+            </article>
+        }
+
+    </section>

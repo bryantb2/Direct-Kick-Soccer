@@ -83,7 +83,9 @@ namespace dropShippingApp
                     pattern: "{controller=Home}/{action=Index}/{id?}");
                 endpoints.MapRazorPages();
             });
-            SeedData.Seed(context);
+
+            // seed DB
+            SeedData.Seed(context, app.ApplicationServices);
         }
     }
 }

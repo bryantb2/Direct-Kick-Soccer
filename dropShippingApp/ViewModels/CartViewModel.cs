@@ -7,7 +7,7 @@ namespace dropShippingApp.ViewModels
 {
     public class CartViewModel
     {
-       // public 
-       public Decimal CartPrice { get; set; }
+        public Decimal CartPrice { get; set; }
+        public List<CartItemVM> CartItems { get; set; }
     }
 }
