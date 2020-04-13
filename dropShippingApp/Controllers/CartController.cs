@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using dropShippingApp.Models;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,9 +10,30 @@ namespace dropShippingApp.Controllers
 {
     public class CartController : Controller
     {
-        // index
-        public async Task<IActionResult> Index(/*Pass in cart object */)
+        private UserManager<AppUser> userManager;
+        private SignInManager<AppUser> signInManager;
+
+        public CartController(
+                UserManager<AppUser> usrMgr,
+                SignInManager<AppUser> signinMgr)
         {
+            userManager = usrMgr;
+            signInManager = signinMgr;
+        }
+
+        // index
+        public async Task<IActionResult> Index()
+        {
+            var user = await userManager.GetUserAsync(HttpContext.User);
+            if(user != null)
+            {
+                // get the cart
+                // loop through each cart item
+                // parse cart information into CartItemVM object
+                // calculate cart total
+                // return cart vm
+
+            }
             return View();
         }
 
@@ -31,7 +54,7 @@ namespace dropShippingApp.Controllers
 
         // change quantity
         [HttpPost]
-        public async Task<IActionResult> ChangeItemQuantity(/*cart item object*/)
+        public async Task<IActionResult> UpdateCart(/*List of Cart items (NOT VIEW MODELS)*/)
         {
             // TODO
             // check cart for item id

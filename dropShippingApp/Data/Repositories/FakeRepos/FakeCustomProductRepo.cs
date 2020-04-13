@@ -8,7 +8,7 @@ using dropShippingApp.Models;
 
 namespace dropShippingApp.Data.Repositories
 {
-	public class CustomProductRepo : ICustomProductRepo
+	public class FakeCustomProductRepo : ICustomProductRepo
 	{
         private List<CustomProduct> customProducts = new List<CustomProduct>();
         public List<CustomProduct> CustomProducts { get { return customProducts; } }

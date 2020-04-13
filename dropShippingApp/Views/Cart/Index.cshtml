@@ -5,7 +5,7 @@
 @model CartViewModel;
 
     <section>
-        <h1>Your Cart</h1>
+        <h1>@(Model.CartItems.Count == 0 ? "Your Cart Appears to be Empty :(" : "Your Cart")</h1>
         @foreach (var item in Model.CartItems)
         {
             <article class="row">
@@ -29,4 +29,5 @@
                 </div>
             </article>
         }
+        <button>Paypal Button goes here</button>
     </section>
