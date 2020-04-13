@@ -9,5 +9,6 @@ namespace dropShippingApp.Models
     {
         public int ProductColorID { get; set; }
         public bool IsColorActive { get; set; }
+        public string ColorName { get; set; }
     }
 }
