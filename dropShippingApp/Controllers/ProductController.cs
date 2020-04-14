@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -8,34 +8,31 @@ using Microsoft.EntityFrameworkCore;
 using System.Web;
 using dropShippingApp.Data;
 using dropShippingApp.Models;
-
+using dropShippingApp.Data.Repositories;
 
 namespace dropShippingApp.Controllers
 {
     public class ProductController : Controller
     {
-        public IRepository Repository { get; set; }
+        public IRProductRepo Repository { get; set; }
 
-        public ProductController(IRepository repo)
+        public ProductController(IRProductRepo repo)
         {
             Repository = repo;
         }
 
         public async Task<IActionResult> Index()
         {
-            IQueryable<RosterProduct> result = await Repository.GetAllRosterProdAsync();
-            return View(result.ToList());
+            //IQueryable<PricingHistory> result = await Repository.GetAllPriceHistAsync();
+            //return View(result.ToList());
+            throw new NotImplementedException();
         }
 
-        public async Task<int> AddRosterProduct(RosterProduct rosterProduct) => await Repository.AddRosterProdAsync(rosterProduct);
-        public async Task<RosterProduct> RemoveRosterProduct(int rosterId)
+        public async Task<IActionResult> PopularItems()
         {
-             RosterProduct roster;
-             roster = await Repository.RemoveRosterProdAsync(rosterId);
-          //  var removedHistory = this.pricingHistory.Find(hstry => hstry.PricingHistoryID == historyId);
-          //  this.pricingHistory.Remove(removedHistory);
-            return roster;
+            // TODO
+            // returns team results page 
+            return View();
         }
-
     }
 }

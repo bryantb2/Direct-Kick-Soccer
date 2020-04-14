@@ -1,0 +1,27 @@
+---------------------------------------------------------------------------------------------
+Assumed Business Rules for Products:
+---------------------------------------------------------------------------------------------
+
+1. A team manager can create a custom product (AKA a product with a logo on it) from a vanilla "roster product" (AKA a plain article of clothing)
+
+2. A team manager can increase the price of a custom product to however much he/she chooses; HOWEVER, the team manager cannot set the price below the base price
+of the roster product that the custom product is based on (ex: a white t-shirt is 10 dollars, so a team manager can charge 12 bucks for one with the company logo,
+but cannot go lower than the initial 10 dollars).
+
+3. The price of each custom product is independent of the roster product, meaning the base price of the roster product is NOT added to the custom product, provided that the rules on pricing
+above are followed (custom product price cannot be lower than roster product).
+
+4. A product can be removed from the database. Alternatively, if a team manager wants to temporarily remove a product from their 
+storefront, it can be marked "inactive".
+
+---------------------------------------------------------------------------------------------
+Assumed Business Rules for Teams:
+---------------------------------------------------------------------------------------------
+
+1. A team can managed by only one account.
+
+2. A user must submit a "team request" to the site owner for approval. If the site owner reads over the content and approves the
+team site, the user will gain "team manager" role permissions.
+
+3. If a request is approved, the team creation request data will be pushed into a new team object. The object will be assigned
+to the requester.

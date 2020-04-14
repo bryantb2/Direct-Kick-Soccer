@@ -16,6 +16,7 @@ namespace dropShippingApp.Models
         public String TeamName { get; set; }
         public String TeamDescription { get; set; }
         public Country Country { get; set; }
+        public Province Providence { get; set; }
         public String StreetAddress { get; set; }
         public int ZipCode { get; set; }
         public String CorporatePageURL { get; set; }
@@ -23,6 +24,7 @@ namespace dropShippingApp.Models
         public int PhoneNumber { get; set; }
         public List<CustomProduct> TeamProducts { get { return teamProducts; } }
         public List<TeamTag> TeamTags { get { return teamTags; } }
+        public bool IsTeamInactive { get; set; }
 
         // methods
         public void AddTag(TeamTag tag) => teamTags.Add(tag);

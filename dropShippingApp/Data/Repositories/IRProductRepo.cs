@@ -1,17 +1,16 @@
-﻿using System.Threading.Tasks;
+﻿using dropShippingApp.Models;
+using System;
+using System.Collections.Generic;
 using System.Linq;
-using dropShippingApp.Models;
-namespace dropShippingApp.Data
+using System.Threading.Tasks;
 
+namespace dropShippingApp.Data.Repositories
 {
-    public interface IRepository
+    public interface IRProductRepo
     {
+        public bool RosterProdExists(int id);
         public Task<int> AddRosterProdAsync(RosterProduct rp);
         public Task<RosterProduct> RemoveRosterProdAsync(int? id);
-
         public Task<IQueryable<RosterProduct>> GetAllRosterProdAsync();
-
-        public bool RosterProdExists(int id);
-
     }
 }
