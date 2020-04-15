@@ -14,6 +14,14 @@ namespace dropShippingApp.Data.Repositories.RealRepos
             this.context = c;
         }
 
+        public List<Tag> GetTags
+        {
+            get
+            {
+                return this.context.Tags.ToList();
+            }
+        }
+
         public async Task AddTag(Tag tag)
         {
             this.context.Tags.Add(tag);

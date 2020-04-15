@@ -11,5 +11,6 @@ namespace dropShippingApp.Data.Repositories
         Task AddTag(Tag tag);
         Task<Tag> RemoveTag(int tagId);
         Task UpdateTag(Tag tag);
+        List<Tag> GetTags { get; }
     }
 }
