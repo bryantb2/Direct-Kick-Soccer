@@ -5,9 +5,9 @@ using System.Threading.Tasks;
 
 namespace dropShippingApp.Models
 {
-    public class ProductTag
+    public class Tag
     {
-        public int ProductTagID { get; set; }
+        public int TeamTagID { get; set; }
         public String TagLine { get; set; }
     }
 }

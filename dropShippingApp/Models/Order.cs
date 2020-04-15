@@ -13,6 +13,6 @@ namespace dropShippingApp.Models
         public string PaypalOrderId { get; set; }
         public string SETrackingId { get; set; }
         public string SEReturnTrackingId { get; set; }
-        public bool IsApproved { get; set; }
+        public bool IsProcessed { get; set; }
     }
 }

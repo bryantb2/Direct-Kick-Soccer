@@ -13,7 +13,7 @@ namespace dropShippingApp.Models
         // public properties
         public int CustomProductID { get; set; }
         public RosterProduct BaseProduct { get; set; } // parent <------
-        public List<ProductTag> ProductTags { get; set; }
+        public List<Tag> ProductTags { get; set; }
         public string ProductTitle { get; set; }
         public string ProductDescription { get; set; }
         public string CustomImagePNG { get; set; }
