@@ -128,6 +128,34 @@ namespace dropShippingApp.Data.Repositories.RealRepos
             await this.context.SaveChangesAsync();
         }
 
+        public async Task<CartItem> RemoveCartItem(int itemId)
+        {
+            var foundItem = this.context.CartItems
+                /*.Include(item => item.ProductSelection)
+                    .ThenInclude(product => product.BaseProduct)
+                .Include(item => item.ProductSelection)
+                    .ThenInclude(product => product.ProductTags)
+                .Include(item => item.ProductSelection)
+                    .ThenInclude(product => product.PricingHistory)
+                .Include(item => item.ProductSelection)
+                    .ThenInclude(product => product.BaseProduct)
+                        .ThenInclude(baseProduct => baseProduct.BaseColor)
+                .Include(item => item.ProductSelection)
+                    .ThenInclude(product => product.BaseProduct)
+                        .ThenInclude(baseProduct => baseProduct.BaseSize)
+                .Include(item => item.ProductSelection)
+                    .ThenInclude(product => product.BaseProduct)
+                        .ThenInclude(baseProduct => baseProduct.ProductTags)
+                .Include(item => item.ProductSelection)
+                    .ThenInclude(product => product.BaseProduct)
+                        .ThenInclude(baseProduct => baseProduct.PricingHistory)*/
+                .ToList()
+                .Find(item => item.CartItemID == itemId);
+            this.context.CartItems.Remove(foundItem);
+            await this.context.SaveChangesAsync();
+            return foundItem;
+        }
+
         public async Task UpdateCartItem(CartItem item)
         {
             this.context.CartItems.Update(item);
