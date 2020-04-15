@@ -116,8 +116,7 @@ namespace dropShippingApp.Data.Repositories.RealRepos
                         .ThenInclude(cartItem => cartItem.ProductSelection)
                             .ThenInclude(selectedProduct => selectedProduct.BaseProduct)
                                 .ThenInclude(baseProduct => baseProduct.PricingHistory)
-                    .ToList()
-                    .Find(cart => 
+                    .ToList().Find(cart => 
                         cart.CartItems.Find(item => item.CartItemID == itemId) != null);
             return foundCart;
         }
@@ -130,26 +129,7 @@ namespace dropShippingApp.Data.Repositories.RealRepos
 
         public async Task<CartItem> RemoveCartItem(int itemId)
         {
-            var foundItem = this.context.CartItems
-                /*.Include(item => item.ProductSelection)
-                    .ThenInclude(product => product.BaseProduct)
-                .Include(item => item.ProductSelection)
-                    .ThenInclude(product => product.ProductTags)
-                .Include(item => item.ProductSelection)
-                    .ThenInclude(product => product.PricingHistory)
-                .Include(item => item.ProductSelection)
-                    .ThenInclude(product => product.BaseProduct)
-                        .ThenInclude(baseProduct => baseProduct.BaseColor)
-                .Include(item => item.ProductSelection)
-                    .ThenInclude(product => product.BaseProduct)
-                        .ThenInclude(baseProduct => baseProduct.BaseSize)
-                .Include(item => item.ProductSelection)
-                    .ThenInclude(product => product.BaseProduct)
-                        .ThenInclude(baseProduct => baseProduct.ProductTags)
-                .Include(item => item.ProductSelection)
-                    .ThenInclude(product => product.BaseProduct)
-                        .ThenInclude(baseProduct => baseProduct.PricingHistory)*/
-                .ToList()
+            var foundItem = this.context.CartItems.ToList()
                 .Find(item => item.CartItemID == itemId);
             this.context.CartItems.Remove(foundItem);
             await this.context.SaveChangesAsync();

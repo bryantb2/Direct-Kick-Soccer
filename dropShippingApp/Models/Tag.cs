@@ -7,7 +7,7 @@ namespace dropShippingApp.Models
 {
     public class Tag
     {
-        public int TeamTagID { get; set; }
+        public int TagID { get; set; }
         public String TagLine { get; set; }
     }
 }

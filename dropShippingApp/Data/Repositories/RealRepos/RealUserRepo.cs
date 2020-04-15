@@ -49,6 +49,9 @@ namespace dropShippingApp.Data.Repositories.RealRepos
                 .Include(user => user.ManagedTeam) // get team product tags
                     .ThenInclude(team => team.TeamProducts)
                         .ThenInclude(product => product.ProductTags)
+                .Include(user => user.ManagedTeam) // get team product tags
+                    .ThenInclude(team => team.TeamProducts)
+                        .ThenInclude(product => product.PricingHistory)
                 .Include(user => user.ManagedTeam) // get team tags
                     .ThenInclude(team => team.TeamTags)
                 .Include(user => user.ManagedTeam) // get team country
