@@ -8,12 +8,12 @@ using dropShippingApp.Models;
 
 namespace dropShippingApp.Data.Repositories
 {
-    public class QuestionResponseRepo : IQuestionResponseRepo
+    public class RealQuestionResponseRepo : IQuestionResponseRepo
     {
 
         private ApplicationDbContext context;
 
-        public QuestionResponseRepo(ApplicationDbContext c) => this.context = c ?? throw new ArgumentNullException(nameof(c));
+        public RealQuestionResponseRepo(ApplicationDbContext c) => this.context = c ?? throw new ArgumentNullException(nameof(c));
 
         public List<QuestionResponse> GetQuestionResponse
         {
