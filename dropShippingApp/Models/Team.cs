@@ -9,7 +9,7 @@ namespace dropShippingApp.Models
     {
         // private fields
         private List<CustomProduct> teamProducts = new List<CustomProduct>();
-        private List<TeamTag> teamTags = new List<TeamTag>();
+        private List<Tag> teamTags = new List<Tag>();
 
         // public properties
         public int TeamID { get; set; }
@@ -23,15 +23,15 @@ namespace dropShippingApp.Models
         public String BusinessEmail { get; set; }
         public int PhoneNumber { get; set; }
         public List<CustomProduct> TeamProducts { get { return teamProducts; } }
-        public List<TeamTag> TeamTags { get { return teamTags; } }
+        public List<Tag> TeamTags { get { return teamTags; } }
         public bool IsTeamInactive { get; set; }
 
         // methods
-        public void AddTag(TeamTag tag) => teamTags.Add(tag);
-        public TeamTag RemoveTag(TeamTag tag)
+        public void AddTag(Tag tag) => teamTags.Add(tag);
+        public Tag RemoveTag(Tag tag)
         {
-            TeamTag removedTag = null;
-            foreach (TeamTag t in teamTags)
+            Tag removedTag = null;
+            foreach (Tag t in teamTags)
             {
                 if (t.TeamTagID == tag.TeamTagID)
                 {

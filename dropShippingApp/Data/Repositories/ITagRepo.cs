@@ -1,17 +1,18 @@
-﻿using System;
+using dropShippingApp.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using dropShippingApp.Models;
 
 namespace dropShippingApp.Data.Repositories
 {
     public interface ITagRepo
     {
-        Task AddTag(ProductTag tag);
-        Task UpdateTag(ProductTag updatedTag);
-        Task<List<ProductTag>> GetAllTags();
-        Task<ProductTag> GetTagById(int id);
-        Task<ProductTag> DeleteTag(int id);
+        Task AddTag(Tag tag);
+        Task<Tag> RemoveTag(int tagId);
+        Task UpdateTag(Tag tag);
+        Task<Tag> GetTagByName(string name);
+        Task<Tag> GetTagById(int id);
+        List<Tag> GetTags { get; }
     }
 }

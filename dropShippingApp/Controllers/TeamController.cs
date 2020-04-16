@@ -74,7 +74,7 @@ namespace dropShippingApp.Controllers
                 // search on team name
                 if (t.TeamName.ToUpper().Contains(searchTerm.ToUpper()))
                     searchResults.Add(t);
-                foreach (TeamTag tag in t.TeamTags)
+                foreach (Tag tag in t.TeamTags)
                 {
                     // search on product tags
                     if (tag.TagLine.ToUpper().Contains(searchTerm.ToUpper()))
