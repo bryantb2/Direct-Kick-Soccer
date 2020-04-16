@@ -36,6 +36,15 @@ namespace dropShippingApp.Data.Repositories
         public async Task<QuestionResponse> GetQuestionResponseById(int questionResponseId)
         {
             return this.context.QuestionResponses
+                .Include(q => q.ParentMessage)
+                .ThenInclude(r => r.QuestionTitle)
+                .Include(q => q.ParentMessage)
+                .ThenInclude(r => r.QuestionBody)
+                .Include(q => q.ParentMessage)
+                .ThenInclude(r => r.TimeStamp)
+                .Include(q => q.ParentMessage)
+                .ThenInclude(r => r.IsResolved)
+                .Include(q => q.TimeStamp)
                 .ToList().Find(id => id.QuestionResponseID == questionResponseId);
         }
 
