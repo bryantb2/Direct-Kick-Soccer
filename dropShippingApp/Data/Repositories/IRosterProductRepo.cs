@@ -8,7 +8,6 @@ namespace dropShippingApp.Data.Repositories
 {
     public interface IRosterProductRepo
     {
-       
         // CRUD operations for RosterProducts
         Task AddRosterProduct(RosterProduct newProduct);
         Task<RosterProduct> GetRosterProductById(int rosterProductId);

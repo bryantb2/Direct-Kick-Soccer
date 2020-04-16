@@ -8,7 +8,7 @@ namespace dropShippingApp.Data.Repositories
 {
     public interface ITeamRepo
     {
-        Task<List<Team>> GetTeams { get; }
+        List<Team> GetTeams { get; }
         Task AddTeam(Team team);
         Task<Team> RemoveTeam(int teamId);
         Task UpdateTeam(Team team);
