@@ -13,6 +13,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using dropShippingApp.Models;
+using dropShippingApp.Data.Repositories;
+using dropShippingApp.Data.Repositories.RealRepos;
 
 namespace dropShippingApp
 {
@@ -50,6 +52,24 @@ namespace dropShippingApp
 
             // force app to use login if jerk user attempts to use restricted controller
             services.ConfigureApplicationCookie(option => option.LoginPath = "/Login/Index");
+
+            // injecting repos into controllers
+            services.AddTransient<ICartRepo, RealCartRepo>();
+            services.AddTransient<IActivityLogRepo, RealActivityLogRepo>();
+            services.AddTransient<ICustomProductRepo, RealCustomProductRepo>();
+            services.AddTransient<ILocationRepo, RealLocationRepo>();
+            services.AddTransient<IOrderRepo, RealOrderRepo>();
+            services.AddTransient<IPricingRepo, RealPricingRepo>();
+            services.AddTransient<IProductColorRepo, RealColorRepo>();
+            services.AddTransient<IProprietaryCollectionRepo, RealProprietaryCollectionRepo>();
+            services.AddTransient<IQuestionMsgRepo, RealQuestionMessageRepo>();
+            services.AddTransient<IQuestionResponseRepo, RealQuestionResponseRepo>();
+            services.AddTransient<IRosterProductRepo, RealRosterProductRepo>();
+            services.AddTransient<ISizeRepo, RealSizeRepo>();
+            services.AddTransient<ITagRepo, RealTagRepo>();
+            services.AddTransient<ITeamRepo, RealTeamRepo>();
+            services.AddTransient<ITeamCreationReqRepo, RealTeamReqRepo>();
+            services.AddTransient<IUserRepo, RealUserRepo>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
