@@ -9,6 +9,7 @@ namespace dropShippingApp.Data.Repositories
     public interface IQuestionMsgRepo
     {
        
+        List<QuestionMessage> GetQuestionMessages {get;}
         // CRUD operations for QuestionMessages
         Task AddQuestionMessage(QuestionMessage newMsg);
         Task<QuestionMessage> GetQuestionMessageById(int questionMessageId);

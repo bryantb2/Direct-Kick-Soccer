@@ -18,7 +18,7 @@ namespace dropShippingApp.Data.Repositories
             this.context = c;
         }
 
-         public List<RosterProduct> GetRosterProduct
+         public List<RosterProduct> GetRosterProducts
         {
             get
             {
