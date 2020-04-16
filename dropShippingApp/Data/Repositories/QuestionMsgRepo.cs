@@ -8,42 +8,53 @@ using dropShippingApp.Models;
 
 namespace dropShippingApp.Data.Repositories
 {
-    public class QuestionMsgRepo : IQuestionMsgRepo
+    public class QuestionMessageRepo : IQuestionMsgRepo
     {
+        private  ApplicationDbContext context;
 
-        private List<QuestionMessage> questionMessages = new List<QuestionMessage>();
-        public List<QuestionMessage> QuestionMessages { get { return questionMessages; } }
+        public QuestionMessageRepo(ApplicationDbContext c) => this.context = c ?? throw new ArgumentNullException(nameof(c));
+
+        public List<QuestionMessage> GetQuestionMessage
+        {
+            get
+            {
+                return this.context.QuestionMessages.ToList();
+            }
+        }
+
+
 
         // methods
         public async Task AddQuestionMessage(QuestionMessage newMsg)
         {
-            QuestionMessages.Add(newMsg);
+            this.context.QuestionMessages.Add(newMsg);
+            await this.context.SaveChangesAsync();
+
         }
 
         public async Task<QuestionMessage> GetQuestionMessageById(int questionMessageId)
         {
-            QuestionMessage foundMsg = QuestionMessages.Find(product => product.QuestionMessageID == questionMessageId);
-            if (foundMsg != null)
-            {
-                return await Task.FromResult<QuestionMessage>(foundMsg);
-            }
-            // Return the Roster product as null if not found
-            return await Task.FromResult<QuestionMessage>(null);
+            return this.context.QuestionMessages
+                .ToList().Find(id => id.QuestionMessageID == questionMessageId);
         }
 
         public async Task UpdateQuestionMessage(QuestionMessage updatedMsg)
         {
-            QuestionMessage oldMsg = QuestionMessages.Find(cp => cp.QuestionMessageID == updatedMsg.QuestionMessageID);
-            QuestionMessages.Remove(oldMsg);
-            QuestionMessages.Add(updatedMsg);
+            this.context.QuestionMessages.Update(updatedMsg);
+            await this.context.SaveChangesAsync();
+
         }
 
-        public async Task RemoveQuestionMessage(QuestionMessage message)
+        public async Task<QuestionMessage> RemoveQuestionMessage(int questionMessageId)
         {
-            if (message != null)
-            {
-                QuestionMessages.Remove(message);
-            }
+
+            var foundQuestionMessage = this.context.QuestionMessages.ToList()
+                .Find(questionMessage => questionMessage.QuestionMessageID == questionMessageId);
+            this.context.QuestionMessages.Remove(foundQuestionMessage);
+            await this.context.SaveChangesAsync();
+            return foundQuestionMessage;
+
+
         }
     }
 }

@@ -11,39 +11,51 @@ namespace dropShippingApp.Data.Repositories
     public class QuestionResponseRepo : IQuestionResponseRepo
     {
 
-        private List<QuestionResponse> questionResponses = new List<QuestionResponse>();
-        public List<QuestionResponse> QuestionResponses { get { return questionResponses; } }
+        private ApplicationDbContext context;
+
+        public QuestionResponseRepo(ApplicationDbContext c) => this.context = c ?? throw new ArgumentNullException(nameof(c));
+
+        public List<QuestionResponse> GetQuestionResponse
+        {
+            get
+            {
+                return this.context.QuestionResponses.ToList();
+            }
+        }
+
+
 
         // methods
-        public async Task AddQuestionResponse(QuestionResponse newResponse)
+        public async Task AddQuestionResponse(QuestionResponse newMsg)
         {
-            QuestionResponses.Add(newResponse);
+            this.context.QuestionResponses.Add(newMsg);
+            await this.context.SaveChangesAsync();
+
         }
 
         public async Task<QuestionResponse> GetQuestionResponseById(int questionResponseId)
         {
-            QuestionResponse foundResponse = QuestionResponses.Find(product => product.QuestionResponseID == questionResponseId);
-            if (foundResponse != null)
-            {
-                return await Task.FromResult<QuestionResponse>(foundResponse);
-            }
-            // Return the Roster product as null if not found
-            return await Task.FromResult<QuestionResponse>(null);
+            return this.context.QuestionResponses
+                .ToList().Find(id => id.QuestionResponseID == questionResponseId);
         }
 
-        public async Task UpdateQuestionResponse(QuestionResponse updatedResponse)
+        public async Task UpdateQuestionResponse(QuestionResponse updatedMsg)
         {
-            QuestionResponse oldResponse = QuestionResponses.Find(cp => cp.QuestionResponseID == updatedResponse.QuestionResponseID);
-            QuestionResponses.Remove(oldResponse);
-            QuestionResponses.Add(updatedResponse);
+            this.context.QuestionResponses.Update(updatedMsg);
+            await this.context.SaveChangesAsync();
+
         }
 
-        public async Task RemoveQuestionResponse(QuestionResponse response)
+        public async Task<QuestionResponse> RemoveQuestionResponse(int questionResponseId)
         {
-            if (response != null)
-            {
-                QuestionResponses.Remove(response);
-            }
+
+            var foundQuestionResponse = this.context.QuestionResponses.ToList()
+                .Find(questionResponse => questionResponse.QuestionResponseID == questionResponseId);
+            this.context.QuestionResponses.Remove(foundQuestionResponse);
+            await this.context.SaveChangesAsync();
+            return foundQuestionResponse;
+
+
         }
     }
 }

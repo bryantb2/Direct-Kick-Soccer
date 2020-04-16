@@ -8,11 +8,11 @@ namespace dropShippingApp.Data.Repositories
 {
     public interface IQuestionMsgRepo
     {
-        List<QuestionMessage> QuestionMessages { get; }
+       
         // CRUD operations for QuestionMessages
         Task AddQuestionMessage(QuestionMessage newMsg);
         Task<QuestionMessage> GetQuestionMessageById(int questionMessageId);
         Task UpdateQuestionMessage(QuestionMessage updatedMsg);
-        Task RemoveQuestionMessage(QuestionMessage message);
+        Task<QuestionMessage> RemoveQuestionMessage(int questionMessageId);
     }
 }

@@ -6,43 +6,67 @@ using Microsoft.EntityFrameworkCore;
 using dropShippingApp.Data.Repositories;
 using dropShippingApp.Models;
 
+
 namespace dropShippingApp.Data.Repositories
 {
     public class RosterProductRepo : IRosterProductRepo
     {
-        private List<RosterProduct> rosterProducts = new List<RosterProduct>();
-        public List<RosterProduct> RosterProducts { get { return rosterProducts; } }
+        private ApplicationDbContext context;
+
+        public RosterProductRepo(ApplicationDbContext c)
+        {
+            this.context = c;
+        }
+
+         public List<RosterProduct> GetRosterProduct
+        {
+            get
+            {
+                return this.context.RosterProducts.ToList();
+            }
+        }
+
+        
 
         // methods
         public async Task AddRosterProduct(RosterProduct newProduct)
         {
-            RosterProducts.Add(newProduct);
+            this.context.RosterProducts.Add(newProduct);
+            await this.context.SaveChangesAsync();
+           
         }
 
         public async Task<RosterProduct> GetRosterProductById(int rosterProductId)
         {
-            RosterProduct foundProduct = RosterProducts.Find(product => product.RosterProductID == rosterProductId);
-            if (foundProduct != null)
-            {
-                return await Task.FromResult<RosterProduct>(foundProduct);
-            }
-            // Return the Roster product as null if not found
-            return await Task.FromResult<RosterProduct>(null);
+            return this.context.RosterProducts
+                .Include(p => p.ModelNumber)
+                .Include(p => p.BasePrice)
+                .Include(p => p.AddOnPrice)
+                .Include(p => p.IsProductActive)
+                .Include(p => p.PricingHistory)
+                .ThenInclude(r => r.DateChanged)
+                .Include(p => p.PricingHistory)
+                .ThenInclude(r => r.NewPrice)
+                .ToList().Find(id => id.RosterProductID == rosterProductId);
         }
 
         public async Task UpdateRosterProduct(RosterProduct updatedProduct)
         {
-            RosterProduct oldProduct = RosterProducts.Find(cp => cp.RosterProductID == updatedProduct.RosterProductID);
-            RosterProducts.Remove(oldProduct);
-            RosterProducts.Add(updatedProduct);
+            this.context.RosterProducts.Update(updatedProduct);
+            await this.context.SaveChangesAsync();
+            
         }
 
-        public async Task RemoveRosterProduct(RosterProduct product)
+        public async Task<RosterProduct> RemoveRosterProduct(int productID)
         {
-            if (product != null)
-            {
-                RosterProducts.Remove(product);
-            }
+
+            var foundRosterProduct = this.context.RosterProducts.ToList()
+                .Find(rosterProduct => rosterProduct.RosterProductID == productID);
+            this.context.RosterProducts.Remove(foundRosterProduct);
+            await this.context.SaveChangesAsync();
+            return foundRosterProduct;
+
+            
         }
     }
 }
