@@ -8,6 +8,7 @@ namespace dropShippingApp.Data.Repositories
 {
     public interface IQuestionResponseRepo
     {
+        List<QuestionResponse> GetQuestionResponses { get; }
         // CRUD operations for QuestionResponses
         Task AddQuestionResponse(QuestionResponse newResponse);
         Task<QuestionResponse> GetQuestionResponseById(int questionResponseId);
