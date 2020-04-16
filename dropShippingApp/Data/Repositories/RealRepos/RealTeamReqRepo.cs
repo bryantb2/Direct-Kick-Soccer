@@ -27,7 +27,7 @@ namespace dropShippingApp.Data.Repositories.RealRepos
         {
             List<TeamCreationRequest> reqs = (from r in Reqs
                                               select r).ToList();
-            return await Task.FromResult<List<TeamCreationRequest>>(reqs);
+            return reqs;
         }
 
         public async Task<TeamCreationRequest> GetById(int id)
@@ -37,11 +37,11 @@ namespace dropShippingApp.Data.Repositories.RealRepos
                 TeamCreationRequest req = (from r in Reqs
                                            where r.TeamCreationRequestID == id
                                            select r).First();
-                return await Task.FromResult<TeamCreationRequest>(req);
+                return req;
             }
             catch
             {
-                return await Task.FromResult<TeamCreationRequest>(null);
+                return null;
             }
         }
 
@@ -57,11 +57,11 @@ namespace dropShippingApp.Data.Repositories.RealRepos
                 req.IsApproved = false;
                 context.Update(req);
                 await context.SaveChangesAsync();
-                return await Task.FromResult<TeamCreationRequest>(req);
+                return req;
             }
             catch
             {
-                return await Task.FromResult<TeamCreationRequest>(null);
+                return null;
             }
         }
 
