@@ -19,6 +19,8 @@ namespace dropShippingApp.Data.Repositories
             CustomProducts.Add(newProduct);
         }
 
+        public List<CustomProduct> GetAllCustomProducts => CustomProducts;
+
         public async Task<CustomProduct> GetCustomProductById(int customProductId)
         {
             CustomProduct foundProduct = CustomProducts.Find(product => product.CustomProductID == customProductId);

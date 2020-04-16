@@ -1,4 +1,4 @@
-﻿using dropShippingApp.Models;
+using dropShippingApp.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,6 +11,8 @@ namespace dropShippingApp.Data.Repositories
         Task AddTag(Tag tag);
         Task<Tag> RemoveTag(int tagId);
         Task UpdateTag(Tag tag);
+        Task<Tag> GetTagByName(string name);
+        Task<Tag> GetTagById(int id);
         List<Tag> GetTags { get; }
     }
 }
