@@ -14,7 +14,7 @@ namespace dropShippingApp.Data.Repositories
 
         public QuestionMessageRepo(ApplicationDbContext c) => this.context = c ?? throw new ArgumentNullException(nameof(c));
 
-        public List<QuestionMessage> GetQuestionMessage
+        public List<QuestionMessage> GetQuestionMessages
         {
             get
             {
