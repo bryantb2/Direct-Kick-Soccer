@@ -12,7 +12,7 @@ namespace dropShippingApp.Data
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options) { }
         public DbSet<ActivityLog> ActivityLogs { get; set; }
         public DbSet<Country> Countries { get; set; }
-        public DbSet<Province> Providences { get; set; }
+        public DbSet<Province> Provinces { get; set; }
         public DbSet<CustomProduct> CustomProducts { get; set; }
         public DbSet<RosterProduct> RosterProducts { get; set; }
         public DbSet<Order> Orders { get; set; }
