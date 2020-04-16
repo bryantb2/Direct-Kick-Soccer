@@ -6,13 +6,13 @@ using Microsoft.EntityFrameworkCore;
 using dropShippingApp.Data.Repositories;
 using dropShippingApp.Models;
 
-namespace dropShippingApp.Data.Repositories
+namespace dropShippingApp.Data.Repositories.RealRepos
 {
-    public class ActivityLogRepo : IActivityLogRepo
+    public class RealActivityLogRepo : IActivityLogRepo
     {
         private ApplicationDbContext context;
 
-        public ActivityLogRepo(ApplicationDbContext c)
+        public RealActivityLogRepo(ApplicationDbContext c)
         {
             this.context = c;
         }
@@ -25,14 +25,11 @@ namespace dropShippingApp.Data.Repositories
             }
         }
 
-
-
         // methods
         public async Task AddActivityLog(ActivityLog newActivityLog)
         {
             this.context.ActivityLogs.Add(newActivityLog);
             await this.context.SaveChangesAsync();
-
         }
 
         public async Task<ActivityLog> GetActivityLogById(int ActivityLogId)
@@ -48,7 +45,6 @@ namespace dropShippingApp.Data.Repositories
         {
             this.context.ActivityLogs.Update(updatedActivityLog);
             await this.context.SaveChangesAsync();
-
         }
 
         public async Task<ActivityLog> RemoveActivityLog(int ActivityLogID)
@@ -59,9 +55,6 @@ namespace dropShippingApp.Data.Repositories
             this.context.ActivityLogs.Remove(foundActivityLog);
             await this.context.SaveChangesAsync();
             return foundActivityLog;
-
-
         }
-
     }
 }

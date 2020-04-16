@@ -9,16 +9,16 @@ using dropShippingApp.Models;
 
 namespace dropShippingApp.Data.Repositories
 {
-    public class RosterProductRepo : IRosterProductRepo
+    public class RealRosterProductRepo : IRosterProductRepo
     {
         private ApplicationDbContext context;
 
-        public RosterProductRepo(ApplicationDbContext c)
+        public RealRosterProductRepo(ApplicationDbContext c)
         {
             this.context = c;
         }
 
-         public List<RosterProduct> GetRosterProducts
+        public List<RosterProduct> GetRosterProducts
         {
             get
             {
@@ -26,14 +26,11 @@ namespace dropShippingApp.Data.Repositories
             }
         }
 
-        
-
         // methods
         public async Task AddRosterProduct(RosterProduct newProduct)
         {
             this.context.RosterProducts.Add(newProduct);
             await this.context.SaveChangesAsync();
-           
         }
 
         public async Task<RosterProduct> GetRosterProductById(int rosterProductId)
@@ -65,8 +62,6 @@ namespace dropShippingApp.Data.Repositories
             this.context.RosterProducts.Remove(foundRosterProduct);
             await this.context.SaveChangesAsync();
             return foundRosterProduct;
-
-            
         }
     }
 }
