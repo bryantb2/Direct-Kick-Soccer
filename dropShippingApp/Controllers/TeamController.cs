@@ -52,7 +52,7 @@ namespace dropShippingApp.Controllers
         {
             // TODO
             // returns team results page 
-            var teamList = await teamRepo.GetTeams;
+            var teamList = teamRepo.GetTeams;
             return View(teamList);
         }
 
@@ -60,7 +60,7 @@ namespace dropShippingApp.Controllers
         {
             // TODO
             // returns team results page (will have view model with search term)
-            var teamList = await teamRepo.GetTeams;
+            var teamList = teamRepo.GetTeams;
             List<Team> searchResults = SearchListForMatches(teamList, searchTerm);
             return View(searchResults);
         }

@@ -64,7 +64,7 @@ namespace ProductTests
             await teamController.RemoveTeam(testTeam.TeamID);
 
             // assert
-            Assert.DoesNotContain(testTeam, await teamRepo.GetTeams);
+            Assert.DoesNotContain(testTeam, teamRepo.GetTeams);
         }
 
         [Fact]
@@ -87,8 +87,8 @@ namespace ProductTests
             await teamManagementController.UpdateTeamSettings(updatedTeam);
 
             // assert
-            Assert.DoesNotContain(testTeam, await teamRepo.GetTeams);
-            Assert.Contains(updatedTeam, await teamRepo.GetTeams);
+            Assert.DoesNotContain(testTeam, teamRepo.GetTeams);
+            Assert.Contains(updatedTeam, teamRepo.GetTeams);
         }
 
         [Fact]

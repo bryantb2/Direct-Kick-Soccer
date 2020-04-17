@@ -5,6 +5,7 @@
 @model CartViewModel;
 
     <section>
+        <script src="https://www.paypal.com/sdk/js?client-id=Aa2Exsni8UtIJ51dbKE0UpgwK5cJpNs32wabmp4u1sbk9mUQIOhCQspTkH1mPQBYAYHGSYumeMmIZqym"></script>
         <h1>@(Model.CartItems.Count == 0 ? "Your Cart Appears to be Empty :(" : "Your Cart")</h1>
         @foreach (var item in Model.CartItems)
         {
@@ -29,5 +30,8 @@
                 </div>
             </article>
         }
-        <button>Paypal Button goes here</button>
+        <div id="paypal-button-container"></div>
+        <script>
+            paypal.Buttons().render('#paypal-button-container');
+        </script>
     </section>

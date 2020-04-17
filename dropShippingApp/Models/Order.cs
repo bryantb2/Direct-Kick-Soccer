@@ -9,10 +9,10 @@ namespace dropShippingApp.Models
     {
         public int OrderID { get; set; }
         public string PaypalPurchaseId { get; set; }
-        public string PaypalInvoiceId { get; set; }
+        //public string PaypalInvoiceId { get; set; }
         public string PaypalOrderId { get; set; }
         public string SETrackingId { get; set; }
         public string SEReturnTrackingId { get; set; }
-        public bool IsProcessed { get; set; }
+        public bool ReturnRequested { get; set; }
     }
 }

@@ -33,7 +33,7 @@ namespace dropShippingApp.Models
             Tag removedTag = null;
             foreach (Tag t in teamTags)
             {
-                if (t.TeamTagID == tag.TeamTagID)
+                if (t.TagID == tag.TagID)
                 {
                     removedTag = t;
                     teamTags.Remove(t);
