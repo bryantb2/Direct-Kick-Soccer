@@ -1,4 +1,5 @@
 ﻿using dropShippingApp.Data.Repositories;
+using dropShippingApp.HelperUtilities;
 using dropShippingApp.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -23,9 +24,9 @@ namespace dropShippingApp.Controllers
                 IConfiguration envConfig,
                 ITeamRepo teamRepo)
         {
-            userManager = usrMgr;
-            signInManager = signinMgr;
-            configuration = envConfig;
+            this.userManager = usrMgr;
+            this.signInManager = signinMgr;
+            this.configuration = envConfig;
             this.teamRepo = teamRepo;
         }
 
@@ -90,10 +91,10 @@ namespace dropShippingApp.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateOrder()
         {
-            // 
-            throw new NotImplementedException();
+            // get user from DB
+            var user = await userManager.GetUserAsync(HttpContext.User);
+            var paypalOrder = await PaypalOrder.CreateOrder(configuration, teamRepo, user);
+            return Ok(paypalOrder);
         }
-
-        //private async 
     }
 }

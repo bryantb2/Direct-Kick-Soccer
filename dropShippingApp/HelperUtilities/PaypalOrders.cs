@@ -32,25 +32,30 @@ namespace dropShippingApp.HelperUtilities
 
     // TODO: add shipping cost calculator because it needs to be factored into the final sale price
 
-    public class PaypalOrders
+    public class PaypalOrder
     {
         public async static Task<HttpResponse> CreateOrder(IConfiguration configuration, ITeamRepo teamRepo, AppUser user, decimal shippingPrice = 0)
         {
             // build out request and order JSON
             var request = new OrdersCreateRequest();
             request.Headers.Add("prefer", "return=representation");
-            request.RequestBody(await BuildOrderRequestBody(teamRepo, user.Cart));
+            request.RequestBody(
+                await BuildOrderRequestBody(teamRepo, 
+                    user.Id.ToString(), 
+                    user.Cart, 
+                    configuration["PaypalCredentials:MerchantID"]));
 
             // setup transaction
-            var response = await PayPalClient.Client(configuration).Execute(request);
+            var response = await PayPalClient.Client(configuration)
+                .Execute(request);
             return response;
         }
 
-        private async static Task<OrderRequest> BuildOrderRequestBody(ITeamRepo teamRepo, Cart cart)
+        private async static Task<OrderRequest> BuildOrderRequestBody(ITeamRepo teamRepo, string appUserID, Cart cart, string DKMerchantID)
         {
             // build purchase units
             // construct order request object
-            var purchaseUnits = GenerateUnitsByTeam(teamRepo, cart.CartItems);
+            var purchaseUnits = GenerateUnitsByTeam(teamRepo, appUserID, cart.CartItems, DKMerchantID);
 
             OrderRequest orderRequest = new OrderRequest()
             {
@@ -62,7 +67,7 @@ namespace dropShippingApp.HelperUtilities
                     BrandName = "Direct Kick",
                     LandingPage = "Login",
                     UserAction = "CONTINUE",
-                    ShippingPreference = "SET_PROVIDED_ADDRESS" // this will require either the merchane or client to specify a shipping address
+                    ShippingPreference = "SET_PROVIDED_ADDRESS" // this will require either the merchant or client to specify a shipping address
                 },
                 // purchase unit represents a purchase of one or more items from a seller
                 // there are many purchase units if there are many sellers (AKA team shops)
@@ -72,7 +77,7 @@ namespace dropShippingApp.HelperUtilities
             return orderRequest;
         }
 
-        private async static Task<List<PurchaseUnitRequest>> GenerateUnitsByTeam(ITeamRepo teamRepo, List<CartItem> cartItems)
+        private async static Task<List<PurchaseUnitRequest>> GenerateUnitsByTeam(ITeamRepo teamRepo, string userID, List<CartItem> cartItems, string merchantID)
         {
             // get unique teams list
             // create unit foreach unique team
@@ -87,10 +92,9 @@ namespace dropShippingApp.HelperUtilities
 
                 purchaseUnits.Add(new PurchaseUnitRequest()
                 {
-                    ReferenceId = team.TeamID.ToString(),
+                    ReferenceId = merchantID,
                     Description = "Clothing and Apparel",
-                    CustomId = "asdfas",
-                    SoftDescriptor = "i dont know",
+                    CustomId = userID, // links transaction to app user
                     AmountWithBreakdown = teamBreakdown,
                     Items = teamItems
                 });
