@@ -9,6 +9,7 @@ using PayPal;
 using Microsoft.AspNetCore;
 using Microsoft.Extensions.Configuration;
 using PayPalHttp;
+using dropShippingApp.Data.Repositories;
 
 namespace dropShippingApp.HelperUtilities
 {
@@ -30,25 +31,23 @@ namespace dropShippingApp.HelperUtilities
      */
     public class PaypalOrders
     {
-        public async static Task<HttpResponse> CreateOrder(IConfiguration configuration, AppUser user, decimal shippingPrice = 0)
+        public async static Task<HttpResponse> CreateOrder(IConfiguration configuration, ITeamRepo teamRepo, AppUser user, decimal shippingPrice = 0)
         {
             // build out request and order JSON
             var request = new OrdersCreateRequest();
             request.Headers.Add("prefer", "return=representation");
-            request.RequestBody(BuildOrderRequestBody(user.Cart));
+            request.RequestBody(BuildOrderRequestBody(teamRepo, user.Cart));
 
             // setup transaction
             var response = await PayPalClient.Client(configuration).Execute(request);
             return response;
         }
 
-        private static OrderRequest BuildOrderRequestBody(Cart cart)
+        private static OrderRequest BuildOrderRequestBody(ITeamRepo teamRepo, Cart cart)
         {
-            // call cart calculate
             // build purchase units
             // construct order request object
-            var cartTotal = CalculateItemTotal(cart.CartItems);
-            var purchaseUnits = GenerateUnitsByTeam(cart.CartItems);
+            var purchaseUnits = GenerateUnitsByTeam(teamRepo, cart.CartItems);
 
             OrderRequest orderRequest = new OrderRequest()
             {
@@ -66,6 +65,8 @@ namespace dropShippingApp.HelperUtilities
                 // there are many purchase units if there are many sellers (AKA team shops)
                 PurchaseUnits = purchaseUnits
             };
+
+            return orderRequest;
         }
 
         private static decimal CalculateItemTotal(List<CartItem> cartItems)
@@ -79,28 +80,102 @@ namespace dropShippingApp.HelperUtilities
             return totalPrice;
         }
 
-        private static List<PurchaseUnitRequest> GenerateUnitsByTeam(List<CartItem> cartItems)
+        private async static List<PurchaseUnitRequest> GenerateUnitsByTeam(ITeamRepo teamRepo, List<CartItem> cartItems)
         {
+            // get unique teams list
+            // create unit foreach unique team
+                // call cart calculate
+                // generate items
+                // generate breakdown
             var purchaseUnits = new List<PurchaseUnitRequest>();
+
+            var cartTotal = CalculateItemTotal(cartItems);
+
+            return purchaseUnits;
         }
 
-        private static List<int> FindAndReturnUniqueTeamIDs(List<CartItem> cartItems)
+        private async static Task<List<TeamProduct>> FindAndReturnTeamProducts(ITeamRepo teamRepo, List<CartItem> cartItems)
         {
-            var teamList = new List<int>();
-            foreach(var item in cartItems)
+            // go through all products in cart
+            // find team based on productId
+            // if teamid doesn't already exist in teamList
+                // create team product object and add current custom product id
+            // else
+                // take team product object in list and add current product id to it
+            var teamList = new List<TeamProduct>();
+            for(var i = 0; i < cartItems.Count; i++)
             {
+                var customProduct = cartItems[i].ProductSelection;
+                var foundTeam = await teamRepo.FindTeamByProductId(customProduct.CustomProductID);
 
+                if (foundTeam != null)
+                {
+                    // team does NOT exist in list
+                    if (!teamList.Exists(team => team.TeamID == foundTeam.TeamID))
+                    {
+                        var newTeam = new TeamProduct()
+                        {
+                            TeamID = foundTeam.TeamID,
+                            ProductIDs = new List<int>() { customProduct.CustomProductID }
+                        };
+                        teamList.Add(newTeam);
+                    }
+                    // team DOES exist in list
+                    else
+                    {
+                        var existingTeamIndex = teamList.FindIndex(team => team.TeamID == foundTeam.TeamID);
+
+                        var productList = teamList[existingTeamIndex].ProductIDs;
+                        productList.Add(customProduct.CustomProductID);
+
+                        // remove at index
+                        teamList.RemoveAt(existingTeamIndex);
+
+                        // add new team val
+                        teamList.Add(new TeamProduct()
+                        {
+                            TeamID = foundTeam.TeamID,
+                            ProductIDs = productList
+                        });
+                    }
+                }
             }
+            return teamList;
         }
 
-        private static List<Item> GenerateOrderItems(List<CartItem> cartItems)
+        /*
+         * private async static Task<List<int>> FindAndReturnUniqueTeamIDs(ITeamRepo teamRepo, List<CartItem> cartItems)
+        {
+            // go through all products in cart
+            // find team based on product id
+            // add found team's id to teamList if it doesn't already exist as an element
+            var teamList = new List<int>();
+            for(var i = 0; i < cartItems.Count; i++)
+            {
+                var customProduct = cartItems[i].ProductSelection;
+                var foundTeam = await teamRepo.FindTeamByProductId(customProduct.CustomProductID);
+
+                if (foundTeam != null && !teamList.Exists(teamId => teamId == foundTeam.TeamID))
+                    teamList.Add(foundTeam.TeamID);
+            }
+            return teamList;
+        }
+         */
+
+        private static List<Item> GeneratePUnitItems(List<CartItem> cartItems)
         {
 
         }
 
-        private static AmountWithBreakdown GenerateBreakdown(List<CartItem> cartItems)
+        private static AmountWithBreakdown GeneratePUnitBreakdown(List<CartItem> cartItems)
         {
 
+        }
+
+        private struct TeamProduct
+        {
+            public int TeamID { get; set; }
+            public List<int> ProductIDs { get; set; }
         }
     }
 }
