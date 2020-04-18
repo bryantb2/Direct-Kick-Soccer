@@ -34,7 +34,17 @@
         <script>
             paypal.Buttons({
                 createOrder: function () {
-                    return fetch('')
+                    const serverURL = "https:localhost:8080";
+                    return fetch(serverURL + 'Cart/CreateOrder', {
+                        method: 'POST',
+                        headers: {
+                            'content-type': 'application/json'
+                        }
+                    }).then(function(res) {
+                        return res.json
+                    }).then(function(data)) {
+                        return data.orderID;
+                    }
                 }
             }).render('#paypal-button-container');
         </script>
