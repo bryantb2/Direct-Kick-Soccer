@@ -25,9 +25,10 @@
 
                 </div>
                 <div class="col-2">
-                    <a asp-controller="Cart" asp-action="Remove" asp-route-productId=@item.BaseProduct.CustomProductID>Remove Item</a>
+                    <a asp-controller="Cart" asp-action="RemoveFromCart" asp-route-productId=@item.BaseProduct.CustomProductID>Remove Item</a>
                 </div>
             </article>
         }
+        <h3>Your total is: $@Model.CartPrice</h3>
         <button>Paypal Button goes here</button>
     </section>
