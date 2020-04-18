@@ -1,4 +1,5 @@
-﻿using dropShippingApp.Models;
+﻿using dropShippingApp.Data.Repositories;
+using dropShippingApp.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
@@ -14,15 +15,18 @@ namespace dropShippingApp.Controllers
         private UserManager<AppUser> userManager;
         private SignInManager<AppUser> signInManager;
         private IConfiguration configuration;
+        private ITeamRepo teamRepo;
 
         public CartController(
                 UserManager<AppUser> usrMgr,
                 SignInManager<AppUser> signinMgr,
-                IConfiguration envConfig)
+                IConfiguration envConfig,
+                ITeamRepo teamRepo)
         {
             userManager = usrMgr;
             signInManager = signinMgr;
             configuration = envConfig;
+            this.teamRepo = teamRepo;
         }
 
         // ------------------- PHASE 1
