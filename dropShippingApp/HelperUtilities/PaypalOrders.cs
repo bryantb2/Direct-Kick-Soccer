@@ -88,6 +88,16 @@ namespace dropShippingApp.HelperUtilities
                 // generate items
                 // generate breakdown
             var purchaseUnits = new List<PurchaseUnitRequest>();
+            var teamProduct = FindAndReturnTeamProducts(teamRepo, cartItems);
+            foreach(var team in teamProduct)
+            {
+                
+
+            }
+            
+
+            
+
 
             var cartTotal = CalculateItemTotal(cartItems);
 
@@ -105,8 +115,8 @@ namespace dropShippingApp.HelperUtilities
             var teamList = new List<TeamProduct>();
             for(var i = 0; i < cartItems.Count; i++)
             {
-                var customProduct = cartItems[i].ProductSelection;
-                var foundTeam = await teamRepo.FindTeamByProductId(customProduct.CustomProductID);
+                var currentCartItem = cartItems[i];
+                var foundTeam = await teamRepo.FindTeamByProductId(currentCartItem.ProductSelection.CustomProductID);
 
                 if (foundTeam != null)
                 {
@@ -116,7 +126,7 @@ namespace dropShippingApp.HelperUtilities
                         var newTeam = new TeamProduct()
                         {
                             TeamID = foundTeam.TeamID,
-                            ProductIDs = new List<int>() { customProduct.CustomProductID }
+                            Products = new List<CartItem>() { currentCartItem }
                         };
                         teamList.Add(newTeam);
                     }
@@ -125,42 +135,23 @@ namespace dropShippingApp.HelperUtilities
                     {
                         var existingTeamIndex = teamList.FindIndex(team => team.TeamID == foundTeam.TeamID);
 
-                        var productList = teamList[existingTeamIndex].ProductIDs;
-                        productList.Add(customProduct.CustomProductID);
+                        var productList = teamList[existingTeamIndex].Products;
+                        productList.Add(currentCartItem);
 
-                        // remove at index
+                        // remove at index (because structs are val types and not ref)
                         teamList.RemoveAt(existingTeamIndex);
 
                         // add new team val
                         teamList.Add(new TeamProduct()
                         {
                             TeamID = foundTeam.TeamID,
-                            ProductIDs = productList
+                            Products = productList
                         });
                     }
                 }
             }
             return teamList;
         }
-
-        /*
-         * private async static Task<List<int>> FindAndReturnUniqueTeamIDs(ITeamRepo teamRepo, List<CartItem> cartItems)
-        {
-            // go through all products in cart
-            // find team based on product id
-            // add found team's id to teamList if it doesn't already exist as an element
-            var teamList = new List<int>();
-            for(var i = 0; i < cartItems.Count; i++)
-            {
-                var customProduct = cartItems[i].ProductSelection;
-                var foundTeam = await teamRepo.FindTeamByProductId(customProduct.CustomProductID);
-
-                if (foundTeam != null && !teamList.Exists(teamId => teamId == foundTeam.TeamID))
-                    teamList.Add(foundTeam.TeamID);
-            }
-            return teamList;
-        }
-         */
 
         private static List<Item> GeneratePUnitItems(List<CartItem> cartItems)
         {
@@ -175,7 +166,7 @@ namespace dropShippingApp.HelperUtilities
         private struct TeamProduct
         {
             public int TeamID { get; set; }
-            public List<int> ProductIDs { get; set; }
+            public List<CartItem> Products { get; set; }
         }
     }
 }
