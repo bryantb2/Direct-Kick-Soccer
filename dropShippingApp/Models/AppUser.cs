@@ -49,138 +49,74 @@ namespace dropShippingApp.Models
 
         // approved request methods
         public void AddApprovedRequest(TeamCreationRequest request) => adminApprovedTeamRequests.Add(request);
-        public TeamCreationRequest RemoveApprovedRequest(TeamCreationRequest request)
+        public TeamCreationRequest RemoveApprovedRequest(int requestId)
         {
-            TeamCreationRequest removedRequest = null;
-            foreach (TeamCreationRequest r in adminApprovedTeamRequests)
-            {
-                if (r.TeamCreationRequestID == request.TeamCreationRequestID)
-                {
-                    removedRequest = r;
-                    adminApprovedTeamRequests.Remove(r);
-                    return removedRequest;
-                }
-            }
-            return removedRequest;
+            var foundRequest = adminApprovedTeamRequests.Find(request => request.TeamCreationRequestID == requestId);
+            adminApprovedTeamRequests.Remove(foundRequest);
+            return foundRequest;
         }
 
         // question response methods
         public void AddQuestionResponse(QuestionResponse question) => adminQuestionResponses.Add(question);
-        public QuestionResponse RemoveQuestionResponse(QuestionResponse question)
+        public QuestionResponse RemoveQuestionResponse(int questionId)
         {
-            QuestionResponse removedQuestion = null;
-            foreach (QuestionResponse qr in adminQuestionResponses)
-            {
-                if (qr.QuestionResponseID == question.QuestionResponseID)
-                {
-                    removedQuestion = qr;
-                    adminQuestionResponses.Remove(qr);
-                    return removedQuestion;
-                }
-            }
-            return removedQuestion;
+            var foundReponse = adminQuestionResponses.Find(response => response.QuestionResponseID == questionId);
+            adminQuestionResponses.Remove(foundReponse);
+            return foundReponse;
         }
 
         // approved order methods
         public void AddApprovedOrder(Order order) => adminOrdersFulfilled.Add(order);
-        public Order RemoveApprovedOrder(Order order)
+        public Order RemoveApprovedOrder(int orderId)
         {
-            Order removedOrder = null;
-            foreach (Order o in adminOrdersFulfilled)
-            {
-                if (order.OrderID == o.OrderID)
-                {
-                    removedOrder = o;
-                    adminOrdersFulfilled.Remove(o);
-                    return removedOrder;
-                }
-            }
-            return removedOrder;
+            var foundOrder = adminOrdersFulfilled.Find(order => order.OrderID == orderId);
+            adminOrdersFulfilled.Remove(foundOrder);
+            return foundOrder;
         }
 
         // question methods
         public void AddQuestion(QuestionMessage question) => askedQuestions.Add(question);
-        public QuestionMessage RemoveQuestion(QuestionMessage question)
+        public QuestionMessage RemoveQuestion(int questionId)
         {
-            QuestionMessage removedQuestion = null;
-            foreach(QuestionMessage q in askedQuestions)
-            {
-                if(q.QuestionMessageID == question.QuestionMessageID)
-                {
-                    removedQuestion = q;
-                    askedQuestions.Remove(q);
-                    return removedQuestion;
-                }
-            }
-            return removedQuestion;
+            var foundMsg = askedQuestions.Find(question => question.QuestionMessageID == questionId);
+            askedQuestions.Remove(foundMsg);
+            return foundMsg;
         }
 
         // roster product methods
         public void AddRosterProduct(RosterProduct product) => adminCreatedRosterProducts.Add(product);
-        public RosterProduct RemoveRosterProduct(RosterProduct product)
+        public RosterProduct RemoveRosterProduct(int productId)
         {
-            RosterProduct removedProduct = null;
-            foreach (RosterProduct p in adminCreatedRosterProducts)
-            {
-                if (p.RosterProductID == product.RosterProductID)
-                {
-                    removedProduct = p;
-                    adminCreatedRosterProducts.Remove(p);
-                    return removedProduct;
-                }
-            }
-            return removedProduct;
+            var foundProduct = adminCreatedRosterProducts.Find(product => product.RosterProductID == productId);
+            adminCreatedRosterProducts.Remove(foundProduct);
+            return foundProduct;
         }
 
         // custom product methods
         public void AddCustomProduct(CustomProduct product) => createdCustomProducts.Add(product);
-        public CustomProduct RemoveCustomProduct(CustomProduct product)
+        public CustomProduct RemoveCustomProduct(int productId)
         {
-            CustomProduct removedProduct = null;
-            foreach (CustomProduct p in createdCustomProducts)
-            {
-                if (p.CustomProductID == product.CustomProductID)
-                {
-                    removedProduct = p;
-                    createdCustomProducts.Remove(p);
-                    return removedProduct;
-                }
-            }
-            return removedProduct;
+            var foundProduct = createdCustomProducts.Find(product => product.CustomProductID == productId);
+            createdCustomProducts.Remove(foundProduct);
+            return foundProduct;
         }
 
         // creation request methods
         public void AddCreationRequest(TeamCreationRequest request) => userCreationReqHistory.Add(request);
-        public TeamCreationRequest RemoveCreationRequest(TeamCreationRequest creationReq)
+        public TeamCreationRequest RemoveCreationRequest(int creationReqId)
         {
-            TeamCreationRequest removedRequest = null;
-            foreach (TeamCreationRequest req in userCreationReqHistory)
-            {
-                if(req.TeamCreationRequestID == creationReq.TeamCreationRequestID)
-                {
-                    removedRequest = req;
-                    userCreationReqHistory.Remove(req);
-                    return removedRequest;
-                }
-            }
-            return removedRequest;
+            var foundRequest = userCreationReqHistory.Find(product => product.TeamCreationRequestID == creationReqId);
+            userCreationReqHistory.Remove(foundRequest);
+            return foundRequest;
         }
 
         // activity log methods
         public void AddLog(ActivityLog log) => this.activityLog.Add(log);
-        public ActivityLog RemoveLog(ActivityLog log)
+        public ActivityLog RemoveLog(int logId)
         {
-            ActivityLog removedLog = null;
-            foreach (ActivityLog l in this.activityLog)
-            {
-                if (l.ActivityLogID == log.ActivityLogID)
-                {
-                    removedLog = l;
-                    activityLog.Remove(l);
-                    return removedLog;
-                }
-            }
-            return removedLog;
+            var foundLog = activityLog.Find(log => log.ActivityLogID == logId);
+            activityLog.Remove(foundLog);
+            return foundLog;
         }
     }
 }
