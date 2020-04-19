@@ -35,7 +35,7 @@
             paypal.Buttons({
                 createOrder: function () {
                     const serverURL = "https:localhost:8080";
-                    return fetch(serverURL + 'Cart/CreateOrder', {
+                    return fetch(serverURL + '/Cart/CreateOrder', {
                         method: 'POST',
                         headers: {
                             'content-type': 'application/json'
