@@ -32,19 +32,34 @@
         }
         <div id="paypal-button-container"></div>
         <script>
+            const serverURL = "https:localhost:8080";
             paypal.Buttons({
                 createOrder: function () {
-                    const serverURL = "https:localhost:8080";
                     return fetch(serverURL + '/Cart/CreateOrder', {
                         method: 'POST',
                         headers: {
                             'content-type': 'application/json'
                         }
-                    }).then(function(res) {
-                        return res.json
-                    }).then(function(data)) {
+                    }).then(function (res) {
+                        return res.json();
+                    }).then(function (data) {
                         return data.orderID;
-                    }
+                    });
+                },
+                onApprove: function (data) {
+                    return fetch(serverURL + '/Cart/GetAndSaveOrder', {
+                        method: 'POST',
+                        headers: {
+                            'content-type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            orderID: data.orderID
+                        })
+                    }).then(function (res) {
+                        return res.json();
+                    }).then(function (data) {
+                        return data.orderID;
+                    });
                 }
             }).render('#paypal-button-container');
         </script>

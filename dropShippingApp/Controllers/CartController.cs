@@ -101,13 +101,13 @@ namespace dropShippingApp.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> GetAndSaveOrder([FromBody]int orderId)
+        public async Task<IActionResult> GetAndSaveOrder([FromBody]int orderID)
         {
             // get user from DB
             // get order from paypal
             // parse response body
             var user = await userManager.GetUserAsync(HttpContext.User);
-            var response = await PaypalTransaction.GetOrder(configuration, orderId.ToString());
+            var response = await PaypalTransaction.GetOrder(configuration, orderID.ToString());
             var responseData = response.Result<PayPalCheckoutSdk.Orders.Order>();
 
             var newOrder = new Order()
