@@ -17,17 +17,20 @@ namespace dropShippingApp.Controllers
         private SignInManager<AppUser> signInManager;
         private IConfiguration configuration;
         private ITeamRepo teamRepo;
+        private IOrderRepo orderRepo;
 
         public CartController(
                 UserManager<AppUser> usrMgr,
                 SignInManager<AppUser> signinMgr,
                 IConfiguration envConfig,
-                ITeamRepo teamRepo)
+                ITeamRepo teamRepo,
+                IOrderRepo orderRepo)
         {
             this.userManager = usrMgr;
             this.signInManager = signinMgr;
             this.configuration = envConfig;
             this.teamRepo = teamRepo;
+            this.orderRepo = orderRepo;
         }
 
         // ------------------- PHASE 1
@@ -112,7 +115,15 @@ namespace dropShippingApp.Controllers
                 PaypalOrderId = responseData.Id
             };
 
-            user.
+            // save order to DB
+            await orderRepo.AddOrder(newOrder);
+
+            // update user in DB
+            user.AddPurchaseOrder(newOrder);
+            await userManager.UpdateAsync(user);
+
+            // redirect to main cart page
+            return RedirectToAction("Index");
         }
     }
 }

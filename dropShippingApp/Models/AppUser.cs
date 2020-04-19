@@ -19,33 +19,31 @@ namespace dropShippingApp.Models
         private List<QuestionMessage> askedQuestions = new List<QuestionMessage>();
         private List<ActivityLog> activityLog = new List<ActivityLog>();
 
-        // universal properties
+        // class properties
         public Int64 DateJoined { get; set; }
         public String FirstName { get; set; }
         public String LastName { get; set; }
-
-        // user properties
-        public List<TeamCreationRequest> CreationRequestHistory { get { return this.userCreationReqHistory; } }
-        public bool hasApprovedRequest { get; set; }
-        public List<Order> UserOrderHistory { get { return this.userOrderHistory; } }
-
-        // team manager properties
         public Team ManagedTeam { get; set; }
-        public List<CustomProduct> CreatedCustomProducts { get { return createdCustomProducts; } }
-
-        // team manager AND user properties
-        public List<QuestionMessage> AskedQuestions { get { return this.askedQuestions; } }
         public Cart Cart { get; set; }
-
-        // admin properties
+        public bool hasApprovedRequest { get; set; }
+        public List<TeamCreationRequest> CreationRequestHistory { get { return this.userCreationReqHistory; } }
+        public List<Order> UserOrderHistory { get { return this.userOrderHistory; } }
+        public List<CustomProduct> CreatedCustomProducts { get { return createdCustomProducts; } }
+        public List<QuestionMessage> AskedQuestions { get { return this.askedQuestions; } }
         public List<QuestionResponse> AnsweredQuestions { get { return adminQuestionResponses; } }
         public List<RosterProduct> RosterProducts { get { return adminCreatedRosterProducts; } }
         public List<TeamCreationRequest> ApprovedTeamRequests { get { return adminApprovedTeamRequests; } }
         public List<Order> ApprovedOrders { get { return adminOrdersFulfilled; } }
-
-        // team manager AND admin properties
         public List<ActivityLog> ActivityLog { get { return activityLog; } }
 
+        // purchase order methods
+        public void AddPurchaseOrder(Order order) => userOrderHistory.Add(order);
+        public Order RemovePurchaseOrder(int orderId)
+        {
+            var foundOrder = userOrderHistory.Find(order => order.OrderID == orderId);
+            userOrderHistory.Remove(foundOrder);
+            return foundOrder;
+        }
 
         // approved request methods
         public void AddApprovedRequest(TeamCreationRequest request) => adminApprovedTeamRequests.Add(request);
