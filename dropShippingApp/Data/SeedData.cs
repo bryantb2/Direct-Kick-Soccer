@@ -83,6 +83,7 @@ namespace dropShippingApp.Data
                     BasePrice = 10,
                     AddOnPrice = 15,
                     IsProductActive = true,
+                    
                 };
                 PricingHistory pricingHistory = new PricingHistory
                 {

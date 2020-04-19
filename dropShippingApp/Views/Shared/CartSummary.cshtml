@@ -1,4 +1,25 @@
-﻿
-@*
-    For more information on enabling MVC for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
-*@
+﻿@model CartItem
+
+<article class="row">
+    <div class="col-2">
+        <img width="50" height="50" src=@Model.ProductSelection.CustomImagePNG/>
+    </div>
+    <div class="col-3">
+        <h3>@Model.ProductSelection.ProductTitle</h3>
+        <p>Selected in @Model.ProductSelection.BaseProduct.BaseColor.ColorName size @Model.ProductSelection.BaseProduct.BaseSize</p>
+    </div>
+    <div class="col-3 flex-column">
+        <span class="p-2">Quantity -
+        <input class="qnty_input" type="number" data-productId=@Model.ProductSelection.BaseProduct.RosterProductID min="1" defaultValue=@Model.Quantity /> </span>
+        <br />
+        <span class="p-2">Subtotal - @((Model.Quantity * Model.ProductSelection.CurrentPrice).ToString("c")) </span>
+    </div>
+    <div class="col-2">
+        
+            
+       
+    </div>
+    <div class="col-2">
+        <a asp-controller="Cart" asp-action="RemoveFromCart" asp-route-productId=@Model.ProductSelection.CustomProductID>Remove Item</a>
+    </div>
+</article>
