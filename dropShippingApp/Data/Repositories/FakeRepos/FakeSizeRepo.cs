@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace dropShippingApp.Data.Repositories.FakeRepos
 {
-    public class FakeSizeRepo : ISizeRepo
+    public class FakeSizeRepo //: ISizeRepo
     {
         private List<ProductSize> sizes = new List<ProductSize>();
         public async Task AddSize(ProductSize s)

@@ -6,48 +6,48 @@ using System.Threading.Tasks;
 
 namespace dropShippingApp.Data.Repositories.RealRepos
 {
-    public class FakeTagRepo : ITagRepo
+    public class FakeTagRepo //: ITagRepo
     {
-        private List<ProductTag> tags = new List<ProductTag>();
+        private List<Tag> tags = new List<Tag>();
 
-        public async Task AddTag(ProductTag tag)
+        public async Task AddTag(Tag tag)
         {
             tags.Add(tag);
         }
 
-        public async Task<ProductTag> CreateTag(string text)
+        public async Task<Tag> CreateTag(string text)
         {
 
-            ProductTag t = new ProductTag
+            Tag t = new Tag
             {
                 TagLine = text
             };
             tags.Add(t);
-            return await Task.FromResult<ProductTag>(t);
+            return await Task.FromResult<Tag>(t);
         }
 
-        public async Task<ProductTag> DeleteTag(int id)
+        public async Task<Tag> DeleteTag(int id)
         {
 
             try
             {
-                ProductTag t = (from tag in tags
-                                where tag.ProductTagID == id
+                Tag t = (from tag in tags
+                                where tag.TagID == id
                                 select tag).First();
                 tags.Remove(t);
-                return await Task.FromResult<ProductTag>(t);
+                return await Task.FromResult<Tag>(t);
             }
             catch
             {
-                return await Task.FromResult<ProductTag>(null);
+                return await Task.FromResult<Tag>(null);
             }
          
         }
 
-        public async Task UpdateTag(ProductTag updatedTag)
+        public async Task UpdateTag(Tag updatedTag)
         {
-            ProductTag  oldTag = (from tag in tags
-                            where tag.ProductTagID == updatedTag.ProductTagID
+            Tag oldTag = (from tag in tags
+                            where tag.TagID == updatedTag.TagID
                             select tag).First();
             tags.Remove(oldTag);
             tags.Add(updatedTag);

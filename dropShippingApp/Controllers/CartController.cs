@@ -1,9 +1,9 @@
-﻿using Abp.Web.Mvc.Models;
 using dropShippingApp.Data.Repositories;
+using dropShippingApp.HelperUtilities;
 using dropShippingApp.Models;
-using dropShippingApp.ViewModels;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,20 +15,41 @@ namespace dropShippingApp.Controllers
     {
         private UserManager<AppUser> userManager;
         private SignInManager<AppUser> signInManager;
-        private ICartRepo cRepo;
-        
+        private IConfiguration configuration;
+        private ITeamRepo teamRepo;
+        private IOrderRepo orderRepo;
 
         public CartController(
                 UserManager<AppUser> usrMgr,
                 SignInManager<AppUser> signinMgr,
-                ICartRepo c)
+                IConfiguration envConfig,
+                ITeamRepo teamRepo,
+                IOrderRepo orderRepo)
         {
-            userManager = usrMgr;
-            signInManager = signinMgr;
-            cRepo = c;
+            this.userManager = usrMgr;
+            this.signInManager = signinMgr;
+            this.configuration = envConfig;
+            this.teamRepo = teamRepo;
+            this.orderRepo = orderRepo;
         }
 
-        // index
+        // ------------------- PHASE 1
+        // user sends request to create order
+        // server send back order as JSON
+        // paypal completes order
+        // when order completes, data is sent from client back to server as JSON
+        // log order id for proper Appuser object
+
+
+        // ------------------- PHASE 2
+        // admin goes through list of orders and picks order
+        // order gets packaged at facility
+        // admin clicks button on site to generate shipping label, initial shipping status is set
+        // shipping id is then hooked into the user's order object
+        // package is sent 
+
+
+        // view cart
         public async Task<IActionResult> Index()
         {
             var user = await userManager.GetUserAsync(HttpContext.User);
@@ -77,7 +98,7 @@ namespace dropShippingApp.Controllers
             return Ok();
         }
 
-        // change quantity
+        // update cart contents
         [HttpPost]
         public async Task<IActionResult> UpdateCart(List<CartItem> cartItems)
         {
@@ -105,12 +126,39 @@ namespace dropShippingApp.Controllers
          
         }
 
-        // checkout
         [HttpPost]
-        public async Task<IActionResult> Checkout(/* WTF will we do? */)
+        public async Task<IActionResult> CreateOrder()
         {
-            // will bundle a user order together (ship engine tracking number, paypal transaction id, ect.)
-            throw new NotImplementedException();
+            // get user from DB
+            var user = await userManager.GetUserAsync(HttpContext.User);
+            var paypalOrder = await PaypalOrder.CreateOrder(configuration, teamRepo, user);
+            return Ok(paypalOrder);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> GetAndSaveOrder([FromBody]int orderID)
+        {
+            // get user from DB
+            // get order from paypal
+            // parse response body
+            var user = await userManager.GetUserAsync(HttpContext.User);
+            var response = await PaypalTransaction.GetOrder(configuration, orderID.ToString());
+            var responseData = response.Result<PayPalCheckoutSdk.Orders.Order>();
+
+            var newOrder = new Order()
+            {
+                PaypalOrderId = responseData.Id
+            };
+
+            // save order to DB
+            await orderRepo.AddOrder(newOrder);
+
+            // update user in DB
+            user.AddPurchaseOrder(newOrder);
+            await userManager.UpdateAsync(user);
+
+            // redirect to main cart page
+            return RedirectToAction("Index");
         }
     }
 }

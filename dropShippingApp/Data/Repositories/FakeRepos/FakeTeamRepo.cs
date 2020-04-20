@@ -11,11 +11,11 @@ namespace dropShippingApp.Data.Repositories
         // private fields
         private List<Team> teams = new List<Team>();
 
-        public Task<List<Team>> GetTeams 
+        public List<Team> GetTeams 
         { 
             get 
             { 
-                return Task.FromResult<List<Team>>(teams); 
+                return this.teams; 
             } 
         }
 

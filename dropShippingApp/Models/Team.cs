@@ -25,6 +25,7 @@ namespace dropShippingApp.Models
         public List<CustomProduct> TeamProducts { get { return teamProducts; } }
         public List<Tag> TeamTags { get { return teamTags; } }
         public bool IsTeamInactive { get; set; }
+        public bool IsHostTeam { get; set; }
 
         // methods
         public void AddTag(Tag tag) => teamTags.Add(tag);
@@ -33,7 +34,7 @@ namespace dropShippingApp.Models
             Tag removedTag = null;
             foreach (Tag t in teamTags)
             {
-                if (t.TeamTagID == tag.TeamTagID)
+                if (t.TagID == tag.TagID)
                 {
                     removedTag = t;
                     teamTags.Remove(t);

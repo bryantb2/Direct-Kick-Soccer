@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace dropShippingApp.Data.Repositories.FakeRepos
 {
-    public class FakeColorRepo : IProductColorRepo
+    public class FakeColorRepo //: IProductColorRepo
     {
         private List<ProductColor> colors = new List<ProductColor>();
         public async Task AddColor(ProductColor c)
