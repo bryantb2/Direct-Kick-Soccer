@@ -61,7 +61,6 @@ namespace dropShippingApp
             services.AddTransient<IOrderRepo, RealOrderRepo>();
             services.AddTransient<IPricingRepo, RealPricingRepo>();
             services.AddTransient<IProductColorRepo, RealColorRepo>();
-            services.AddTransient<IProprietaryCollectionRepo, RealProprietaryCollectionRepo>();
             services.AddTransient<IQuestionMsgRepo, RealQuestionMessageRepo>();
             services.AddTransient<IQuestionResponseRepo, RealQuestionResponseRepo>();
             services.AddTransient<IRosterProductRepo, RealRosterProductRepo>();
