@@ -10,14 +10,15 @@ namespace dropShippingApp.Data
 {
     public class SeedData
     {
-        public static async void Seed(ApplicationDbContext context, IServiceProvider prov)
+        public static async void Seed(IServiceProvider prov)
         {
-            // check context
-            context.Database.EnsureCreated();
-
             // get services
             UserManager<AppUser> userManager = prov.GetRequiredService<UserManager<AppUser>>();
-            RoleManager<IdentityRole> roleManager = prov.GetRequiredService<RoleManager<IdentityRole>>(); 
+            RoleManager<IdentityRole> roleManager = prov.GetRequiredService<RoleManager<IdentityRole>>();
+            ApplicationDbContext context = prov.GetRequiredService<ApplicationDbContext>();
+
+            // check context
+            context.Database.EnsureCreated();
 
             if (!context.RosterProducts.Any())
             {

@@ -21,6 +21,8 @@ namespace dropShippingApp
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
                     webBuilder.UseStartup<Startup>();
-                });
+                })
+                .UseDefaultServiceProvider(option =>
+                    option.ValidateScopes = false);
     }
 }
