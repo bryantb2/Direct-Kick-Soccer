@@ -6,12 +6,12 @@ using System.Threading.Tasks;
 
 namespace dropShippingApp.Data.Repositories.RealRepos
 {
-	public class CustomProductRepo : ICustomProductRepo
+	public class RealCustomProductRepo : ICustomProductRepo
 	{
         private ApplicationDbContext context;
         public List<CustomProduct> CustomProducts { get { return context.CustomProducts.ToList(); } }
 
-        public CustomProductRepo(ApplicationDbContext appDbContext)
+        public RealCustomProductRepo(ApplicationDbContext appDbContext)
         {
             context = appDbContext;
         }

@@ -6,13 +6,13 @@ using System.Threading.Tasks;
 
 namespace dropShippingApp.Data.Repositories.RealRepos
 {
-	public class LocationRepo : ILocationRepo
+	public class RealLocationRepo : ILocationRepo
 	{
 		private ApplicationDbContext context;
 		public List<Country> Countries { get { return context.Countries.ToList(); } }
 		public List<Province> Provinces { get { return context.Provinces.ToList(); } }
 
-		public LocationRepo(ApplicationDbContext appDbContext)
+		public RealLocationRepo(ApplicationDbContext appDbContext)
 		{
 			context = appDbContext;
 		}

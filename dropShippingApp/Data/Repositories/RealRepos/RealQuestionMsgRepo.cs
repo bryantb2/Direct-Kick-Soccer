@@ -6,23 +6,21 @@ using Microsoft.EntityFrameworkCore;
 using dropShippingApp.Data.Repositories;
 using dropShippingApp.Models;
 
-namespace dropShippingApp.Data.Repositories
+namespace dropShippingApp.Data.Repositories.RealRepos
 {
-    public class QuestionMessageRepo : IQuestionMsgRepo
+    public class RealQuestionMessageRepo : IQuestionMsgRepo
     {
         private  ApplicationDbContext context;
 
-        public QuestionMessageRepo(ApplicationDbContext c) => this.context = c ?? throw new ArgumentNullException(nameof(c));
+        public RealQuestionMessageRepo(ApplicationDbContext c) => this.context = c ?? throw new ArgumentNullException(nameof(c));
 
-        public List<QuestionMessage> GetQuestionMessage
+        public List<QuestionMessage> GetQuestionMessages
         {
             get
             {
                 return this.context.QuestionMessages.ToList();
             }
         }
-
-
 
         // methods
         public async Task AddQuestionMessage(QuestionMessage newMsg)
