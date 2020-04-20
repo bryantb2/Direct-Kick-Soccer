@@ -9,7 +9,30 @@
         <h1>@(Model.CartItems.Count == 0 ? "Your Cart Appears to be Empty :(" : "Your Cart")</h1>
         @foreach (var item in Model.CartItems)
         {
-          @Html.PartialAsync("CartSumamry")
+            <article class="row">
+                <div class="col-2">
+                    <img width="50" height="50" src=@item.ProductSelection.CustomImagePNG />
+                </div>
+                <div class="col-3">
+                    <h3>@item.ProductSelection.ProductTitle</h3>
+                    <p>Selected in @item.ProductSelection.BaseProduct.BaseColor.ColorName size @item.ProductSelection.BaseProduct.BaseSize</p>
+                </div>
+                <div class="col-3 flex-column">
+                    <span class="p-2">
+                        Quantity - <input class="qnty_input" type="number" data-cartItemId=@item.CartItemID min="1" defaultValue=@item.Quantity />
+                    </span>
+                    <br />
+                    <span class="p-2">Subtotal - @((item.Quantity * item.ProductSelection.CurrentPrice).ToString("c")) </span>
+                </div>
+                <div class="col-2">
+
+
+
+                </div>
+                <div class="col-2">
+                    <a asp-controller="Cart" asp-action="RemoveFromCart" asp-route-productId=@item.CartItemID>Remove Item</a>
+                </div>
+            </article>
         }
         <div id="paypal-button-container"></div>
         <script>

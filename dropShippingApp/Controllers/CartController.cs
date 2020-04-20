@@ -2,6 +2,7 @@ using dropShippingApp.Data.Repositories;
 using dropShippingApp.HelperUtilities;
 using dropShippingApp.Models;
 using dropShippingApp.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
@@ -12,6 +13,7 @@ using System.Threading.Tasks;
 
 namespace dropShippingApp.Controllers
 {
+    [Authorize]
     public class CartController : Controller
     {
         private UserManager<AppUser> userManager;
@@ -20,6 +22,7 @@ namespace dropShippingApp.Controllers
         private ITeamRepo teamRepo;
         private IOrderRepo orderRepo;
         private ICartRepo cartRepo;
+        private IUserRepo userRepo;
 
         public CartController(
                 UserManager<AppUser> usrMgr,
@@ -27,7 +30,8 @@ namespace dropShippingApp.Controllers
                 IConfiguration envConfig,
                 ITeamRepo teamRepo,
                 IOrderRepo orderRepo,
-                ICartRepo cartRepo)
+                ICartRepo cartRepo,
+                IUserRepo userRepo)
         {
             this.userManager = usrMgr;
             this.signInManager = signinMgr;
@@ -35,6 +39,7 @@ namespace dropShippingApp.Controllers
             this.teamRepo = teamRepo;
             this.orderRepo = orderRepo;
             this.cartRepo = cartRepo;
+            this.userRepo = userRepo;
         }
 
         // ------------------- PHASE 1
@@ -56,26 +61,21 @@ namespace dropShippingApp.Controllers
         // view cart
         public async Task<IActionResult> Index()
         {
-            var user = await userManager.GetUserAsync(HttpContext.User);
+            var user = await userRepo.GetUserDataAsync(HttpContext.User);
             if (user != null)
             {
-                CartItemVM cIVM = new CartItemVM();
                 CartViewModel cartVM = new CartViewModel();
-                foreach(CartItem c in user.Cart.CartItems)
+                var cartItemList = new List<CartItem>();
+                foreach(CartItem item in user.Cart.CartItems)
                 {
-                    cIVM.BaseProduct = c.ProductSelection;
-                    cIVM.Quantity = c.Quantity;
-                    cartVM.CartItems.Add(cIVM);
-                    cartVM.CartPrice += (cIVM.Quantity * cIVM.Quantity);
+                    // add to running cart total
+                    cartVM.CartPrice += (item.Quantity * item.ProductSelection.CurrentPrice);
+                    // add item to list
+                    cartItemList.Add(item);
                 }
+                // set item list
+                cartVM.CartItems = cartItemList;
                 return View(cartVM);
-                    
-                // get the cart
-                // loop through each cart item
-                // parse cart information into CartItemVM object
-                // calculate cart total
-                // return cart vm
-
             }
             
             return View("");

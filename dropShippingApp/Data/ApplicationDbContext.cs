@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace dropShippingApp.Data
 {
-    public class ApplicationDbContext : IdentityDbContext
+    public class ApplicationDbContext : IdentityDbContext<AppUser>
     {
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options) { }
         public DbSet<ActivityLog> ActivityLogs { get; set; }

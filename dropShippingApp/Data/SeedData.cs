@@ -20,6 +20,13 @@ namespace dropShippingApp.Data
             // check context
             context.Database.EnsureCreated();
 
+
+            /*
+             * Carts
+             * Cart items
+             * 
+             */
+
             if (!context.RosterProducts.Any())
             {
                 // ------------------------------------------- ADDING APP USERS AND ROLES ------------------------------------------- //
@@ -76,15 +83,52 @@ namespace dropShippingApp.Data
                 await userManager.AddToRoleAsync(user2, roles[1]);
                 await userManager.AddToRoleAsync(user3, roles[2]);
 
+                // ------------------------------------------- ADDING PRODUCT PROPERTIES ------------------------------------------- //
+                var colorArr = new string[] { "Blue", "Green", "Red" };
+                var sizeArr = new string[] { "Small", "Medium", "Large" };
+                var categoryArr = new string[] { "Pants", "Shirt", "Jersey" };
+                var categoryDesc = new string[] { "For your legs", "For your torso", "For your team" };
+
+                var colors = new List<ProductColor>();
+                var sizes = new List<ProductSize>();
+                var categories = new List<ProductCategory>();
+
+                for (var i = 0; i < 3; i++)
+                {
+                    var color = new ProductColor()
+                    {
+                        IsColorActive = true,
+                        ColorName = colorArr[i]
+                    };
+                    var size = new ProductSize()
+                    {
+                        IsSizeActive = true,
+                        SizeName = sizeArr[i]
+                    };
+                    var category = new ProductCategory()
+                    {
+                        Name = categoryArr[i],
+                        BriefDescription = categoryDesc[i]
+                    };
+
+                    context.ProductColors.Add(color);
+                    context.ProductSizes.Add(size);
+                    context.Categories.Add(category);
+
+                    await context.SaveChangesAsync();
+
+                    // add to local lists
+                    colors.Add(color);
+                    sizes.Add(size);
+                    categories.Add(category);
+                }
 
                 // ------------------------------------------- ADDING ROSTER PRODUCTS ------------------------------------------- //
                 RosterProduct product1 = new RosterProduct
                 {
                     ModelNumber = 1,
                     BasePrice = 10,
-                    AddOnPrice = 15,
                     IsProductActive = true,
-                    
                 };
                 PricingHistory pricingHistory = new PricingHistory
                 {
@@ -104,7 +148,6 @@ namespace dropShippingApp.Data
                 {
                     ModelNumber = 2,
                     BasePrice = 30,
-                    AddOnPrice = 0,
                     IsProductActive = true,
                 };
                 PricingHistory pricingHistory3 = new PricingHistory
@@ -125,7 +168,6 @@ namespace dropShippingApp.Data
                 {
                     ModelNumber = 3,
                     BasePrice = 80,
-                    AddOnPrice = 10,
                     IsProductActive = true,
                 };
                 PricingHistory pricingHistory5 = new PricingHistory
@@ -146,7 +188,6 @@ namespace dropShippingApp.Data
                 {
                     ModelNumber = 4,
                     BasePrice = 80,
-                    AddOnPrice = 0,
                     IsProductActive = false,
                 };
                 PricingHistory pricingHistory7 = new PricingHistory
@@ -350,8 +391,18 @@ namespace dropShippingApp.Data
                 };
                 CartItem item4 = new CartItem()
                 {
-                    ProductSelection = customProduct5,
+                    ProductSelection = customProduct7,
                     Quantity = 1
+                };
+                CartItem item5 = new CartItem()
+                {
+                    ProductSelection = customProduct5,
+                    Quantity = 2
+                };
+                CartItem item6 = new CartItem()
+                {
+                    ProductSelection = customProduct7,
+                    Quantity = 2
                 };
 
                 // save cart items to context
@@ -359,23 +410,31 @@ namespace dropShippingApp.Data
                 context.CartItems.Add(item2);
                 context.CartItems.Add(item3);
                 context.CartItems.Add(item4);
+                context.CartItems.Add(item5);
+                context.CartItems.Add(item6);
 
                 Cart cart1 = new Cart();
                 Cart cart2 = new Cart();
+                Cart cart3 = new Cart();
                 cart1.AddItem(item1);
                 cart1.AddItem(item2);
                 cart2.AddItem(item3);
                 cart2.AddItem(item4);
+                cart3.AddItem(item5);
+                cart3.AddItem(item6);
 
                 // save carts to context
                 context.Carts.Add(cart1);
                 context.Carts.Add(cart2);
+                context.Carts.Add(cart3);
 
                 // save charts to appuser
                 user1.Cart = cart1;
                 user2.Cart = cart2;
+                user3.Cart = cart3;
                 await userManager.UpdateAsync(user1);
                 await userManager.UpdateAsync(user2);
+                await userManager.UpdateAsync(user3);
 
 
 

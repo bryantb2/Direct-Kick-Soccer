@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -21,9 +22,12 @@ namespace dropShippingApp.Models
 
         // class properties
         public Int64 DateJoined { get; set; }
+        [Required]
         public String FirstName { get; set; }
+        [Required]
         public String LastName { get; set; }
         public Team ManagedTeam { get; set; }
+        [Required]
         public Cart Cart { get; set; }
         public bool hasApprovedRequest { get; set; }
         public List<TeamCreationRequest> CreationRequestHistory { get { return this.userCreationReqHistory; } }
