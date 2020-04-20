@@ -1,6 +1,7 @@
 using dropShippingApp.Data.Repositories;
 using dropShippingApp.HelperUtilities;
 using dropShippingApp.Models;
+using dropShippingApp.ViewModels;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
@@ -18,19 +19,22 @@ namespace dropShippingApp.Controllers
         private IConfiguration configuration;
         private ITeamRepo teamRepo;
         private IOrderRepo orderRepo;
+        private ICartRepo cartRepo;
 
         public CartController(
                 UserManager<AppUser> usrMgr,
                 SignInManager<AppUser> signinMgr,
                 IConfiguration envConfig,
                 ITeamRepo teamRepo,
-                IOrderRepo orderRepo)
+                IOrderRepo orderRepo,
+                ICartRepo cartRepo)
         {
             this.userManager = usrMgr;
             this.signInManager = signinMgr;
             this.configuration = envConfig;
             this.teamRepo = teamRepo;
             this.orderRepo = orderRepo;
+            this.cartRepo = cartRepo;
         }
 
         // ------------------- PHASE 1
@@ -81,7 +85,7 @@ namespace dropShippingApp.Controllers
         public async Task<IActionResult> RemoveFromCart(int cartItemId)
         {
 
-            await cRepo.RemoveCartItem(cartItemId);
+            await cartRepo.RemoveCartItem(cartItemId);
  
             return View("Index");
         }
@@ -90,8 +94,6 @@ namespace dropShippingApp.Controllers
         public async Task<IActionResult> AddToCart(int cartItemId)
         {
             var user = await userManager.GetUserAsync(HttpContext.User);
-            cRepo.f
-            user.Cart.AddItem()
             // TODO
             // add item to user's cart
             // return 200 status
@@ -109,7 +111,7 @@ namespace dropShippingApp.Controllers
                 {
                     if (user.Cart.CartItems.Contains(c))
                     {
-                        await cRepo.UpdateCartItem(c);
+                        await cartRepo.UpdateCartItem(c);
                     }
                 }
                 return Ok();
