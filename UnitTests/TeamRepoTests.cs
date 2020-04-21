@@ -38,7 +38,7 @@ namespace ProductTests
             var testTeam = new Team()
             {
                 TeamID = 32,
-                TeamName = "test"
+                Name = "test"
             };
             await teamRepo.AddTeam(testTeam);
 
@@ -56,7 +56,7 @@ namespace ProductTests
             var testTeam = new Team()
             {
                 TeamID = 32,
-                TeamName = "test"
+                Name = "test"
             };
             await teamRepo.AddTeam(testTeam);
 
@@ -74,12 +74,12 @@ namespace ProductTests
             var testTeam = new Team()
             {
                 TeamID = 32,
-                TeamName = "test"
+                Name = "test"
             };
             var updatedTeam = new Team()
             {
                 TeamID = 32,
-                TeamName = "notTest"
+                Name = "notTest"
             };
             await teamRepo.AddTeam(testTeam);
 
@@ -98,7 +98,7 @@ namespace ProductTests
             var testTeam = new Team()
             {
                 TeamID = 32,
-                TeamName = "test"
+                Name = "test"
             };
             await teamRepo.AddTeam(testTeam);
 
@@ -116,7 +116,7 @@ namespace ProductTests
             var testTeam = new Team()
             {
                 TeamID = 32,
-                TeamName = "test"
+                Name = "test"
             };
             await teamRepo.AddTeam(testTeam);
             const string searchTerm = "test";

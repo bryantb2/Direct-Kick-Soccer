@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -13,18 +14,29 @@ namespace dropShippingApp.Models
 
         // public properties
         public int TeamID { get; set; }
-        public String TeamName { get; set; }
-        public String TeamDescription { get; set; }
+        [Required]
+        public String Name { get; set; }
+        [Required]
+        public String Description { get; set; }
+        [Required]
         public Country Country { get; set; }
+        [Required]
         public Province Providence { get; set; }
+        [Required]
         public String StreetAddress { get; set; }
-        public int ZipCode { get; set; }
+        [Required]
+        public string ZipCode { get; set; }
+        [Required]
         public String CorporatePageURL { get; set; }
+        [Required]
         public String BusinessEmail { get; set; }
-        public int PhoneNumber { get; set; }
+        [Required]
+        public string PhoneNumber { get; set; }
         public List<CustomProduct> TeamProducts { get { return teamProducts; } }
         public List<Tag> TeamTags { get { return teamTags; } }
+        [Required]
         public bool IsTeamInactive { get; set; }
+        [Required]
         public bool IsHostTeam { get; set; }
 
         // methods

@@ -72,7 +72,7 @@ namespace dropShippingApp.Controllers
             foreach (Team t in teams)
             {
                 // search on team name
-                if (t.TeamName.ToUpper().Contains(searchTerm.ToUpper()))
+                if (t.Name.ToUpper().Contains(searchTerm.ToUpper()))
                     searchResults.Add(t);
                 foreach (Tag tag in t.TeamTags)
                 {

@@ -328,6 +328,48 @@ namespace dropShippingApp.Data
                 context.CustomProducts.Add(customProduct6);
                 context.CustomProducts.Add(customProduct7);
 
+                // ------------------------------------------- ADDING AND ASSIGNMENT CARTS TO USERS ------------------------------------------- //
+                Country america = new Country()
+                {
+                    CountryName = "America"
+                };
+
+                Province oregon = new Province()
+                {
+                    ProvinceName = "Oregon"
+                };
+
+                context.Provinces.Add(oregon);
+                context.Countries.Add(america);
+                await context.SaveChangesAsync();
+                america.AddProvidence(oregon);
+                context.Countries.Update(america);
+                await context.SaveChangesAsync();
+
+                Team team = new Team()
+                {
+                    Name = "Test",
+                    Description = "Test team",
+                    Country = america,
+                    Providence = oregon,
+                    StreetAddress = "abc123 street",
+                    ZipCode = "97490",
+                    CorporatePageURL = "google.com",
+                    BusinessEmail = "abc@gmail.com",
+                    PhoneNumber = "541-234-4040",
+                    IsTeamInactive = false,
+                    IsHostTeam = true
+                };
+
+                team.AddProduct(customProduct);
+                team.AddProduct(customProduct2);
+                team.AddProduct(customProduct3);
+                team.AddProduct(customProduct4);
+                team.AddProduct(customProduct5);
+                team.AddProduct(customProduct6);
+                team.AddProduct(customProduct7);
+                context.Teams.Add(team);
+                await context.SaveChangesAsync();
 
                 // ------------------------------------------- ADDING AND ASSIGNMENT CARTS TO USERS ------------------------------------------- //
                 CartItem item1 = new CartItem()
