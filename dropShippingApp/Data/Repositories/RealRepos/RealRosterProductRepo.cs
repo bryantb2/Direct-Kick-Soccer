@@ -36,15 +36,9 @@ namespace dropShippingApp.Data.Repositories
         public async Task<RosterProduct> GetRosterProductById(int rosterProductId)
         {
             return this.context.RosterProducts
-                .Include(p => p.ModelNumber)
-                .Include(p => p.BasePrice)
-                .Include(p => p.AddOnPrice)
-                .Include(p => p.IsProductActive)
                 .Include(p => p.PricingHistory)
-                .ThenInclude(r => r.DateChanged)
-                .Include(p => p.PricingHistory)
-                .ThenInclude(r => r.NewPrice)
-                .ToList().Find(id => id.RosterProductID == rosterProductId);
+                .ToList()
+                    .Find(id => id.RosterProductID == rosterProductId);
         }
 
         public async Task UpdateRosterProduct(RosterProduct updatedProduct)

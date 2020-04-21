@@ -132,7 +132,7 @@ namespace dropShippingApp.Controllers
         public async Task<IActionResult> CreateOrder()
         {
             // get user from DB
-            var user = await userManager.GetUserAsync(HttpContext.User);
+            var user = await userRepo.GetUserDataAsync(HttpContext.User);
             var paypalOrder = await PaypalOrder.CreateOrder(configuration, teamRepo, user);
             return Ok(paypalOrder);
         }

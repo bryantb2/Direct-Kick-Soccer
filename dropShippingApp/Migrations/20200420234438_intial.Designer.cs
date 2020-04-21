@@ -10,8 +10,8 @@ using dropShippingApp.Data;
 namespace dropShippingApp.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20200420220011_third")]
-    partial class third
+    [Migration("20200420234438_intial")]
+    partial class intial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -70,71 +70,6 @@ namespace dropShippingApp.Migrations
                     b.HasIndex("RoleId");
 
                     b.ToTable("AspNetRoleClaims");
-                });
-
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUser", b =>
-                {
-                    b.Property<string>("Id")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<int>("AccessFailedCount")
-                        .HasColumnType("int");
-
-                    b.Property<string>("ConcurrencyStamp")
-                        .IsConcurrencyToken()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Email")
-                        .HasColumnType("nvarchar(256)")
-                        .HasMaxLength(256);
-
-                    b.Property<bool>("EmailConfirmed")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("LockoutEnabled")
-                        .HasColumnType("bit");
-
-                    b.Property<DateTimeOffset?>("LockoutEnd")
-                        .HasColumnType("datetimeoffset");
-
-                    b.Property<string>("NormalizedEmail")
-                        .HasColumnType("nvarchar(256)")
-                        .HasMaxLength(256);
-
-                    b.Property<string>("NormalizedUserName")
-                        .HasColumnType("nvarchar(256)")
-                        .HasMaxLength(256);
-
-                    b.Property<string>("PasswordHash")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("PhoneNumber")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("PhoneNumberConfirmed")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("SecurityStamp")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("TwoFactorEnabled")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("UserName")
-                        .HasColumnType("nvarchar(256)")
-                        .HasMaxLength(256);
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("NormalizedEmail")
-                        .HasName("EmailIndex");
-
-                    b.HasIndex("NormalizedUserName")
-                        .IsUnique()
-                        .HasName("UserNameIndex")
-                        .HasFilter("[NormalizedUserName] IS NOT NULL");
-
-                    b.ToTable("AspNetUsers");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
@@ -224,6 +159,9 @@ namespace dropShippingApp.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+                    b.Property<string>("AppUserId")
+                        .HasColumnType("nvarchar(450)");
+
                     b.Property<string>("ChangeDescription")
                         .HasColumnType("nvarchar(max)");
 
@@ -235,7 +173,98 @@ namespace dropShippingApp.Migrations
 
                     b.HasKey("ActivityLogID");
 
+                    b.HasIndex("AppUserId");
+
                     b.ToTable("ActivityLogs");
+                });
+
+            modelBuilder.Entity("dropShippingApp.Models.AppUser", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<int>("AccessFailedCount")
+                        .HasColumnType("int");
+
+                    b.Property<int>("CartID")
+                        .HasColumnType("int");
+
+                    b.Property<string>("ConcurrencyStamp")
+                        .IsConcurrencyToken()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<long>("DateJoined")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("Email")
+                        .HasColumnType("nvarchar(256)")
+                        .HasMaxLength(256);
+
+                    b.Property<bool>("EmailConfirmed")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("FirstName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("LastName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("LockoutEnabled")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTimeOffset?>("LockoutEnd")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<int?>("ManagedTeamTeamID")
+                        .HasColumnType("int");
+
+                    b.Property<string>("NormalizedEmail")
+                        .HasColumnType("nvarchar(256)")
+                        .HasMaxLength(256);
+
+                    b.Property<string>("NormalizedUserName")
+                        .HasColumnType("nvarchar(256)")
+                        .HasMaxLength(256);
+
+                    b.Property<string>("PasswordHash")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PhoneNumber")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("PhoneNumberConfirmed")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("SecurityStamp")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("TwoFactorEnabled")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("UserName")
+                        .HasColumnType("nvarchar(256)")
+                        .HasMaxLength(256);
+
+                    b.Property<bool>("hasApprovedRequest")
+                        .HasColumnType("bit");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CartID");
+
+                    b.HasIndex("ManagedTeamTeamID");
+
+                    b.HasIndex("NormalizedEmail")
+                        .HasName("EmailIndex");
+
+                    b.HasIndex("NormalizedUserName")
+                        .IsUnique()
+                        .HasName("UserNameIndex")
+                        .HasFilter("[NormalizedUserName] IS NOT NULL");
+
+                    b.ToTable("AspNetUsers");
                 });
 
             modelBuilder.Entity("dropShippingApp.Models.Cart", b =>
@@ -300,10 +329,14 @@ namespace dropShippingApp.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int?>("BaseProductRosterProductID")
+                    b.Property<string>("AppUserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<int>("BaseProductRosterProductID")
                         .HasColumnType("int");
 
                     b.Property<string>("CustomImagePNG")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("CustomImageSVG")
@@ -313,15 +346,19 @@ namespace dropShippingApp.Migrations
                         .HasColumnType("bit");
 
                     b.Property<string>("ProductDescription")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("ProductTitle")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int?>("TeamID")
                         .HasColumnType("int");
 
                     b.HasKey("CustomProductID");
+
+                    b.HasIndex("AppUserId");
 
                     b.HasIndex("BaseProductRosterProductID");
 
@@ -337,6 +374,12 @@ namespace dropShippingApp.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+                    b.Property<string>("AppUserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("AppUserId1")
+                        .HasColumnType("nvarchar(450)");
+
                     b.Property<string>("PaypalOrderId")
                         .HasColumnType("nvarchar(max)");
 
@@ -350,6 +393,10 @@ namespace dropShippingApp.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("OrderID");
+
+                    b.HasIndex("AppUserId");
+
+                    b.HasIndex("AppUserId1");
 
                     b.ToTable("Orders");
                 });
@@ -390,9 +437,12 @@ namespace dropShippingApp.Migrations
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("BriefDescription")
-                        .HasColumnType("nvarchar(max)");
+                        .IsRequired()
+                        .HasColumnType("nvarchar(50)")
+                        .HasMaxLength(50);
 
                     b.Property<string>("Name")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("ProductCategoryID");
@@ -408,6 +458,7 @@ namespace dropShippingApp.Migrations
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("ColorName")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("IsColorActive")
@@ -463,6 +514,9 @@ namespace dropShippingApp.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+                    b.Property<string>("AppUserId")
+                        .HasColumnType("nvarchar(450)");
+
                     b.Property<bool>("IsResolved")
                         .HasColumnType("bit");
 
@@ -477,6 +531,8 @@ namespace dropShippingApp.Migrations
 
                     b.HasKey("QuestionMessageID");
 
+                    b.HasIndex("AppUserId");
+
                     b.ToTable("QuestionMessages");
                 });
 
@@ -487,6 +543,9 @@ namespace dropShippingApp.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+                    b.Property<string>("AppUserId")
+                        .HasColumnType("nvarchar(450)");
+
                     b.Property<int?>("ParentMessageQuestionMessageID")
                         .HasColumnType("int");
 
@@ -494,6 +553,8 @@ namespace dropShippingApp.Migrations
                         .HasColumnType("datetime2");
 
                     b.HasKey("QuestionResponseID");
+
+                    b.HasIndex("AppUserId");
 
                     b.HasIndex("ParentMessageQuestionMessageID");
 
@@ -507,19 +568,19 @@ namespace dropShippingApp.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<decimal>("AddOnPrice")
-                        .HasColumnType("decimal(18,2)");
+                    b.Property<string>("AppUserId")
+                        .HasColumnType("nvarchar(450)");
 
-                    b.Property<int?>("BaseColorProductColorID")
+                    b.Property<int>("BaseColorProductColorID")
                         .HasColumnType("int");
 
                     b.Property<decimal>("BasePrice")
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<int?>("BaseSizeProductSizeID")
+                    b.Property<int>("BaseSizeProductSizeID")
                         .HasColumnType("int");
 
-                    b.Property<int?>("CategoryProductCategoryID")
+                    b.Property<int>("CategoryProductCategoryID")
                         .HasColumnType("int");
 
                     b.Property<bool>("IsProductActive")
@@ -532,6 +593,8 @@ namespace dropShippingApp.Migrations
                         .HasColumnType("int");
 
                     b.HasKey("RosterProductID");
+
+                    b.HasIndex("AppUserId");
 
                     b.HasIndex("BaseColorProductColorID");
 
@@ -628,6 +691,12 @@ namespace dropShippingApp.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+                    b.Property<string>("AppUserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("AppUserId1")
+                        .HasColumnType("nvarchar(450)");
+
                     b.Property<string>("BusinessEmail")
                         .HasColumnType("nvarchar(max)");
 
@@ -660,6 +729,10 @@ namespace dropShippingApp.Migrations
 
                     b.HasKey("TeamCreationRequestID");
 
+                    b.HasIndex("AppUserId");
+
+                    b.HasIndex("AppUserId1");
+
                     b.HasIndex("CountryID");
 
                     b.HasIndex("ProvidenceProvinceID");
@@ -678,7 +751,7 @@ namespace dropShippingApp.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
                 {
-                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", null)
+                    b.HasOne("dropShippingApp.Models.AppUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -687,7 +760,7 @@ namespace dropShippingApp.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
                 {
-                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", null)
+                    b.HasOne("dropShippingApp.Models.AppUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -702,7 +775,7 @@ namespace dropShippingApp.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", null)
+                    b.HasOne("dropShippingApp.Models.AppUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -711,11 +784,31 @@ namespace dropShippingApp.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
                 {
-                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", null)
+                    b.HasOne("dropShippingApp.Models.AppUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("dropShippingApp.Models.ActivityLog", b =>
+                {
+                    b.HasOne("dropShippingApp.Models.AppUser", null)
+                        .WithMany("ActivityLog")
+                        .HasForeignKey("AppUserId");
+                });
+
+            modelBuilder.Entity("dropShippingApp.Models.AppUser", b =>
+                {
+                    b.HasOne("dropShippingApp.Models.Cart", "Cart")
+                        .WithMany()
+                        .HasForeignKey("CartID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("dropShippingApp.Models.Team", "ManagedTeam")
+                        .WithMany()
+                        .HasForeignKey("ManagedTeamTeamID");
                 });
 
             modelBuilder.Entity("dropShippingApp.Models.CartItem", b =>
@@ -731,13 +824,30 @@ namespace dropShippingApp.Migrations
 
             modelBuilder.Entity("dropShippingApp.Models.CustomProduct", b =>
                 {
+                    b.HasOne("dropShippingApp.Models.AppUser", null)
+                        .WithMany("CreatedCustomProducts")
+                        .HasForeignKey("AppUserId");
+
                     b.HasOne("dropShippingApp.Models.RosterProduct", "BaseProduct")
                         .WithMany()
-                        .HasForeignKey("BaseProductRosterProductID");
+                        .HasForeignKey("BaseProductRosterProductID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("dropShippingApp.Models.Team", null)
                         .WithMany("TeamProducts")
                         .HasForeignKey("TeamID");
+                });
+
+            modelBuilder.Entity("dropShippingApp.Models.Order", b =>
+                {
+                    b.HasOne("dropShippingApp.Models.AppUser", null)
+                        .WithMany("ApprovedOrders")
+                        .HasForeignKey("AppUserId");
+
+                    b.HasOne("dropShippingApp.Models.AppUser", null)
+                        .WithMany("UserOrderHistory")
+                        .HasForeignKey("AppUserId1");
                 });
 
             modelBuilder.Entity("dropShippingApp.Models.PricingHistory", b =>
@@ -758,8 +868,19 @@ namespace dropShippingApp.Migrations
                         .HasForeignKey("CountryID");
                 });
 
+            modelBuilder.Entity("dropShippingApp.Models.QuestionMessage", b =>
+                {
+                    b.HasOne("dropShippingApp.Models.AppUser", null)
+                        .WithMany("AskedQuestions")
+                        .HasForeignKey("AppUserId");
+                });
+
             modelBuilder.Entity("dropShippingApp.Models.QuestionResponse", b =>
                 {
+                    b.HasOne("dropShippingApp.Models.AppUser", null)
+                        .WithMany("AnsweredQuestions")
+                        .HasForeignKey("AppUserId");
+
                     b.HasOne("dropShippingApp.Models.QuestionMessage", "ParentMessage")
                         .WithMany()
                         .HasForeignKey("ParentMessageQuestionMessageID");
@@ -767,17 +888,27 @@ namespace dropShippingApp.Migrations
 
             modelBuilder.Entity("dropShippingApp.Models.RosterProduct", b =>
                 {
+                    b.HasOne("dropShippingApp.Models.AppUser", null)
+                        .WithMany("RosterProducts")
+                        .HasForeignKey("AppUserId");
+
                     b.HasOne("dropShippingApp.Models.ProductColor", "BaseColor")
                         .WithMany()
-                        .HasForeignKey("BaseColorProductColorID");
+                        .HasForeignKey("BaseColorProductColorID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("dropShippingApp.Models.ProductSize", "BaseSize")
                         .WithMany()
-                        .HasForeignKey("BaseSizeProductSizeID");
+                        .HasForeignKey("BaseSizeProductSizeID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("dropShippingApp.Models.ProductCategory", "Category")
                         .WithMany()
-                        .HasForeignKey("CategoryProductCategoryID");
+                        .HasForeignKey("CategoryProductCategoryID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("dropShippingApp.Models.Tag", b =>
@@ -808,6 +939,14 @@ namespace dropShippingApp.Migrations
 
             modelBuilder.Entity("dropShippingApp.Models.TeamCreationRequest", b =>
                 {
+                    b.HasOne("dropShippingApp.Models.AppUser", null)
+                        .WithMany("ApprovedTeamRequests")
+                        .HasForeignKey("AppUserId");
+
+                    b.HasOne("dropShippingApp.Models.AppUser", null)
+                        .WithMany("CreationRequestHistory")
+                        .HasForeignKey("AppUserId1");
+
                     b.HasOne("dropShippingApp.Models.Country", "Country")
                         .WithMany()
                         .HasForeignKey("CountryID");

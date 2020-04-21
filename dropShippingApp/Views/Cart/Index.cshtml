@@ -5,7 +5,10 @@
 @model CartViewModel;
 
     <section>
-        <script src="https://www.paypal.com/sdk/js?client-id=Aa2Exsni8UtIJ51dbKE0UpgwK5cJpNs32wabmp4u1sbk9mUQIOhCQspTkH1mPQBYAYHGSYumeMmIZqym"></script>
+        <script 
+            src="https://www.paypal.com/sdk/js?client-id=AZpm9gTt8pFrq0PZoGf_ptllalZ5UtmqOf6vTpcwtIC0lTD09EA5fTyyhwTHoUJNsmKYh4E6IxK7Ky0P">
+        </script>
+
         <h1>@(Model.CartItems.Count == 0 ? "Your Cart Appears to be Empty :(" : "Your Cart")</h1>
         @foreach (var item in Model.CartItems)
         {
@@ -15,28 +18,23 @@
                 </div>
                 <div class="col-3">
                     <h3>@item.ProductSelection.ProductTitle</h3>
-                    <p>Selected in @item.ProductSelection.BaseProduct.BaseColor.ColorName size @item.ProductSelection.BaseProduct.BaseSize</p>
+                    <p>Selected in @item.ProductSelection.BaseProduct.BaseColor.ColorName size @item.ProductSelection.BaseProduct.BaseSize.SizeName</p>
                 </div>
-                <div class="col-3 flex-column">
-                    <span class="p-2">
-                        Quantity - <input class="qnty_input" type="number" data-cartItemId=@item.CartItemID min="1" defaultValue=@item.Quantity />
-                    </span>
-                    <br />
-                    <span class="p-2">Subtotal - @((item.Quantity * item.ProductSelection.CurrentPrice).ToString("c")) </span>
+                <div class="col-3">
+                    Quantity - <input class="qnty_input" type="number" data-cartItemId=@item.CartItemID min="1" value=@item.Quantity />
                 </div>
                 <div class="col-2">
-
-
-
+                    Subtotal - @((item.Quantity * item.ProductSelection.CurrentPrice).ToString("c"))
                 </div>
                 <div class="col-2">
                     <a asp-controller="Cart" asp-action="RemoveFromCart" asp-route-productId=@item.CartItemID>Remove Item</a>
                 </div>
             </article>
         }
+        <h3>Your total is: $@Model.CartPrice</h3>
         <div id="paypal-button-container"></div>
         <script>
-            const serverURL = "https:localhost:8080";
+            const serverURL = "https://localhost:44386";
             paypal.Buttons({
                 createOrder: function () {
                     return fetch(serverURL + '/Cart/CreateOrder', {
@@ -67,5 +65,4 @@
                 }
             }).render('#paypal-button-container');
         </script>
-        <h3>Your total is: $@Model.CartPrice</h3>
     </section>

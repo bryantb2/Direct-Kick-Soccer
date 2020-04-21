@@ -3,25 +3,10 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace dropShippingApp.Migrations
 {
-    public partial class third : Migration
+    public partial class intial : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.CreateTable(
-                name: "ActivityLogs",
-                columns: table => new
-                {
-                    ActivityLogID = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Title = table.Column<string>(nullable: true),
-                    ChangeDescription = table.Column<string>(nullable: true),
-                    TimeStamp = table.Column<DateTime>(nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_ActivityLogs", x => x.ActivityLogID);
-                });
-
             migrationBuilder.CreateTable(
                 name: "AspNetRoles",
                 columns: table => new
@@ -34,31 +19,6 @@ namespace dropShippingApp.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_AspNetRoles", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "AspNetUsers",
-                columns: table => new
-                {
-                    Id = table.Column<string>(nullable: false),
-                    UserName = table.Column<string>(maxLength: 256, nullable: true),
-                    NormalizedUserName = table.Column<string>(maxLength: 256, nullable: true),
-                    Email = table.Column<string>(maxLength: 256, nullable: true),
-                    NormalizedEmail = table.Column<string>(maxLength: 256, nullable: true),
-                    EmailConfirmed = table.Column<bool>(nullable: false),
-                    PasswordHash = table.Column<string>(nullable: true),
-                    SecurityStamp = table.Column<string>(nullable: true),
-                    ConcurrencyStamp = table.Column<string>(nullable: true),
-                    PhoneNumber = table.Column<string>(nullable: true),
-                    PhoneNumberConfirmed = table.Column<bool>(nullable: false),
-                    TwoFactorEnabled = table.Column<bool>(nullable: false),
-                    LockoutEnd = table.Column<DateTimeOffset>(nullable: true),
-                    LockoutEnabled = table.Column<bool>(nullable: false),
-                    AccessFailedCount = table.Column<int>(nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_AspNetUsers", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -80,8 +40,8 @@ namespace dropShippingApp.Migrations
                 {
                     ProductCategoryID = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(nullable: true),
-                    BriefDescription = table.Column<string>(nullable: true)
+                    Name = table.Column<string>(nullable: false),
+                    BriefDescription = table.Column<string>(maxLength: 50, nullable: false)
                 },
                 constraints: table =>
                 {
@@ -102,29 +62,13 @@ namespace dropShippingApp.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Orders",
-                columns: table => new
-                {
-                    OrderID = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    PaypalOrderId = table.Column<string>(nullable: true),
-                    SETrackingId = table.Column<string>(nullable: true),
-                    SEReturnTrackingId = table.Column<string>(nullable: true),
-                    ReturnRequested = table.Column<bool>(nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Orders", x => x.OrderID);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "ProductColors",
                 columns: table => new
                 {
                     ProductColorID = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     IsColorActive = table.Column<bool>(nullable: false),
-                    ColorName = table.Column<string>(nullable: true)
+                    ColorName = table.Column<string>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -146,22 +90,6 @@ namespace dropShippingApp.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "QuestionMessages",
-                columns: table => new
-                {
-                    QuestionMessageID = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    QuestionTitle = table.Column<string>(nullable: true),
-                    QuestionBody = table.Column<string>(nullable: true),
-                    TimeStamp = table.Column<DateTime>(nullable: false),
-                    IsResolved = table.Column<bool>(nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_QuestionMessages", x => x.QuestionMessageID);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "AspNetRoleClaims",
                 columns: table => new
                 {
@@ -180,6 +108,126 @@ namespace dropShippingApp.Migrations
                         principalTable: "AspNetRoles",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Provinces",
+                columns: table => new
+                {
+                    ProvinceID = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    ProvinceName = table.Column<string>(nullable: true),
+                    CountryID = table.Column<int>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Provinces", x => x.ProvinceID);
+                    table.ForeignKey(
+                        name: "FK_Provinces_Countries_CountryID",
+                        column: x => x.CountryID,
+                        principalTable: "Countries",
+                        principalColumn: "CountryID",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Teams",
+                columns: table => new
+                {
+                    TeamID = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    TeamName = table.Column<string>(nullable: true),
+                    TeamDescription = table.Column<string>(nullable: true),
+                    CountryID = table.Column<int>(nullable: true),
+                    ProvidenceProvinceID = table.Column<int>(nullable: true),
+                    StreetAddress = table.Column<string>(nullable: true),
+                    ZipCode = table.Column<int>(nullable: false),
+                    CorporatePageURL = table.Column<string>(nullable: true),
+                    BusinessEmail = table.Column<string>(nullable: true),
+                    PhoneNumber = table.Column<int>(nullable: false),
+                    IsTeamInactive = table.Column<bool>(nullable: false),
+                    IsHostTeam = table.Column<bool>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Teams", x => x.TeamID);
+                    table.ForeignKey(
+                        name: "FK_Teams_Countries_CountryID",
+                        column: x => x.CountryID,
+                        principalTable: "Countries",
+                        principalColumn: "CountryID",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Teams_Provinces_ProvidenceProvinceID",
+                        column: x => x.ProvidenceProvinceID,
+                        principalTable: "Provinces",
+                        principalColumn: "ProvinceID",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "AspNetUsers",
+                columns: table => new
+                {
+                    Id = table.Column<string>(nullable: false),
+                    UserName = table.Column<string>(maxLength: 256, nullable: true),
+                    NormalizedUserName = table.Column<string>(maxLength: 256, nullable: true),
+                    Email = table.Column<string>(maxLength: 256, nullable: true),
+                    NormalizedEmail = table.Column<string>(maxLength: 256, nullable: true),
+                    EmailConfirmed = table.Column<bool>(nullable: false),
+                    PasswordHash = table.Column<string>(nullable: true),
+                    SecurityStamp = table.Column<string>(nullable: true),
+                    ConcurrencyStamp = table.Column<string>(nullable: true),
+                    PhoneNumber = table.Column<string>(nullable: true),
+                    PhoneNumberConfirmed = table.Column<bool>(nullable: false),
+                    TwoFactorEnabled = table.Column<bool>(nullable: false),
+                    LockoutEnd = table.Column<DateTimeOffset>(nullable: true),
+                    LockoutEnabled = table.Column<bool>(nullable: false),
+                    AccessFailedCount = table.Column<int>(nullable: false),
+                    DateJoined = table.Column<long>(nullable: false),
+                    FirstName = table.Column<string>(nullable: false),
+                    LastName = table.Column<string>(nullable: false),
+                    ManagedTeamTeamID = table.Column<int>(nullable: true),
+                    CartID = table.Column<int>(nullable: false),
+                    hasApprovedRequest = table.Column<bool>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_AspNetUsers", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_AspNetUsers_Carts_CartID",
+                        column: x => x.CartID,
+                        principalTable: "Carts",
+                        principalColumn: "CartID",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_AspNetUsers_Teams_ManagedTeamTeamID",
+                        column: x => x.ManagedTeamTeamID,
+                        principalTable: "Teams",
+                        principalColumn: "TeamID",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "ActivityLogs",
+                columns: table => new
+                {
+                    ActivityLogID = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Title = table.Column<string>(nullable: true),
+                    ChangeDescription = table.Column<string>(nullable: true),
+                    TimeStamp = table.Column<DateTime>(nullable: false),
+                    AppUserId = table.Column<string>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ActivityLogs", x => x.ActivityLogID);
+                    table.ForeignKey(
+                        name: "FK_ActivityLogs_AspNetUsers_AppUserId",
+                        column: x => x.AppUserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -268,22 +316,55 @@ namespace dropShippingApp.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Provinces",
+                name: "Orders",
                 columns: table => new
                 {
-                    ProvinceID = table.Column<int>(nullable: false)
+                    OrderID = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    ProvinceName = table.Column<string>(nullable: true),
-                    CountryID = table.Column<int>(nullable: true)
+                    PaypalOrderId = table.Column<string>(nullable: true),
+                    SETrackingId = table.Column<string>(nullable: true),
+                    SEReturnTrackingId = table.Column<string>(nullable: true),
+                    ReturnRequested = table.Column<bool>(nullable: false),
+                    AppUserId = table.Column<string>(nullable: true),
+                    AppUserId1 = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Provinces", x => x.ProvinceID);
+                    table.PrimaryKey("PK_Orders", x => x.OrderID);
                     table.ForeignKey(
-                        name: "FK_Provinces_Countries_CountryID",
-                        column: x => x.CountryID,
-                        principalTable: "Countries",
-                        principalColumn: "CountryID",
+                        name: "FK_Orders_AspNetUsers_AppUserId",
+                        column: x => x.AppUserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Orders_AspNetUsers_AppUserId1",
+                        column: x => x.AppUserId1,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "QuestionMessages",
+                columns: table => new
+                {
+                    QuestionMessageID = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    QuestionTitle = table.Column<string>(nullable: true),
+                    QuestionBody = table.Column<string>(nullable: true),
+                    TimeStamp = table.Column<DateTime>(nullable: false),
+                    IsResolved = table.Column<bool>(nullable: false),
+                    AppUserId = table.Column<string>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_QuestionMessages", x => x.QuestionMessageID);
+                    table.ForeignKey(
+                        name: "FK_QuestionMessages_AspNetUsers_AppUserId",
+                        column: x => x.AppUserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
 
@@ -295,54 +376,40 @@ namespace dropShippingApp.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     ModelNumber = table.Column<int>(nullable: false),
                     SKU = table.Column<int>(nullable: false),
-                    BaseColorProductColorID = table.Column<int>(nullable: true),
-                    BaseSizeProductSizeID = table.Column<int>(nullable: true),
+                    BaseColorProductColorID = table.Column<int>(nullable: false),
+                    BaseSizeProductSizeID = table.Column<int>(nullable: false),
                     BasePrice = table.Column<decimal>(nullable: false),
-                    AddOnPrice = table.Column<decimal>(nullable: false),
                     IsProductActive = table.Column<bool>(nullable: false),
-                    CategoryProductCategoryID = table.Column<int>(nullable: true)
+                    CategoryProductCategoryID = table.Column<int>(nullable: false),
+                    AppUserId = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_RosterProducts", x => x.RosterProductID);
                     table.ForeignKey(
+                        name: "FK_RosterProducts_AspNetUsers_AppUserId",
+                        column: x => x.AppUserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
                         name: "FK_RosterProducts_ProductColors_BaseColorProductColorID",
                         column: x => x.BaseColorProductColorID,
                         principalTable: "ProductColors",
                         principalColumn: "ProductColorID",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_RosterProducts_ProductSizes_BaseSizeProductSizeID",
                         column: x => x.BaseSizeProductSizeID,
                         principalTable: "ProductSizes",
                         principalColumn: "ProductSizeID",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_RosterProducts_Categories_CategoryProductCategoryID",
                         column: x => x.CategoryProductCategoryID,
                         principalTable: "Categories",
                         principalColumn: "ProductCategoryID",
-                        onDelete: ReferentialAction.Restrict);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "QuestionResponses",
-                columns: table => new
-                {
-                    QuestionResponseID = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    ParentMessageQuestionMessageID = table.Column<int>(nullable: true),
-                    TimeStamp = table.Column<DateTime>(nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_QuestionResponses", x => x.QuestionResponseID);
-                    table.ForeignKey(
-                        name: "FK_QuestionResponses_QuestionMessages_ParentMessageQuestionMessageID",
-                        column: x => x.ParentMessageQuestionMessageID,
-                        principalTable: "QuestionMessages",
-                        principalColumn: "QuestionMessageID",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -360,11 +427,25 @@ namespace dropShippingApp.Migrations
                     CorporatePageURL = table.Column<string>(nullable: true),
                     BusinessEmail = table.Column<string>(nullable: true),
                     PhoneNumber = table.Column<int>(nullable: false),
-                    IsApproved = table.Column<bool>(nullable: false)
+                    IsApproved = table.Column<bool>(nullable: false),
+                    AppUserId = table.Column<string>(nullable: true),
+                    AppUserId1 = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_TeamCreationRequests", x => x.TeamCreationRequestID);
+                    table.ForeignKey(
+                        name: "FK_TeamCreationRequests_AspNetUsers_AppUserId",
+                        column: x => x.AppUserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_TeamCreationRequests_AspNetUsers_AppUserId1",
+                        column: x => x.AppUserId1,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_TeamCreationRequests_Countries_CountryID",
                         column: x => x.CountryID,
@@ -380,37 +461,29 @@ namespace dropShippingApp.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Teams",
+                name: "QuestionResponses",
                 columns: table => new
                 {
-                    TeamID = table.Column<int>(nullable: false)
+                    QuestionResponseID = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    TeamName = table.Column<string>(nullable: true),
-                    TeamDescription = table.Column<string>(nullable: true),
-                    CountryID = table.Column<int>(nullable: true),
-                    ProvidenceProvinceID = table.Column<int>(nullable: true),
-                    StreetAddress = table.Column<string>(nullable: true),
-                    ZipCode = table.Column<int>(nullable: false),
-                    CorporatePageURL = table.Column<string>(nullable: true),
-                    BusinessEmail = table.Column<string>(nullable: true),
-                    PhoneNumber = table.Column<int>(nullable: false),
-                    IsTeamInactive = table.Column<bool>(nullable: false),
-                    IsHostTeam = table.Column<bool>(nullable: false)
+                    ParentMessageQuestionMessageID = table.Column<int>(nullable: true),
+                    TimeStamp = table.Column<DateTime>(nullable: false),
+                    AppUserId = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Teams", x => x.TeamID);
+                    table.PrimaryKey("PK_QuestionResponses", x => x.QuestionResponseID);
                     table.ForeignKey(
-                        name: "FK_Teams_Countries_CountryID",
-                        column: x => x.CountryID,
-                        principalTable: "Countries",
-                        principalColumn: "CountryID",
+                        name: "FK_QuestionResponses_AspNetUsers_AppUserId",
+                        column: x => x.AppUserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_Teams_Provinces_ProvidenceProvinceID",
-                        column: x => x.ProvidenceProvinceID,
-                        principalTable: "Provinces",
-                        principalColumn: "ProvinceID",
+                        name: "FK_QuestionResponses_QuestionMessages_ParentMessageQuestionMessageID",
+                        column: x => x.ParentMessageQuestionMessageID,
+                        principalTable: "QuestionMessages",
+                        principalColumn: "QuestionMessageID",
                         onDelete: ReferentialAction.Restrict);
                 });
 
@@ -420,23 +493,30 @@ namespace dropShippingApp.Migrations
                 {
                     CustomProductID = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    BaseProductRosterProductID = table.Column<int>(nullable: true),
-                    ProductTitle = table.Column<string>(nullable: true),
-                    ProductDescription = table.Column<string>(nullable: true),
-                    CustomImagePNG = table.Column<string>(nullable: true),
+                    BaseProductRosterProductID = table.Column<int>(nullable: false),
+                    ProductTitle = table.Column<string>(nullable: false),
+                    ProductDescription = table.Column<string>(nullable: false),
+                    CustomImagePNG = table.Column<string>(nullable: false),
                     CustomImageSVG = table.Column<string>(nullable: true),
                     IsProductActive = table.Column<bool>(nullable: false),
+                    AppUserId = table.Column<string>(nullable: true),
                     TeamID = table.Column<int>(nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_CustomProducts", x => x.CustomProductID);
                     table.ForeignKey(
+                        name: "FK_CustomProducts_AspNetUsers_AppUserId",
+                        column: x => x.AppUserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
                         name: "FK_CustomProducts_RosterProducts_BaseProductRosterProductID",
                         column: x => x.BaseProductRosterProductID,
                         principalTable: "RosterProducts",
                         principalColumn: "RosterProductID",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_CustomProducts_Teams_TeamID",
                         column: x => x.TeamID,
@@ -535,6 +615,11 @@ namespace dropShippingApp.Migrations
                 });
 
             migrationBuilder.CreateIndex(
+                name: "IX_ActivityLogs_AppUserId",
+                table: "ActivityLogs",
+                column: "AppUserId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",
                 table: "AspNetRoleClaims",
                 column: "RoleId");
@@ -562,6 +647,16 @@ namespace dropShippingApp.Migrations
                 column: "RoleId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_AspNetUsers_CartID",
+                table: "AspNetUsers",
+                column: "CartID");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_AspNetUsers_ManagedTeamTeamID",
+                table: "AspNetUsers",
+                column: "ManagedTeamTeamID");
+
+            migrationBuilder.CreateIndex(
                 name: "EmailIndex",
                 table: "AspNetUsers",
                 column: "NormalizedEmail");
@@ -584,6 +679,11 @@ namespace dropShippingApp.Migrations
                 column: "ProductSelectionCustomProductID");
 
             migrationBuilder.CreateIndex(
+                name: "IX_CustomProducts_AppUserId",
+                table: "CustomProducts",
+                column: "AppUserId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_CustomProducts_BaseProductRosterProductID",
                 table: "CustomProducts",
                 column: "BaseProductRosterProductID");
@@ -592,6 +692,16 @@ namespace dropShippingApp.Migrations
                 name: "IX_CustomProducts_TeamID",
                 table: "CustomProducts",
                 column: "TeamID");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Orders_AppUserId",
+                table: "Orders",
+                column: "AppUserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Orders_AppUserId1",
+                table: "Orders",
+                column: "AppUserId1");
 
             migrationBuilder.CreateIndex(
                 name: "IX_PricingHistories_CustomProductID",
@@ -609,9 +719,24 @@ namespace dropShippingApp.Migrations
                 column: "CountryID");
 
             migrationBuilder.CreateIndex(
+                name: "IX_QuestionMessages_AppUserId",
+                table: "QuestionMessages",
+                column: "AppUserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_QuestionResponses_AppUserId",
+                table: "QuestionResponses",
+                column: "AppUserId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_QuestionResponses_ParentMessageQuestionMessageID",
                 table: "QuestionResponses",
                 column: "ParentMessageQuestionMessageID");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_RosterProducts_AppUserId",
+                table: "RosterProducts",
+                column: "AppUserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_RosterProducts_BaseColorProductColorID",
@@ -642,6 +767,16 @@ namespace dropShippingApp.Migrations
                 name: "IX_Tags_TeamID",
                 table: "Tags",
                 column: "TeamID");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_TeamCreationRequests_AppUserId",
+                table: "TeamCreationRequests",
+                column: "AppUserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_TeamCreationRequests_AppUserId1",
+                table: "TeamCreationRequests",
+                column: "AppUserId1");
 
             migrationBuilder.CreateIndex(
                 name: "IX_TeamCreationRequests_CountryID",
@@ -706,12 +841,6 @@ namespace dropShippingApp.Migrations
                 name: "AspNetRoles");
 
             migrationBuilder.DropTable(
-                name: "AspNetUsers");
-
-            migrationBuilder.DropTable(
-                name: "Carts");
-
-            migrationBuilder.DropTable(
                 name: "QuestionMessages");
 
             migrationBuilder.DropTable(
@@ -721,7 +850,7 @@ namespace dropShippingApp.Migrations
                 name: "RosterProducts");
 
             migrationBuilder.DropTable(
-                name: "Teams");
+                name: "AspNetUsers");
 
             migrationBuilder.DropTable(
                 name: "ProductColors");
@@ -731,6 +860,12 @@ namespace dropShippingApp.Migrations
 
             migrationBuilder.DropTable(
                 name: "Categories");
+
+            migrationBuilder.DropTable(
+                name: "Carts");
+
+            migrationBuilder.DropTable(
+                name: "Teams");
 
             migrationBuilder.DropTable(
                 name: "Provinces");

@@ -20,69 +20,8 @@ namespace dropShippingApp.Data
             // check context
             context.Database.EnsureCreated();
 
-
-            /*
-             * Carts
-             * Cart items
-             * 
-             */
-
             if (!context.RosterProducts.Any())
             {
-                // ------------------------------------------- ADDING APP USERS AND ROLES ------------------------------------------- //
-                var user1 = new AppUser
-                {
-                    UserName = "NoobSlayer",
-                    NormalizedUserName = "NOOBSLAYER",
-                    Email = "abc123@gmail.com",
-                    NormalizedEmail = "ABC123@GMAIL.COM",
-                    DateJoined = DateTimeOffset.UtcNow.ToUnixTimeSeconds()
-                };
-                var user2 = new AppUser
-                {
-                    UserName = "Kalashnikov",
-                    NormalizedUserName = "KALASHNIKOV",
-                    Email = "ak47@yahoo.com",
-                    NormalizedEmail = "AK47@YAHOO.COM",
-                    DateJoined = DateTimeOffset.UtcNow.ToUnixTimeSeconds()
-                };
-                var user3 = new AppUser
-                {
-                    UserName = "ItalianCowboy",
-                    NormalizedUserName = "ITALIANCOWBODY",
-                    Email = "cowboy@gmail.com",
-                    NormalizedEmail = "COWBOY@GMAIL.COM",
-                    DateJoined = DateTimeOffset.UtcNow.ToUnixTimeSeconds()
-                };
-
-                var userArr = new AppUser[3] { user1, user2, user3 };
-                var userPasswordArr = new String[3] { "WhoaDude123!", "MotherRussia123!", "MeatBallRevolver123!" };
-                var roles = new string[3] { "standard", "manager", "admin" };
-
-                // assign passwords and add users to DB
-                for (var i = 0; i < userPasswordArr.Length; i++)
-                {
-                    // hash and assign password
-                    var hasher = new PasswordHasher<AppUser>();
-                    var hashedPassword = hasher.HashPassword(userArr[i], userPasswordArr[i]);
-                    userArr[i].PasswordHash = hashedPassword;
-                    // add user
-                    await userManager.CreateAsync(userArr[i]);
-                }
-
-                // adding roles to DB
-                for (var i = 0; i < roles.Length; i++)
-                {
-                    // add role if it doesn't exist
-                    if (await roleManager.FindByNameAsync(roles[i]) == null)
-                        await roleManager.CreateAsync(new IdentityRole(roles[i]));
-                }
-
-                // add role to users
-                await userManager.AddToRoleAsync(user1, roles[0]);
-                await userManager.AddToRoleAsync(user2, roles[1]);
-                await userManager.AddToRoleAsync(user3, roles[2]);
-
                 // ------------------------------------------- ADDING PRODUCT PROPERTIES ------------------------------------------- //
                 var colorArr = new string[] { "Blue", "Green", "Red" };
                 var sizeArr = new string[] { "Small", "Medium", "Large" };
@@ -123,12 +62,17 @@ namespace dropShippingApp.Data
                     categories.Add(category);
                 }
 
+
                 // ------------------------------------------- ADDING ROSTER PRODUCTS ------------------------------------------- //
                 RosterProduct product1 = new RosterProduct
                 {
                     ModelNumber = 1,
                     BasePrice = 10,
                     IsProductActive = true,
+                    SKU = 1,
+                    BaseColor = colors[0],
+                    BaseSize = sizes[0],
+                    Category = categories[0]
                 };
                 PricingHistory pricingHistory = new PricingHistory
                 {
@@ -143,12 +87,16 @@ namespace dropShippingApp.Data
                 product1.AddPricingHistory(pricingHistory);
                 product1.AddPricingHistory(pricingHistory2);
 
-                
+
                 RosterProduct product2 = new RosterProduct
                 {
                     ModelNumber = 2,
                     BasePrice = 30,
                     IsProductActive = true,
+                    SKU = 1,
+                    BaseColor = colors[1],
+                    BaseSize = sizes[1],
+                    Category = categories[1]
                 };
                 PricingHistory pricingHistory3 = new PricingHistory
                 {
@@ -169,6 +117,10 @@ namespace dropShippingApp.Data
                     ModelNumber = 3,
                     BasePrice = 80,
                     IsProductActive = true,
+                    SKU = 1,
+                    BaseColor = colors[2],
+                    BaseSize = sizes[2],
+                    Category = categories[2]
                 };
                 PricingHistory pricingHistory5 = new PricingHistory
                 {
@@ -189,6 +141,10 @@ namespace dropShippingApp.Data
                     ModelNumber = 4,
                     BasePrice = 80,
                     IsProductActive = false,
+                    SKU = 1,
+                    BaseColor = colors[0],
+                    BaseSize = sizes[1],
+                    Category = categories[2]
                 };
                 PricingHistory pricingHistory7 = new PricingHistory
                 {
@@ -429,13 +385,70 @@ namespace dropShippingApp.Data
                 context.Carts.Add(cart3);
 
                 // save charts to appuser
-                user1.Cart = cart1;
-                user2.Cart = cart2;
-                user3.Cart = cart3;
-                await userManager.UpdateAsync(user1);
-                await userManager.UpdateAsync(user2);
-                await userManager.UpdateAsync(user3);
+                var carts = new List<Cart>() { cart1, cart2, cart3 };
 
+                // ------------------------------------------- ADDING APP USERS AND ROLES ------------------------------------------- //
+                var user1 = new AppUser
+                {
+                    FirstName = "Thor69",
+                    LastName = "Of Assguard",
+                    UserName = "NoobSlayer",
+                    NormalizedUserName = "NOOBSLAYER",
+                    Email = "abc123@gmail.com",
+                    NormalizedEmail = "ABC123@GMAIL.COM",
+                    DateJoined = DateTimeOffset.UtcNow.ToUnixTimeSeconds(),
+                    Cart = carts[0]
+                };
+                var user2 = new AppUser
+                {
+                    FirstName = "Straight",
+                    LastName = "Fire",
+                    UserName = "Kalashnikov",
+                    NormalizedUserName = "KALASHNIKOV",
+                    Email = "ak47@yahoo.com",
+                    NormalizedEmail = "AK47@YAHOO.COM",
+                    DateJoined = DateTimeOffset.UtcNow.ToUnixTimeSeconds(),
+                    Cart = carts[1]
+                };
+                var user3 = new AppUser
+                {
+                    FirstName = "Luigi",
+                    LastName = "Gangsta",
+                    UserName = "ItalianCowboy",
+                    NormalizedUserName = "ITALIANCOWBODY",
+                    Email = "cowboy@gmail.com",
+                    NormalizedEmail = "COWBOY@GMAIL.COM",
+                    DateJoined = DateTimeOffset.UtcNow.ToUnixTimeSeconds(),
+                    Cart = carts[2]
+                };
+
+                var userArr = new AppUser[3] { user1, user2, user3 };
+                var userPasswordArr = new String[3] { "WhoaDude123!", "MotherRussia123!", "MeatBallRevolver123!" };
+                var roles = new string[3] { "standard", "manager", "admin" };
+
+                // assign passwords and add users to DB
+                for (var i = 0; i < userPasswordArr.Length; i++)
+                {
+                    // hash and assign password
+                    var hasher = new PasswordHasher<AppUser>();
+                    var hashedPassword = hasher.HashPassword(userArr[i], userPasswordArr[i]);
+                    userArr[i].PasswordHash = hashedPassword;
+                    // add user
+                    await userManager.CreateAsync(userArr[i]);
+                }
+
+                // adding roles to DB
+                for (var i = 0; i < roles.Length; i++)
+                {
+                    // add role if it doesn't exist
+                    if (await roleManager.FindByNameAsync(roles[i]) == null)
+                        await roleManager.CreateAsync(new IdentityRole(roles[i]));
+                }
+
+                // add role to users
+                await userManager.AddToRoleAsync(user1, roles[0]);
+                await userManager.AddToRoleAsync(user2, roles[1]);
+                await userManager.AddToRoleAsync(user3, roles[2]);
 
 
                 /*customProduct = new CustomProduct

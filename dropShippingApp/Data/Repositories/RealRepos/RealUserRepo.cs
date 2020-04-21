@@ -227,6 +227,11 @@ namespace dropShippingApp.Data.Repositories.RealRepos
                         .ThenInclude(cartItem => cartItem.ProductSelection)
                             .ThenInclude(selectedProduct => selectedProduct.BaseProduct)
                                 .ThenInclude(baseProduct => baseProduct.PricingHistory)
+                .Include(user => user.Cart)
+                    .ThenInclude(cart => cart.CartItems)
+                        .ThenInclude(cartItem => cartItem.ProductSelection)
+                            .ThenInclude(selectedProduct => selectedProduct.BaseProduct)
+                                .ThenInclude(baseProduct => baseProduct.Category)
 
                 .Include(user => user.AnsweredQuestions)
                     .ThenInclude(answer => answer.ParentMessage)
