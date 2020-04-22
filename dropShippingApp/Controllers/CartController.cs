@@ -9,7 +9,11 @@ using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.Json;
 using System.Threading.Tasks;
+using Newtonsoft.Json.Serialization;
+using Newtonsoft.Json;
+using dropShippingApp.APIModels;
 
 namespace dropShippingApp.Controllers
 {
@@ -134,22 +138,25 @@ namespace dropShippingApp.Controllers
             // get user from DB
             var user = await userRepo.GetUserDataAsync(HttpContext.User);
             var paypalOrder = await PaypalOrder.CreateOrder(configuration, teamRepo, user);
-            return Ok(paypalOrder);
+            var orderJSON = JsonConvert.SerializeObject(paypalOrder);
+            return Ok(orderJSON);
         }
 
         [HttpPost]
-        public async Task<IActionResult> GetAndSaveOrder([FromBody]int orderID)
+        public async Task<IActionResult> GetAndSaveOrder([FromBody] OrderResponse order)
         {
             // get user from DB
             // get order from paypal
             // parse response body
             var user = await userManager.GetUserAsync(HttpContext.User);
-            var response = await PaypalTransaction.GetOrder(configuration, orderID.ToString());
-            var responseData = response.Result<PayPalCheckoutSdk.Orders.Order>();
+            //var response = await PaypalTransaction.GetOrder(configuration, order.OrderID);
+            //var responseData = response.Result<PayPalCheckoutSdk.Orders.Order>();
+
+            var processedOrder = await PaypalTransaction.ProcessOrder(configuration, order.OrderID);
 
             var newOrder = new Order()
             {
-                PaypalOrderId = responseData.Id
+                PaypalOrderId = order.OrderID
             };
 
             // save order to DB

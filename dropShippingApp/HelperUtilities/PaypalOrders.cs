@@ -34,7 +34,7 @@ namespace dropShippingApp.HelperUtilities
 
     public class PaypalOrder
     {
-        public async static Task<HttpResponse> CreateOrder(IConfiguration configuration, ITeamRepo teamRepo, AppUser user, decimal shippingPrice = 0)
+        public async static Task<PayPalCheckoutSdk.Orders.Order> CreateOrder(IConfiguration configuration, ITeamRepo teamRepo, AppUser user, decimal shippingPrice = 0)
         {
             // build out request and order JSON
             var request = new OrdersCreateRequest();
@@ -48,14 +48,14 @@ namespace dropShippingApp.HelperUtilities
             // setup transaction
             var response = await PayPalClient.Client(configuration)
                 .Execute(request);
-            return response;
+            return response.Result<PayPalCheckoutSdk.Orders.Order>();
         }
 
         private async static Task<OrderRequest> BuildOrderRequestBody(ITeamRepo teamRepo, string appUserID, Cart cart, string DKMerchantID)
         {
             // build purchase units
             // construct order request object
-            var purchaseUnits = GenerateUnitsByTeam(teamRepo, appUserID, cart.CartItems, DKMerchantID);
+            var purchaseUnits = await GenerateUnitsByTeam(teamRepo, appUserID, cart.CartItems, DKMerchantID);
 
             OrderRequest orderRequest = new OrderRequest()
             {
@@ -65,13 +65,13 @@ namespace dropShippingApp.HelperUtilities
                 ApplicationContext = new ApplicationContext()
                 {
                     BrandName = "Direct Kick",
-                    LandingPage = "Login",
+                    LandingPage = "BILLING",
                     UserAction = "CONTINUE",
-                    ShippingPreference = "SET_PROVIDED_ADDRESS" // this will require either the merchant or client to specify a shipping address
+                    ShippingPreference = "GET_FROM_FILE" // this will require either the merchant or client to specify a shipping address
                 },
                 // purchase unit represents a purchase of one or more items from a seller
                 // there are many purchase units if there are many sellers (AKA team shops)
-                PurchaseUnits = await purchaseUnits
+                PurchaseUnits = purchaseUnits
             };
 
             return orderRequest;
