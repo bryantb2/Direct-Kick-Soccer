@@ -27,6 +27,7 @@ namespace dropShippingApp.Controllers
         private IOrderRepo orderRepo;
         private ICartRepo cartRepo;
         private IUserRepo userRepo;
+        private ICustomProductRepo customProductRepo;
 
         public CartController(
                 UserManager<AppUser> usrMgr,
@@ -35,7 +36,8 @@ namespace dropShippingApp.Controllers
                 ITeamRepo teamRepo,
                 IOrderRepo orderRepo,
                 ICartRepo cartRepo,
-                IUserRepo userRepo)
+                IUserRepo userRepo,
+                ICustomProductRepo customProductRepo)
         {
             this.userManager = usrMgr;
             this.signInManager = signinMgr;
@@ -44,6 +46,7 @@ namespace dropShippingApp.Controllers
             this.orderRepo = orderRepo;
             this.cartRepo = cartRepo;
             this.userRepo = userRepo;
+            this.customProductRepo = customProductRepo;
         }
 
         // ------------------- PHASE 1
@@ -107,27 +110,47 @@ namespace dropShippingApp.Controllers
         }
 
         // add item to cart
-        public async Task<IActionResult> AddToCart(int cartItemId)
+        public async Task<IActionResult> AddToCart(int productId, int quantity)
         {
+            // get user
             var user = await userManager.GetUserAsync(HttpContext.User);
-            // TODO
-            // add item to user's cart
-            // return 200 status
+
+            // get product
+            var foundProduct = await customProductRepo.GetCustomProductById(productId);
+            if (foundProduct == null)
+                return NotFound();
+
+            // add to DB
+            var newItem = new CartItem()
+            {
+                Quantity = quantity,
+                ProductSelection = foundProduct
+            };
+            await cartRepo.AddCartItem(newItem);
+
+            // add to cart
+            user.Cart.AddItem(newItem);
+            await userManager.UpdateAsync(user);
+
+            // return ok status
             return Ok();
         }
 
         // update cart contents
         [HttpPost]
-        public async Task<IActionResult> UpdateCart(List<CartItem> cartItems)
+        public async Task<IActionResult> UpdateCart(List<CartItemViewModel> cartItems)
         {
             // change cart items quantities
             var user = await userManager.GetUserAsync(HttpContext.User);
-            foreach (CartItem c in cartItems)
+
+            // update cart items
+            for (var i = 0; i < cartItems.Count; i++)
             {
-                if (user.Cart.CartItems.Contains(c))
-                {
-                    await cartRepo.UpdateCartItem(c);
-                }
+                // find cart item in db
+                // update it
+                var foundItem = await cartRepo.GetCartItemById(cartItems[i].ItemID);
+                if (foundItem != null)
+                    await cartRepo.UpdateCartItem(foundItem);
             }
 
             // return refreshed cart page

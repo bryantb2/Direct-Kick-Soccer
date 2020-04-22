@@ -141,5 +141,11 @@ namespace dropShippingApp.Data.Repositories.RealRepos
             this.context.CartItems.Update(item);
             await this.context.SaveChangesAsync();
         }
+
+        public async Task<CartItem> GetCartItemById(int cartId)
+        {
+            return this.context.CartItems.ToList()
+                .Find(item => item.CartItemID == cartId);
+        }
     }
 }
