@@ -32,17 +32,5 @@ namespace dropShippingApp.HelperUtilities
             var sandboxSecret = config["PaypalCredentials:Secret"];
             return new PayPalHttpClient(Environment(sandboxID, sandboxSecret), refreshToken);
         }
-
-        /*public static String ObjectToJSONString(Object serializableObject)
-        {
-            MemoryStream memoryStream = new MemoryStream();
-            var writer = JsonReaderWriterFactory.CreateJsonWriter(
-                        memoryStream, Encoding.UTF8, true, true, "  ");
-            DataContractJsonSerializer ser = new DataContractJsonSerializer(serializableObject.GetType(), new DataContractJsonSerializerSettings { UseSimpleDictionaryFormat = true });
-            ser.WriteObject(writer, serializableObject);
-            memoryStream.Position = 0;
-            StreamReader sr = new StreamReader(memoryStream);
-            return sr.ReadToEnd();
-        }*/
     }
 }

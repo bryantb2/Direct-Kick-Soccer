@@ -137,9 +137,8 @@ namespace dropShippingApp.Controllers
             // get user from DB
             var user = await userRepo.GetUserDataAsync(HttpContext.User);
             var paypalOrder = await PaypalOrder.CreateOrder(configuration, teamRepo, user);
-            //Console.WriteLine(paypalOrder);
-            //var orderJSON = JsonConvert.SerializeObject(paypalOrder);
-            return Ok(paypalOrder);
+            var orderJSON = JsonConvert.SerializeObject(paypalOrder);
+            return Ok(orderJSON);
         }
 
         [HttpPost]

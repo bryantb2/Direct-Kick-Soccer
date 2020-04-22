@@ -48,8 +48,6 @@ namespace dropShippingApp.HelperUtilities
             // setup transaction
             var response = await PayPalClient.Client(configuration)
                 .Execute(request);
-            //var order = new PayPalCheckoutSdk.Orders.Order();
-            //order.Id = response.Result<PayPalCheckoutSdk.Orders.Order>().Id;
             return response.Result<PayPalCheckoutSdk.Orders.Order>();
         }
 
