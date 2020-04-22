@@ -13,6 +13,7 @@ using System.Text.Json;
 using System.Threading.Tasks;
 using Newtonsoft.Json.Serialization;
 using Newtonsoft.Json;
+using dropShippingApp.APIModels;
 
 namespace dropShippingApp.Controllers
 {
@@ -142,18 +143,20 @@ namespace dropShippingApp.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> GetAndSaveOrder([FromBody]int orderID)
+        public async Task<IActionResult> GetAndSaveOrder([FromBody] OrderResponse order)
         {
             // get user from DB
             // get order from paypal
             // parse response body
             var user = await userManager.GetUserAsync(HttpContext.User);
-            var response = await PaypalTransaction.GetOrder(configuration, orderID.ToString());
-            var responseData = response.Result<PayPalCheckoutSdk.Orders.Order>();
+            //var response = await PaypalTransaction.GetOrder(configuration, order.OrderID);
+            //var responseData = response.Result<PayPalCheckoutSdk.Orders.Order>();
+
+            var processedOrder = await PaypalTransaction.ProcessOrder(configuration, order.OrderID);
 
             var newOrder = new Order()
             {
-                PaypalOrderId = responseData.Id
+                PaypalOrderId = order.OrderID
             };
 
             // save order to DB

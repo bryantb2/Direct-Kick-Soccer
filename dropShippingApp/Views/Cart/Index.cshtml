@@ -50,6 +50,8 @@
                     });
                 },
                 onApprove: async function (data) {
+                    console.log('logging on approve');
+                    console.log(data);
                     return await fetch(serverURL + '/Cart/GetAndSaveOrder', {
                         method: 'POST',
                         headers: {
@@ -61,7 +63,7 @@
                     }).then(function (res) {
                         return res.json();
                     }).then(function (data) {
-                        return data.id;
+                        return data.orderID;
                     });
                 }
             }).render('#paypal-button-container');
