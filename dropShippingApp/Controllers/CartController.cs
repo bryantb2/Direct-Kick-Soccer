@@ -88,10 +88,22 @@ namespace dropShippingApp.Controllers
         // remove item from cart
         public async Task<IActionResult> RemoveFromCart(int cartItemId)
         {
-
-            await cartRepo.RemoveCartItem(cartItemId);
- 
-            return View("Index");
+            // get user
+            var user = await userManager.GetUserAsync(HttpContext.User);
+            // verify they havae the cartItemId
+            var hasItem = false;
+            foreach(var item in user.Cart.CartItems)
+            {
+                if (item.CartItemID == cartItemId)
+                {
+                    hasItem = true;
+                    break;
+                }
+            }
+            // remove cart item
+            if(hasItem)
+                await cartRepo.RemoveCartItem(cartItemId);
+            return RedirectToAction("Index");
         }
 
         // add item to cart
@@ -108,28 +120,18 @@ namespace dropShippingApp.Controllers
         [HttpPost]
         public async Task<IActionResult> UpdateCart(List<CartItem> cartItems)
         {
-            try
+            // change cart items quantities
+            var user = await userManager.GetUserAsync(HttpContext.User);
+            foreach (CartItem c in cartItems)
             {
-                var user = await userManager.GetUserAsync(HttpContext.User);
-                foreach (CartItem c in cartItems)
+                if (user.Cart.CartItems.Contains(c))
                 {
-                    if (user.Cart.CartItems.Contains(c))
-                    {
-                        await cartRepo.UpdateCartItem(c);
-                    }
+                    await cartRepo.UpdateCartItem(c);
                 }
-                return Ok();
-            }
-            catch
-            {
-                return NotFound(cartItems);
             }
 
-            // TODO
-            // check cart for item id
-            // if exists, update
-            // return cart index with error message
-         
+            // return refreshed cart page
+            return RedirectToAction("Index");
         }
 
         [HttpPost]
