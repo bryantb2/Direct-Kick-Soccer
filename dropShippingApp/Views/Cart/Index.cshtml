@@ -36,8 +36,8 @@
         <script>
             const serverURL = "https://localhost:44386";
             paypal.Buttons({
-                createOrder: function () {
-                    return fetch(serverURL + '/Cart/CreateOrder', {
+                createOrder: async function () {
+                    return await fetch(serverURL + '/Cart/CreateOrder', {
                         method: 'POST',
                         headers: {
                             'content-type': 'application/json'
@@ -45,11 +45,12 @@
                     }).then(function (res) {
                         return res.json();
                     }).then(function (data) {
-                        return data.orderID;
+                        console.log(data);
+                        return data.id;
                     });
                 },
-                onApprove: function (data) {
-                    return fetch(serverURL + '/Cart/GetAndSaveOrder', {
+                onApprove: async function (data) {
+                    return await fetch(serverURL + '/Cart/GetAndSaveOrder', {
                         method: 'POST',
                         headers: {
                             'content-type': 'application/json'
@@ -60,7 +61,7 @@
                     }).then(function (res) {
                         return res.json();
                     }).then(function (data) {
-                        return data.orderID;
+                        return data.id;
                     });
                 }
             }).render('#paypal-button-container');

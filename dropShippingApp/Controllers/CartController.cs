@@ -9,7 +9,10 @@ using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.Json;
 using System.Threading.Tasks;
+using Newtonsoft.Json.Serialization;
+using Newtonsoft.Json;
 
 namespace dropShippingApp.Controllers
 {
@@ -134,6 +137,8 @@ namespace dropShippingApp.Controllers
             // get user from DB
             var user = await userRepo.GetUserDataAsync(HttpContext.User);
             var paypalOrder = await PaypalOrder.CreateOrder(configuration, teamRepo, user);
+            //Console.WriteLine(paypalOrder);
+            //var orderJSON = JsonConvert.SerializeObject(paypalOrder);
             return Ok(paypalOrder);
         }
 
