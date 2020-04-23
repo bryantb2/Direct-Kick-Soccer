@@ -9,11 +9,10 @@ using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text.Json;
 using System.Threading.Tasks;
-using Newtonsoft.Json.Serialization;
-using Newtonsoft.Json;
+using Microsoft.AspNetCore.Mvc.NewtonsoftJson;
 using dropShippingApp.APIModels;
+using Newtonsoft.Json;
 
 namespace dropShippingApp.Controllers
 {
@@ -27,6 +26,7 @@ namespace dropShippingApp.Controllers
         private IOrderRepo orderRepo;
         private ICartRepo cartRepo;
         private IUserRepo userRepo;
+        private ICustomProductRepo customProductRepo;
 
         public CartController(
                 UserManager<AppUser> usrMgr,
@@ -35,7 +35,8 @@ namespace dropShippingApp.Controllers
                 ITeamRepo teamRepo,
                 IOrderRepo orderRepo,
                 ICartRepo cartRepo,
-                IUserRepo userRepo)
+                IUserRepo userRepo,
+                ICustomProductRepo customProductRepo)
         {
             this.userManager = usrMgr;
             this.signInManager = signinMgr;
@@ -44,6 +45,7 @@ namespace dropShippingApp.Controllers
             this.orderRepo = orderRepo;
             this.cartRepo = cartRepo;
             this.userRepo = userRepo;
+            this.customProductRepo = customProductRepo;
         }
 
         // ------------------- PHASE 1
@@ -88,48 +90,73 @@ namespace dropShippingApp.Controllers
         // remove item from cart
         public async Task<IActionResult> RemoveFromCart(int cartItemId)
         {
-
-            await cartRepo.RemoveCartItem(cartItemId);
- 
-            return View("Index");
+            // get user
+            var user = await userManager.GetUserAsync(HttpContext.User);
+            // verify they havae the cartItemId
+            var hasItem = false;
+            foreach(var item in user.Cart.CartItems)
+            {
+                if (item.CartItemID == cartItemId)
+                {
+                    hasItem = true;
+                    break;
+                }
+            }
+            // remove cart item
+            if(hasItem)
+                await cartRepo.RemoveCartItem(cartItemId);
+            return RedirectToAction("Index");
         }
 
         // add item to cart
-        public async Task<IActionResult> AddToCart(int cartItemId)
+        public async Task<IActionResult> AddToCart(int productId, int quantity)
         {
+            // get user
             var user = await userManager.GetUserAsync(HttpContext.User);
-            // TODO
-            // add item to user's cart
-            // return 200 status
+
+            // get product
+            var foundProduct = await customProductRepo.GetCustomProductById(productId);
+            if (foundProduct == null)
+                return NotFound();
+
+            // add to DB
+            var newItem = new CartItem()
+            {
+                Quantity = quantity,
+                ProductSelection = foundProduct
+            };
+            await cartRepo.AddCartItem(newItem);
+
+            // add to cart
+            user.Cart.AddItem(newItem);
+            await userManager.UpdateAsync(user);
+
+            // return ok status
             return Ok();
         }
 
         // update cart contents
         [HttpPost]
-        public async Task<IActionResult> UpdateCart(List<CartItem> cartItems)
+        public async Task<IActionResult> UpdateCart([FromBody] List<CartItemViewModel> cartItems) //UpdateCartVM cart)
         {
-            try
+            // change cart items quantities
+            var user = await userManager.GetUserAsync(HttpContext.User);
+
+            // update cart items
+            for (var i = 0; i < cartItems.Count; i++) //cart.CartItems.Count; i++)
             {
-                var user = await userManager.GetUserAsync(HttpContext.User);
-                foreach (CartItem c in cartItems)
+                // find item and update
+                var currentItem = cartItems[i]; //cart.CartItems[i];
+                var foundItem = await cartRepo.GetCartItemById(currentItem.ItemID);
+                if (foundItem != null)
                 {
-                    if (user.Cart.CartItems.Contains(c))
-                    {
-                        await cartRepo.UpdateCartItem(c);
-                    }
-                }
-                return Ok();
-            }
-            catch
-            {
-                return NotFound(cartItems);
+                    foundItem.Quantity = currentItem.Quantity;
+                    await cartRepo.UpdateCartItem(foundItem);
+                } 
             }
 
-            // TODO
-            // check cart for item id
-            // if exists, update
-            // return cart index with error message
-         
+            // return refreshed cart page
+            return RedirectToAction("Index");
         }
 
         [HttpPost]

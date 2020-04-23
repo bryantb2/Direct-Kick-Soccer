@@ -15,5 +15,6 @@ namespace dropShippingApp.Data.Repositories
         Task AddCartItem(CartItem item); // JUST for adding to DB context
         Task<CartItem> RemoveCartItem(int itemId); // JUST for removing from DB context
         Task UpdateCartItem(CartItem item); // JUST for updating to DB context
+        Task<CartItem> GetCartItemById(int cartId);
     }
 }
