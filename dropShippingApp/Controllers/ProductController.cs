@@ -14,11 +14,14 @@ namespace dropShippingApp.Controllers
 {
     public class ProductController : Controller
     {
-        public IRosterProductRepo Repository { get; set; }
+        public IRosterProductRepo rosterRepo { get; set; }
+        private ICustomProductRepo customRepo;
 
-        public ProductController(IRosterProductRepo repo)
+        public ProductController(IRosterProductRepo repo,ICustomProductRepo customProdRepo)
         {
-            Repository = repo;
+            rosterRepo = repo;
+            customRepo = customProdRepo;
+
         }
 
         public async Task<IActionResult> Index()
@@ -35,18 +38,52 @@ namespace dropShippingApp.Controllers
             return View();
         }
 
-        //public ViewResult GetProductBySKU(int SKU)
-        //{
-        //    CustomProduct product = new CustomProduct();
-        //    product = repo.CustomProducts.First(p => p.SKU == SKU);
-        //    return View(product);
-        //}
+        [HttpGet]
+        public async Task<IActionResult> SortView()
+        {
+            List<CustomProduct> prods = (from p in customRepo.CustomProducts
+                                         select p).ToList();
+            return View(prods);
+        }
+        [HttpPost]
+        public async Task<IActionResult> SortView(string command)
+        {
+            if (command == "Cheap")
+            {
+                List<CustomProduct> prods = (from p in customRepo.CustomProducts
+                                             select p).ToList();
 
-        //public ViewResult GetProductByModelNumber(int productNum)
-        //{
-        //    CustomProduct product = new CustomProduct();
-        //    product = repo.CustomProducts.First(p => p.ModelNumber == productNum);
-        //    return View(product);
-        //}
+                List<CustomProduct> sortedProd = prods.OrderBy(prod => prod.CurrentPrice).ToList();
+
+                return View(sortedProd);
+            }
+            else
+            {
+                List<CustomProduct> prods = (from p in customRepo.CustomProducts
+                                             select p).ToList();
+
+                List<CustomProduct> sortedProd = prods.OrderByDescending(prod => prod.CurrentPrice).ToList();
+
+                return View(sortedProd);
+            }
+
+        }
+
+       
+
+        public ViewResult GetProductBySKU(int SKU)
+        {
+            RosterProduct product = new RosterProduct();
+            product = rosterRepo.GetRosterProducts.First(p => p.SKU == SKU);
+            
+            return View(product);
+        }
+
+        public ViewResult GetProductByModelNumber(int productNum)
+        {
+            RosterProduct product = new RosterProduct();
+            product = rosterRepo.GetRosterProducts.First(p => p.ModelNumber == productNum);
+            return View(product);
+        }
     }
 }
