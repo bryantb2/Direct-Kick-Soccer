@@ -5,7 +5,10 @@
 @model CartViewModel;
 
     <section>
-        <script src="~/js/CartClient.js"></script>
+        <script src="~/js/CartClient.js">
+            console.log('logging cart client class');
+            console.log(CartClient);
+        </script>
         <script src="https://www.paypal.com/sdk/js?client-id=AZpm9gTt8pFrq0PZoGf_ptllalZ5UtmqOf6vTpcwtIC0lTD09EA5fTyyhwTHoUJNsmKYh4E6IxK7Ky0P"></script>
 
         <h1>@(Model.CartItems.Count == 0 ? "Your Cart Appears to be Empty :(" : "Your Cart")</h1>
@@ -32,7 +35,7 @@
         }
         <h3>Your total is: $@Model.CartPrice</h3>
         <br />
-        <button onclick="CartClient.updateCartCallback('https://localhost:44386/Cart/UpdateCart')">Update Cart</button>
+        <button onclick="updateCartCallback('https://localhost:44386/Cart/UpdateCart')">Update Cart</button>
         <br />
         <br />
         <div id="paypal-button-container"></div>

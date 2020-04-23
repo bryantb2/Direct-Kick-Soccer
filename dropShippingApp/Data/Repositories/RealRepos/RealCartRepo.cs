@@ -144,7 +144,26 @@ namespace dropShippingApp.Data.Repositories.RealRepos
 
         public async Task<CartItem> GetCartItemById(int cartId)
         {
-            return this.context.CartItems.ToList()
+            return this.context.CartItems
+                .Include(cartItem => cartItem.ProductSelection)
+                    .ThenInclude(selectedProduct => selectedProduct.BaseProduct)
+                .Include(cartItem => cartItem.ProductSelection)
+                    .ThenInclude(selectedProduct => selectedProduct.ProductTags)
+                .Include(cartItem => cartItem.ProductSelection)
+                    .ThenInclude(selectedProduct => selectedProduct.PricingHistory)
+                .Include(cartItem => cartItem.ProductSelection)
+                    .ThenInclude(selectedProduct => selectedProduct.BaseProduct)
+                        .ThenInclude(baseProduct => baseProduct.BaseColor)
+                .Include(cartItem => cartItem.ProductSelection)
+                    .ThenInclude(selectedProduct => selectedProduct.BaseProduct)
+                        .ThenInclude(baseProduct => baseProduct.BaseSize)
+                .Include(cartItem => cartItem.ProductSelection)
+                    .ThenInclude(selectedProduct => selectedProduct.BaseProduct)
+                        .ThenInclude(baseProduct => baseProduct.ProductTags)
+                .Include(cartItem => cartItem.ProductSelection)
+                    .ThenInclude(selectedProduct => selectedProduct.BaseProduct)
+                        .ThenInclude(baseProduct => baseProduct.PricingHistory)
+                .ToList()
                 .Find(item => item.CartItemID == cartId);
         }
     }

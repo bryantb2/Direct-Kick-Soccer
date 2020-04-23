@@ -9,11 +9,10 @@ using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text.Json;
 using System.Threading.Tasks;
-using Newtonsoft.Json.Serialization;
-using Newtonsoft.Json;
+using Microsoft.AspNetCore.Mvc.NewtonsoftJson;
 using dropShippingApp.APIModels;
+using Newtonsoft.Json;
 
 namespace dropShippingApp.Controllers
 {
@@ -138,19 +137,22 @@ namespace dropShippingApp.Controllers
 
         // update cart contents
         [HttpPost]
-        public async Task<IActionResult> UpdateCart(List<CartItemViewModel> cartItems)
+        public async Task<IActionResult> UpdateCart([FromBody] List<CartItemViewModel> cartItems) //UpdateCartVM cart)
         {
             // change cart items quantities
             var user = await userManager.GetUserAsync(HttpContext.User);
 
             // update cart items
-            for (var i = 0; i < cartItems.Count; i++)
+            for (var i = 0; i < cartItems.Count; i++) //cart.CartItems.Count; i++)
             {
-                // find cart item in db
-                // update it
-                var foundItem = await cartRepo.GetCartItemById(cartItems[i].ItemID);
+                // find item and update
+                var currentItem = cartItems[i]; //cart.CartItems[i];
+                var foundItem = await cartRepo.GetCartItemById(currentItem.ItemID);
                 if (foundItem != null)
+                {
+                    foundItem.Quantity = currentItem.Quantity;
                     await cartRepo.UpdateCartItem(foundItem);
+                } 
             }
 
             // return refreshed cart page
