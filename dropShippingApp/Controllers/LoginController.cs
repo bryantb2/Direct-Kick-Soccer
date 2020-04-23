@@ -47,6 +47,12 @@ namespace dropShippingApp.Controllers
             return View();
         }
 
+        [AllowAnonymous]
+        public IActionResult Login()
+        {
+            return View("Index");
+        }
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Login(LoginViewModel model, string returnUrl)

@@ -29,7 +29,7 @@ namespace dropShippingApp.Controllers
         {
             //IQueryable<PricingHistory> result = await Repository.GetAllPriceHistAsync();
             //return View(result.ToList());
-            throw new NotImplementedException();
+            return View();
         }
 
         public async Task<IActionResult> PopularItems()
@@ -52,6 +52,55 @@ namespace dropShippingApp.Controllers
 
             // send to view
             return View(productViewModel);
+        }
+        
+        [HttpGet]
+        public async Task<IActionResult> SortView()
+        {
+            List<CustomProduct> prods = (from p in customRepo.CustomProducts
+                                         select p).ToList();
+            return View(prods);
+        }
+        
+        [HttpPost]
+        public async Task<IActionResult> SortView(string command)
+        {
+            if (command == "Cheap")
+            {
+                List<CustomProduct> prods = (from p in customRepo.CustomProducts
+                                             select p).ToList();
+
+                List<CustomProduct> sortedProd = prods.OrderBy(prod => prod.CurrentPrice).ToList();
+
+                return View(sortedProd);
+            }
+            else
+            {
+                List<CustomProduct> prods = (from p in customRepo.CustomProducts
+                                             select p).ToList();
+
+                List<CustomProduct> sortedProd = prods.OrderByDescending(prod => prod.CurrentPrice).ToList();
+
+                return View(sortedProd);
+            }
+
+        }
+
+       
+
+        public ViewResult GetProductBySKU(int SKU)
+        {
+            RosterProduct product = new RosterProduct();
+            product = rosterRepo.GetRosterProducts.First(p => p.SKU == SKU);
+            
+            return View(product);
+        }
+
+        public ViewResult GetProductByModelNumber(int productNum)
+        {
+            RosterProduct product = new RosterProduct();
+            product = rosterRepo.GetRosterProducts.First(p => p.ModelNumber == productNum);
+            return View(product);
         }
     }
 }

@@ -10,8 +10,13 @@ namespace dropShippingApp.Data.Repositories.RealRepos
     public class RealCustomProductRepo : ICustomProductRepo
     {
         private ApplicationDbContext context;
-        public List<CustomProduct> CustomProducts { get { return context.CustomProducts.ToList(); } }
+        public List<CustomProduct> CustomProducts { get { return context.CustomProducts.Include(p=>p.BaseProduct)
+                                                                                        .Include(p=>p.ProductTags)
+                                                                                        .Include(p=>p.PricingHistory)
+                                                                                        .ToList(); 
+            } }
 
+ 
         public RealCustomProductRepo(ApplicationDbContext appDbContext)
         {
             context = appDbContext;
