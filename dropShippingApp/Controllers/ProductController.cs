@@ -28,7 +28,7 @@ namespace dropShippingApp.Controllers
         {
             //IQueryable<PricingHistory> result = await Repository.GetAllPriceHistAsync();
             //return View(result.ToList());
-            throw new NotImplementedException();
+            return View();
         }
 
         public async Task<IActionResult> PopularItems()
@@ -37,6 +37,7 @@ namespace dropShippingApp.Controllers
             // returns team results page 
             return View();
         }
+
         [HttpGet]
         public async Task<IActionResult> SortView()
         {
@@ -84,6 +85,5 @@ namespace dropShippingApp.Controllers
             product = rosterRepo.GetRosterProducts.First(p => p.ModelNumber == productNum);
             return View(product);
         }
-
     }
 }

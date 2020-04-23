@@ -26,7 +26,7 @@ namespace dropShippingApp.Data
                 var colorArr = new string[] { "Blue", "Green", "Red" };
                 var sizeArr = new string[] { "Small", "Medium", "Large" };
                 var categoryArr = new string[] { "Pants", "Shirt", "Jersey" };
-                var categoryDesc = new string[] { "For your legs", "For your torso", "For your team" };
+                //var categoryDesc = new string[] { "For your legs", "For your torso", "For your team" };
 
                 var colors = new List<ProductColor>();
                 var sizes = new List<ProductSize>();
@@ -47,7 +47,7 @@ namespace dropShippingApp.Data
                     var category = new ProductCategory()
                     {
                         Name = categoryArr[i],
-                        BriefDescription = categoryDesc[i]
+                        //BriefDescription = categoryDesc[i]
                     };
 
                     context.ProductColors.Add(color);
@@ -612,9 +612,26 @@ namespace dropShippingApp.Data
 
                 customProduct.AddPricingHistory(pricingHistory);
                 context.Add(customProduct);*/
-                context.SaveChanges();
-            }
 
+
+                // ------------------------------------------- ADDING PRODUCT CATAGORIES ------------------------------------------- //
+                var c = new string[] { "T-Shirts", "Polos/Knits", "Sweatshirts/Fleece", "Caps", "Activewear", "Outerwear", 
+                    "Woven/Dress Shirts", "Workwear/Medical/Scrubs", "Bags", "Acessories", "Ladies/Women", "Youth" };
+
+                for (int i = 0; i < c.Length; i++)
+                {
+                    ProductCategory newCatagory = new ProductCategory()
+                    {
+                        Name = c[i]
+                    };
+                    // Add to the DB
+                    context.Categories.Add(newCatagory);
+
+                    // Add to the local list 
+                    categories.Add(newCatagory);
+                }
+                await context.SaveChangesAsync();
+            }
         }
     }
 }
