@@ -15,7 +15,6 @@
 
   <ItemGroup>
     <Content Remove="Views\Account\ResetPassword.cshtml" />
-    <Content Remove="Views\Account\Signup.cshtml" />
   </ItemGroup>
 
 
@@ -47,6 +46,5 @@
 
   <ItemGroup>
     <None Include="Views\Account\ResetPassword.cshtml" />
-    <None Include="Views\Account\Signup.cshtml" />
   </ItemGroup>
 </Project>

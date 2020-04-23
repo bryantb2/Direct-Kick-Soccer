@@ -112,7 +112,8 @@ namespace dropShippingApp.Controllers
         public async Task<IActionResult> AddToCart(int productId, int quantity)
         {
             // get user
-            var user = await userManager.GetUserAsync(HttpContext.User);
+            //var user = await userManager.GetUserAsync(HttpContext.User);
+            var user = await userRepo.GetUserDataAsync(HttpContext.User);
 
             // get product
             var foundProduct = await customProductRepo.GetCustomProductById(productId);
@@ -132,7 +133,7 @@ namespace dropShippingApp.Controllers
             await userManager.UpdateAsync(user);
 
             // return ok status
-            return Ok();
+            return RedirectToAction("Index");
         }
 
         // update cart contents

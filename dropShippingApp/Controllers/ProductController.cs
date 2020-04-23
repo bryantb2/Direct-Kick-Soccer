@@ -9,16 +9,20 @@ using System.Web;
 using dropShippingApp.Data;
 using dropShippingApp.Models;
 using dropShippingApp.Data.Repositories;
+using dropShippingApp.ViewModels;
 
 namespace dropShippingApp.Controllers
 {
     public class ProductController : Controller
     {
-        public IRosterProductRepo Repository { get; set; }
+        private IRosterProductRepo rosterProductRepo;
+        private ICustomProductRepo customProductRepo;
 
-        public ProductController(IRosterProductRepo repo)
+        public ProductController(IRosterProductRepo rosterProductRepo,
+            ICustomProductRepo customProductRepo)
         {
-            Repository = repo;
+            this.rosterProductRepo = rosterProductRepo;
+            this.customProductRepo = customProductRepo;
         }
 
         public async Task<IActionResult> Index()
@@ -33,6 +37,21 @@ namespace dropShippingApp.Controllers
             // TODO
             // returns team results page 
             return View();
+        }
+
+        public async Task<IActionResult> ViewProduct(int productId)
+        {
+            // get product
+            var foundProduct = await customProductRepo.GetCustomProductById(productId);
+
+            var productViewModel = new ProductViewModel
+            {
+                Product = foundProduct,
+                Quantity = 1
+            };
+
+            // send to view
+            return View(productViewModel);
         }
     }
 }

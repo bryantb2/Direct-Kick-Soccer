@@ -17,7 +17,7 @@
         return itemArr;
     }
 
-const updateOnServer = async (apiString) => {
+const updateOnServer = async (apiString, cartItems) => {
     await fetch(apiString, {
         method: 'POST',
         headers: {
