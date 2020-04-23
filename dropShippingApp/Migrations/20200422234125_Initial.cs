@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace dropShippingApp.Migrations
 {
-    public partial class intial : Migration
+    public partial class Initial : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -40,8 +40,7 @@ namespace dropShippingApp.Migrations
                 {
                     ProductCategoryID = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(nullable: false),
-                    BriefDescription = table.Column<string>(maxLength: 50, nullable: false)
+                    Name = table.Column<string>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -136,15 +135,15 @@ namespace dropShippingApp.Migrations
                 {
                     TeamID = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    TeamName = table.Column<string>(nullable: true),
-                    TeamDescription = table.Column<string>(nullable: true),
-                    CountryID = table.Column<int>(nullable: true),
-                    ProvidenceProvinceID = table.Column<int>(nullable: true),
-                    StreetAddress = table.Column<string>(nullable: true),
-                    ZipCode = table.Column<int>(nullable: false),
-                    CorporatePageURL = table.Column<string>(nullable: true),
-                    BusinessEmail = table.Column<string>(nullable: true),
-                    PhoneNumber = table.Column<int>(nullable: false),
+                    Name = table.Column<string>(nullable: false),
+                    Description = table.Column<string>(nullable: false),
+                    CountryID = table.Column<int>(nullable: false),
+                    ProvidenceProvinceID = table.Column<int>(nullable: false),
+                    StreetAddress = table.Column<string>(nullable: false),
+                    ZipCode = table.Column<string>(nullable: false),
+                    CorporatePageURL = table.Column<string>(nullable: false),
+                    BusinessEmail = table.Column<string>(nullable: false),
+                    PhoneNumber = table.Column<string>(nullable: false),
                     IsTeamInactive = table.Column<bool>(nullable: false),
                     IsHostTeam = table.Column<bool>(nullable: false)
                 },
@@ -156,13 +155,13 @@ namespace dropShippingApp.Migrations
                         column: x => x.CountryID,
                         principalTable: "Countries",
                         principalColumn: "CountryID",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_Teams_Provinces_ProvidenceProvinceID",
                         column: x => x.ProvidenceProvinceID,
                         principalTable: "Provinces",
                         principalColumn: "ProvinceID",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(

@@ -1,4 +1,7 @@
-﻿<!DOCTYPE html>
+﻿@inject ICategoryRepo categoryRepo
+
+
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -23,6 +26,15 @@
                         </li>
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Cart" asp-action="Index">Cart</a>
+                        </li>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link text-dark dropdown-toggle" data-toggle="dropdown" asp-area="" asp-controller="Product" asp-action="Index">Apparel</a>
+                            <ul class="dropdown-menu">
+                                @foreach (var category in categoryRepo.GetCategories)
+                                {
+                                    <li><a asp-action="Index" asp-route-categoryID="@category.ProductCategoryID">@category.Name</a></li>
+                                }
+                            </ul>
                         </li>
                     </ul>
                 </div>
