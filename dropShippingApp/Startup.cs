@@ -70,6 +70,7 @@ namespace dropShippingApp
             services.AddTransient<ITeamRepo, RealTeamRepo>();
             services.AddTransient<ITeamCreationReqRepo, RealTeamReqRepo>();
             services.AddTransient<IUserRepo, RealUserRepo>();
+            services.AddTransient<ICategoryRepo, RealCategoryRepo>();
 
             // injection config for paypal services
             //services.AddSingleton<IConfiguration>(Configuration);
