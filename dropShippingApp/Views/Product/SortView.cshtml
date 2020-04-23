@@ -1,18 +1,20 @@
 ﻿@model List<CustomProduct>
 
 
-    <h2>
-        <a asp-action="SortView" asp-route-sortOrder="@ViewData["AscendSort"]">Ascending Price</a>
-    </h2>
-    <h2>
-        <a asp-action="SortView" asp-route-sortOrder="@ViewData["DescendSort"]">Descend Price</a>
-    </h2>
+    <form method="post">
+        <button type="submit" name="command" value="Cheap">Cheapest Price</button>
+       </form>
+
+        <form method="post">
+            <button type="submit" name="command" value="Expensive">Expensive Price</button>
+        </form>
 
 
 
-@foreach(CustomProduct p in Model)
-{
-    <h2>@p.ProductTitle</h2>
-    <h3>@p.CurrentPrice</h3>
-    <br />
-}
+
+        @foreach (CustomProduct p in Model)
+        {
+            <h2>@p.ProductTitle</h2>
+            <h3>@p.CurrentPrice</h3>
+            <br />
+        }

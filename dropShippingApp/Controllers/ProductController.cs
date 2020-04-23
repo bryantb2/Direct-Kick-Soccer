@@ -45,9 +45,9 @@ namespace dropShippingApp.Controllers
             return View(prods);
         }
         [HttpPost]
-        public async Task<IActionResult> SortView(string sortOrder)
+        public async Task<IActionResult> SortView(string command)
         {
-            if (sortOrder == "AscendSort")
+            if (command == "Cheap")
             {
                 List<CustomProduct> prods = (from p in customRepo.CustomProducts
                                              select p).ToList();
@@ -68,21 +68,22 @@ namespace dropShippingApp.Controllers
 
         }
 
-        // Not currently implemented
+       
 
-        //public ViewResult GetProductBySKU(int SKU)
-        //{
-        //    CustomProduct product = new CustomProduct();
-        //    product = repo.CustomProducts.First(p => p.SKU == SKU);
-        //    return View(product);
-        //}
+        public ViewResult GetProductBySKU(int SKU)
+        {
+            RosterProduct product = new RosterProduct();
+            product = rosterRepo.GetRosterProducts.First(p => p.SKU == SKU);
+            
+            return View(product);
+        }
 
-        //public ViewResult GetProductByModelNumber(int productNum)
-        //{
-        //    CustomProduct product = new CustomProduct();
-        //    product = repo.CustomProducts.First(p => p.ModelNumber == productNum);
-        //    return View(product);
-        //}
+        public ViewResult GetProductByModelNumber(int productNum)
+        {
+            RosterProduct product = new RosterProduct();
+            product = rosterRepo.GetRosterProducts.First(p => p.ModelNumber == productNum);
+            return View(product);
+        }
 
     }
 }
