@@ -14,11 +14,14 @@ namespace dropShippingApp.Controllers
 {
     public class ProductController : Controller
     {
-        public IRosterProductRepo Repository { get; set; }
+        public IRosterProductRepo RosterRepository { get; set; }
 
-        public ProductController(IRosterProductRepo repo)
+        public ICustomProductRepo CustomRepository {get; set; }
+
+        public ProductController(IRosterProductRepo rosterrepo, ICustomProductRepo customrepo)
         {
-            Repository = repo;
+            RosterRepository = rosterrepo;
+            CustomRepository = customrepo;
         }
 
         public async Task<IActionResult> Index()
@@ -26,6 +29,18 @@ namespace dropShippingApp.Controllers
             //IQueryable<PricingHistory> result = await Repository.GetAllPriceHistAsync();
             //return View(result.ToList());
             throw new NotImplementedException();
+        }
+
+        public async Task<IActionResult> Search(string searchString) 
+        {
+            var csProduct = CustomRepository.CustomProducts;
+           
+                         
+            if (!String.IsNullOrEmpty(searchString))
+            {
+                csProduct = csProduct.Where(s => s.ProductTags.Exists(x => x.TagLine == searchString)).OrderBy(p => p.CustomProductID).ToList();   
+            }
+               return View(csProduct); 
         }
 
         public async Task<IActionResult> PopularItems()
