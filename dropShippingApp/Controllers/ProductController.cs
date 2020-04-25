@@ -38,7 +38,7 @@ namespace dropShippingApp.Controllers
                          
             if (!String.IsNullOrEmpty(searchString))
             {
-                csProduct = csProduct.Where(s => s.ProductTags.Exists(x => x.TagLine == searchString)).OrderBy(p => p.CustomProductID).ToList();   
+                csProduct = csProduct.Where(s => s.BaseProduct.Category.Name == searchString).OrderBy(p => p.CustomProductID).ToList();   
             }
                return View(csProduct); 
         }

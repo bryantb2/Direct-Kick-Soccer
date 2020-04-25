@@ -18,10 +18,10 @@
 <table class="table">
     <thead>
         <tr>
-            <th>               ProductTitle        </th>
+            <th>               Product Title        </th>
             <th>              Product Description        </th>
-            <th>              Current Price            </th>
-            <th>                Custom ImageSVG           </th>
+            <th>              New Price            </th>
+            <th>                Custom Image PNG           </th>
             <th></th>
         </tr>
     </thead>
@@ -31,8 +31,8 @@
             <tr>
                 <td>                    @Html.DisplayFor(modelItem => c.ProductTitle)                </td>
                 <td>                    @Html.DisplayFor(modelItem => c.ProductDescription)                </td>
-                <td>                    @Html.DisplayFor(modelItem => c.CurrentPrice)                </td>
-                <td>                    @Html.DisplayFor(modelItem => c.CustomImageSVG)                </td>
+                <td>                    @Html.DisplayFor(modelItem => c.PricingHistory)                </td>
+                <td>                    @Html.DisplayFor(modelItem => c.CustomImagePNG)                </td>
                 
             </tr>
         }
