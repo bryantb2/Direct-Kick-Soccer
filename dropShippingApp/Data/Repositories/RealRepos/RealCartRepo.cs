@@ -121,6 +121,21 @@ namespace dropShippingApp.Data.Repositories.RealRepos
             return foundCart;
         }
 
+        public async Task AddCart(Cart cart)
+        {
+            this.context.Carts.Add(cart);
+            await this.context.SaveChangesAsync();
+        }
+
+        public async Task<Cart> RemoveCartById(int cartId)
+        {
+            var foundCart = this.context.Carts.ToList()
+                .Find(cart => cart.CartID == cartId);
+            this.context.Carts.Remove(foundCart);
+            await this.context.SaveChangesAsync();
+            return foundCart;
+        }
+
         public async Task AddCartItem(CartItem item)
         {
             this.context.CartItems.Add(item);

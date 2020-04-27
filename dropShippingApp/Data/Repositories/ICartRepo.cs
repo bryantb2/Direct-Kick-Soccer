@@ -8,6 +8,8 @@ namespace dropShippingApp.Data.Repositories
 {
     public interface ICartRepo
     {
+        Task AddCart(Cart cart);
+        Task<Cart> RemoveCartById(int cartId);
         Task UpdateCart(Cart cart);
         List<Cart> GetCarts { get; }
         Task<Cart> FindCartById(int cartId);

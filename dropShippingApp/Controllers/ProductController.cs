@@ -98,8 +98,6 @@ namespace dropShippingApp.Controllers
 
         }
 
-       
-
         public ViewResult GetProductBySKU(int SKU)
         {
             RosterProduct product = new RosterProduct();
