@@ -17,12 +17,15 @@ namespace dropShippingApp.Controllers
     {
         private IRosterProductRepo rosterProductRepo;
         private ICustomProductRepo customProductRepo;
+        private ISortRepo sortRepo;
 
         public ProductController(IRosterProductRepo rosterProductRepo,
-            ICustomProductRepo customProductRepo)
+            ICustomProductRepo customProductRepo,
+            ISortRepo sortRepo)
         {
             this.rosterProductRepo = rosterProductRepo;
             this.customProductRepo = customProductRepo;
+            this.sortRepo = sortRepo;
         }
 
         public async Task<IActionResult> Index()
@@ -94,9 +97,13 @@ namespace dropShippingApp.Controllers
         }
         
         [HttpPost]
-        public async Task<IActionResult> SortView(string command)
+        public async Task<IActionResult> SortView(string searchTerm, int sortId)
         {
-            if (command == "Cheap")
+            var foundSort = sortRepo.GetSortById(sortId);
+            
+
+
+            /*if (command == "Cheap")
             {
                 List<CustomProduct> prods = (from p in customProductRepo.CustomProducts
                                              select p).ToList();
@@ -113,8 +120,14 @@ namespace dropShippingApp.Controllers
                 List<CustomProduct> sortedProd = prods.OrderByDescending(prod => prod.CurrentPrice).ToList();
 
                 return View(sortedProd);
-            }
+            }*/
 
+        }
+
+
+        private List<CustomProduct> SearchByString(string searchString)
+        {
+            // checks product tags, title
         }
     }
 }
