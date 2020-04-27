@@ -1,18 +1,18 @@
-﻿
+﻿@model LoginViewModel
 @{
-    ViewData["Title"] = "Index";
+    Layout = "_Layout";
+    ViewData["Title"] = "Login";
 }
-@model LoginViewModel
 
 <h1>Login</h1>
 
 <form asp-controller="Login" asp-action="Login" method="post">
     <label>Email</label>
-    <input type="email" placeholder="Enter Email" asp-for=@Model.Email required/>
+    <input type="email" placeholder="Enter Email" asp-for=@Model.Email required />
 
     <br />
 
     <label>Password</label>
-    <input type="password" placeholder="Enter Password" asp-for=@Model.Password required/>
+    <input type="password" placeholder="Enter Password" asp-for=@Model.Password required />
     <button type="submit">Login</button>
 </form>

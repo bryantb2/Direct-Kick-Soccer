@@ -15,6 +15,7 @@ using Microsoft.Extensions.Hosting;
 using dropShippingApp.Models;
 using dropShippingApp.Data.Repositories;
 using dropShippingApp.Data.Repositories.RealRepos;
+using Microsoft.AspNetCore.Mvc.NewtonsoftJson;
 
 namespace dropShippingApp
 {
@@ -47,7 +48,7 @@ namespace dropShippingApp
             .AddEntityFrameworkStores<ApplicationDbContext>()
             .AddDefaultTokenProviders();
 
-            services.AddControllersWithViews();
+            services.AddControllersWithViews().AddNewtonsoftJson();
             services.AddRazorPages();
 
             // force app to use login if jerk user attempts to use restricted controller
@@ -69,6 +70,7 @@ namespace dropShippingApp
             services.AddTransient<ITeamRepo, RealTeamRepo>();
             services.AddTransient<ITeamCreationReqRepo, RealTeamReqRepo>();
             services.AddTransient<IUserRepo, RealUserRepo>();
+            services.AddTransient<ICategoryRepo, RealCategoryRepo>();
 
             // injection config for paypal services
             //services.AddSingleton<IConfiguration>(Configuration);

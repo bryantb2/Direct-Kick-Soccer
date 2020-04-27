@@ -1,4 +1,9 @@
-﻿<!DOCTYPE html>
+﻿@inject ICategoryRepo categoryRepo
+@inject SignInManager<AppUser> SignInManager
+@inject UserManager<AppUser> UserManager
+
+
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -24,11 +29,38 @@
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Cart" asp-action="Index">Cart</a>
                         </li>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link text-dark dropdown-toggle" data-toggle="dropdown" asp-area="" asp-controller="Product" asp-action="Index">Apparel</a>
+                            <ul class="dropdown-menu">
+                                @foreach (var category in categoryRepo.GetCategories)
+                                {
+                                    <li><a class="nav-link text-dark" asp-action="Index" asp-route-categoryID="@category.ProductCategoryID">@category.Name</a></li>
+                                }
+                            </ul>
+                        </li>
                     </ul>
                 </div>
+                <ul class="nav navbar-nav navbar-right">
+                    @if (SignInManager.IsSignedIn(User))
+                    {
+                        <li>
+                            <a class="nav-link text-dark"><span class="glyphicon glyphicon-user" style="padding-right: 5px"></span>Welcome @UserManager.GetUserName(User)</a>
+                        </li>
+                        <li>
+                            <a class="nav-link text-dark" asp-controller="Account" asp-action="Logout"><span class="glyphicon glyphicon-log-out" style="padding-right: 5px"></span>Logout</a>
+                        </li>
+                    }
+                    else
+                    {
+                        <li><a class="nav-link text-dark" asp-controller="Admin" asp-action="Create"><span class="glyphicon glyphicon-user" style="padding-right: 5px"></span>Register</a></li>
+                        <li><a class="nav-link text-dark" asp-controller="Login" asp-action="Login"><span class="glyphicon glyphicon-log-in" style="padding-right: 5px"></span>Login</a></li>
+                    }
+                </ul>
             </div>
         </nav>
     </header>
+
+    
     <div class="container">
         <main role="main" class="pb-3">
             @RenderBody()

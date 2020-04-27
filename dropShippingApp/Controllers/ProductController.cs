@@ -9,26 +9,27 @@ using System.Web;
 using dropShippingApp.Data;
 using dropShippingApp.Models;
 using dropShippingApp.Data.Repositories;
+using dropShippingApp.ViewModels;
 
 namespace dropShippingApp.Controllers
 {
     public class ProductController : Controller
     {
-        public IRosterProductRepo RosterRepository { get; set; }
+        private IRosterProductRepo rosterProductRepo;
+        private ICustomProductRepo customProductRepo;
 
-        public ICustomProductRepo CustomRepository {get; set; }
-
-        public ProductController(IRosterProductRepo rosterrepo, ICustomProductRepo customrepo)
+        public ProductController(IRosterProductRepo rosterProductRepo,
+            ICustomProductRepo customProductRepo)
         {
-            RosterRepository = rosterrepo;
-            CustomRepository = customrepo;
+            this.rosterProductRepo = rosterProductRepo;
+            this.customProductRepo = customProductRepo;
         }
 
         public async Task<IActionResult> Index()
         {
             //IQueryable<PricingHistory> result = await Repository.GetAllPriceHistAsync();
             //return View(result.ToList());
-            throw new NotImplementedException();
+            return View();
         }
 
         public async Task<IActionResult> Search(string searchString) 
@@ -48,6 +49,70 @@ namespace dropShippingApp.Controllers
             // TODO
             // returns team results page 
             return View();
+        }
+
+        public async Task<IActionResult> ViewProduct(int productId)
+        {
+            // get product
+            var foundProduct = await customProductRepo.GetCustomProductById(productId);
+
+            var productViewModel = new ProductViewModel
+            {
+                Product = foundProduct,
+                Quantity = 1
+            };
+
+            // send to view
+            return View(productViewModel);
+        }
+        
+        [HttpGet]
+        public async Task<IActionResult> SortView()
+        {
+            List<CustomProduct> prods = (from p in customRepo.CustomProducts
+                                         select p).ToList();
+            return View(prods);
+        }
+        
+        [HttpPost]
+        public async Task<IActionResult> SortView(string command)
+        {
+            if (command == "Cheap")
+            {
+                List<CustomProduct> prods = (from p in customRepo.CustomProducts
+                                             select p).ToList();
+
+                List<CustomProduct> sortedProd = prods.OrderBy(prod => prod.CurrentPrice).ToList();
+
+                return View(sortedProd);
+            }
+            else
+            {
+                List<CustomProduct> prods = (from p in customRepo.CustomProducts
+                                             select p).ToList();
+
+                List<CustomProduct> sortedProd = prods.OrderByDescending(prod => prod.CurrentPrice).ToList();
+
+                return View(sortedProd);
+            }
+
+        }
+
+       
+
+        public ViewResult GetProductBySKU(int SKU)
+        {
+            RosterProduct product = new RosterProduct();
+            product = rosterRepo.GetRosterProducts.First(p => p.SKU == SKU);
+            
+            return View(product);
+        }
+
+        public ViewResult GetProductByModelNumber(int productNum)
+        {
+            RosterProduct product = new RosterProduct();
+            product = rosterRepo.GetRosterProducts.First(p => p.ModelNumber == productNum);
+            return View(product);
         }
     }
 }
