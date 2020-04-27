@@ -34,7 +34,7 @@ namespace dropShippingApp.Controllers
 
         public async Task<IActionResult> Search(string searchString) 
         {
-            var csProduct = CustomRepository.CustomProducts;
+            var csProduct = customProductRepo.CustomProducts;
            
                          
             if (!String.IsNullOrEmpty(searchString))
@@ -69,7 +69,7 @@ namespace dropShippingApp.Controllers
         [HttpGet]
         public async Task<IActionResult> SortView()
         {
-            List<CustomProduct> prods = (from p in customRepo.CustomProducts
+            List<CustomProduct> prods = (from p in customProductRepo.CustomProducts
                                          select p).ToList();
             return View(prods);
         }
@@ -79,7 +79,7 @@ namespace dropShippingApp.Controllers
         {
             if (command == "Cheap")
             {
-                List<CustomProduct> prods = (from p in customRepo.CustomProducts
+                List<CustomProduct> prods = (from p in customProductRepo.CustomProducts
                                              select p).ToList();
 
                 List<CustomProduct> sortedProd = prods.OrderBy(prod => prod.CurrentPrice).ToList();
@@ -88,7 +88,7 @@ namespace dropShippingApp.Controllers
             }
             else
             {
-                List<CustomProduct> prods = (from p in customRepo.CustomProducts
+                List<CustomProduct> prods = (from p in customProductRepo.CustomProducts
                                              select p).ToList();
 
                 List<CustomProduct> sortedProd = prods.OrderByDescending(prod => prod.CurrentPrice).ToList();
@@ -103,7 +103,7 @@ namespace dropShippingApp.Controllers
         public ViewResult GetProductBySKU(int SKU)
         {
             RosterProduct product = new RosterProduct();
-            product = rosterRepo.GetRosterProducts.First(p => p.SKU == SKU);
+            product = rosterProductRepo.GetRosterProducts.First(p => p.SKU == SKU);
             
             return View(product);
         }
@@ -111,7 +111,7 @@ namespace dropShippingApp.Controllers
         public ViewResult GetProductByModelNumber(int productNum)
         {
             RosterProduct product = new RosterProduct();
-            product = rosterRepo.GetRosterProducts.First(p => p.ModelNumber == productNum);
+            product = rosterProductRepo.GetRosterProducts.First(p => p.ModelNumber == productNum);
             return View(product);
         }
     }
