@@ -9,7 +9,7 @@ namespace dropShippingApp.Models
     public class ProductCategory
     {
         public int ProductCategoryID { get; set; }
-        [Required]
+        [Required] 
         public string Name { get; set; }
         //[Required]
         //[MaxLength(50, ErrorMessage = "Cannot be longer than 50 characters.")]

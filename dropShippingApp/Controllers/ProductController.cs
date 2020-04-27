@@ -32,6 +32,18 @@ namespace dropShippingApp.Controllers
             return View();
         }
 
+        public async Task<IActionResult> Search(string searchString) 
+        {
+            var csProduct = CustomRepository.CustomProducts;
+           
+                         
+            if (!String.IsNullOrEmpty(searchString))
+            {
+                csProduct = csProduct.Where(s => s.BaseProduct.Category.Name == searchString).OrderBy(p => p.CustomProductID).ToList();   
+            }
+               return View(csProduct); 
+        }
+
         public async Task<IActionResult> PopularItems()
         {
             // TODO

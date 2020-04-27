@@ -206,8 +206,8 @@ namespace dropShippingApp.Data
                     DateChanged = new DateTime(2020, 4, 1),
                     NewPrice = 100
                 };
-                customProduct2.AddPricingHistory(pricingHistory);
-                customProduct2.AddPricingHistory(pricingHistory);
+                customProduct2.AddPricingHistory(pricingHistory11);
+                customProduct2.AddPricingHistory(pricingHistory12);
 
 
                 CustomProduct customProduct3 = new CustomProduct

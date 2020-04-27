@@ -1,0 +1,40 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+
+}
+
+
+@model IEnumerable<dropShippingApp.Models.CustomProduct>
+@{ ViewData["Title"] = "Search"; }
+<h1>Search</h1>
+<p>    <a asp-action="Create">Create New</a> </p>
+<form asp-controller="Product" asp-action="Search" method="get">
+    
+ Category: <input type="text" name="searchString" value="filter" />        <input type="submit" value="Search" class="btn btn-default"/>
+   
+</form>
+<table class="table">
+    <thead>
+        <tr>
+            <th>               Product Title        </th>
+            <th>              Product Description        </th>
+            <th>              New Price            </th>
+            <th>                Custom Image PNG           </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (dropShippingApp.Models.CustomProduct c in Model)
+        {
+            <tr>
+                <td>                    @Html.DisplayFor(modelItem => c.ProductTitle)                </td>
+                <td>                    @Html.DisplayFor(modelItem => c.ProductDescription)                </td>
+                <td>                    @Html.DisplayFor(modelItem => c.PricingHistory)                </td>
+                <td>                    @Html.DisplayFor(modelItem => c.CustomImagePNG)                </td>
+                
+            </tr>
+        }
+    </tbody>
+</table>
