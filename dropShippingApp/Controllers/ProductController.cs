@@ -32,8 +32,16 @@ namespace dropShippingApp.Controllers
             return View();
         }
 
+        public async Task<IActionResult> PopularItems()
+        {
+            // TODO
+            // returns team results page 
+            return View();
+        }
+
         public async Task<IActionResult> Search(string searchString) 
         {
+            // 
             var csProduct = customProductRepo.CustomProducts;
            
                          
@@ -44,11 +52,22 @@ namespace dropShippingApp.Controllers
                return View(csProduct); 
         }
 
-        public async Task<IActionResult> PopularItems()
+        public async Task<IActionResult> GetProductBySKU(int SKU)
         {
-            // TODO
-            // returns team results page 
-            return View();
+            var foundProduct = customProductRepo.CustomProducts
+                .Find(product => product.BaseProduct.SKU == SKU);
+
+            // add admin view at some point to browse products
+            throw new NotImplementedException();
+        }
+
+        public async Task<IActionResult> GetProductsByModelNumber(int modelNumber)
+        {
+            var foundProducts = customProductRepo.CustomProducts
+                .Where(product => product.BaseProduct.ModelNumber == modelNumber);
+
+            // add admin view at some point to browse products
+            throw new NotImplementedException();
         }
 
         public async Task<IActionResult> ViewProduct(int productId)
@@ -96,21 +115,6 @@ namespace dropShippingApp.Controllers
                 return View(sortedProd);
             }
 
-        }
-
-        public ViewResult GetProductBySKU(int SKU)
-        {
-            RosterProduct product = new RosterProduct();
-            product = rosterProductRepo.GetRosterProducts.First(p => p.SKU == SKU);
-            
-            return View(product);
-        }
-
-        public ViewResult GetProductByModelNumber(int productNum)
-        {
-            RosterProduct product = new RosterProduct();
-            product = rosterProductRepo.GetRosterProducts.First(p => p.ModelNumber == productNum);
-            return View(product);
         }
     }
 }
