@@ -127,7 +127,69 @@ namespace dropShippingApp.Controllers
 
         private List<CustomProduct> SearchByString(string searchString)
         {
-            // checks product tags, title
+            // clean search term
+            var cleanedSearchTerm = searchString.Trim().Split(' ');
+            // checks product tags, title, color, size, SKU, model number
+            var customProducts = customProductRepo.CustomProducts;
+            var foundProducts = new List<CustomProduct>();
+            foreach(var product in customProducts)
+            {
+                if (DoesQueryContainString(cleanedSearchTerm, product.ProductTitle))
+                    foundProducts.Add(product);
+                else if (DoesQueryContainString(cleanedSearchTerm, product.ProductTags))
+                    foundProducts.Add(product);
+                else if (DoesQueryContainString(cleanedSearchTerm, product.BaseProduct.ProductTags))
+                    foundProducts.Add(product);
+                else if (DoesQueryContainString(cleanedSearchTerm, product.BaseProduct.ModelNumber.ToString()))
+                    foundProducts.Add(product);
+                else if (DoesQueryContainString(cleanedSearchTerm, product.BaseProduct.SKU.ToString()))
+                    foundProducts.Add(product);
+                else if (DoesQueryContainString(cleanedSearchTerm, product.BaseProduct.BaseColor.ColorName))
+                    foundProducts.Add(product);
+                else if (DoesQueryContainString(cleanedSearchTerm, product.BaseProduct.BaseSize.SizeName))
+                    foundProducts.Add(product);
+                else if (DoesQueryContainString(cleanedSearchTerm, product.BaseProduct.ProductTags))
+                    foundProducts.Add(product);
+                else if (DoesQueryContainString(cleanedSearchTerm, product.BaseProduct.Category.Name))
+                    foundProducts.Add(product);
+            }
+            return foundProducts;
+        }
+
+        private bool DoesQueryContainString(string[] query, string stringToCheck)
+        {
+            foreach(var term in query)
+            {
+                if (term.ToUpper() == stringToCheck.ToUpper())
+                    return true;
+            }
+            return false;
+        }
+
+        private bool DoesQueryContainString(string[] query, string[] stringsToCheck)
+        {
+            foreach (var term in query)
+            {
+                foreach(var checkAgainstTerm in stringsToCheck)
+                {
+                    if (term.ToUpper() == checkAgainstTerm.ToUpper())
+                        return true;
+                }
+            }
+            return false;
+        }
+
+        private bool DoesQueryContainString(string[] query, List<Tag> tagsToCheck)
+        {
+            foreach (var term in query)
+            {
+                foreach (var tag in tagsToCheck)
+                {
+                    if (term.ToUpper() == tag.TagLine.ToUpper())
+                        return true;
+                }
+            }
+            return false;
         }
     }
 }
