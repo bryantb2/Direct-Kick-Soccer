@@ -18,13 +18,16 @@ namespace dropShippingApp.Controllers
     {
         private IRosterProductRepo rosterProductRepo;
         private ICustomProductRepo customProductRepo;
-        public int PageSize = 30;//num of prod per page
+        private ISortRepo sortRepo;
+        public int PageSize=30//num of prod per page
 
         public ProductController(IRosterProductRepo rosterProductRepo,
-            ICustomProductRepo customProductRepo)
+            ICustomProductRepo customProductRepo,
+            ISortRepo sortRepo)
         {
             this.rosterProductRepo = rosterProductRepo;
             this.customProductRepo = customProductRepo;
+            this.sortRepo = sortRepo;
         }
 
         public async Task<IActionResult> Index()
@@ -34,8 +37,17 @@ namespace dropShippingApp.Controllers
             return View();
         }
 
-        public async Task<IActionResult> Search(string searchString,int productPage=1) 
+
+        public async Task<IActionResult> PopularItems()
         {
+            // TODO
+            // returns team results page 
+            return View();
+        }
+
+        public async Task<IActionResult> Search(string searchString, int productPage = 1) 
+        {
+            // 
             var csProduct = customProductRepo.CustomProducts;
             var pagingInfo=new PagingInfoVM();
 
@@ -56,11 +68,22 @@ namespace dropShippingApp.Controllers
                return View((csProduct,pagingInfo)); 
         }
 
-        public async Task<IActionResult> PopularItems()
+        public async Task<IActionResult> GetProductBySKU(int SKU)
         {
-            // TODO
-            // returns team results page 
-            return View();
+            var foundProduct = customProductRepo.CustomProducts
+                .Find(product => product.BaseProduct.SKU == SKU);
+
+            // add admin view at some point to browse products
+            throw new NotImplementedException();
+        }
+
+        public async Task<IActionResult> GetProductsByModelNumber(int modelNumber)
+        {
+            var foundProducts = customProductRepo.CustomProducts
+                .Where(product => product.BaseProduct.ModelNumber == modelNumber);
+
+            // add admin view at some point to browse products
+            throw new NotImplementedException();
         }
 
         public async Task<IActionResult> ViewProduct(int productId)
@@ -87,44 +110,84 @@ namespace dropShippingApp.Controllers
         }
         
         [HttpPost]
-        public async Task<IActionResult> SortView(string command)
+        public async Task<IActionResult> SortView(string searchTerm, int sortId)
         {
-            if (command == "Cheap")
-            {
-                List<CustomProduct> prods = (from p in customProductRepo.CustomProducts
-                                             select p).ToList();
+            // get sort object and products from search
+            var foundSort = sortRepo.GetSortById(sortId);
+            var foundProducts = SearchByString(searchTerm);
 
-                List<CustomProduct> sortedProd = prods.OrderBy(prod => prod.CurrentPrice).ToList();
+            // perform sort
+            foundProducts.Sort(foundSort.SortOperation);
 
-                return View(sortedProd);
-            }
-            else
-            {
-                List<CustomProduct> prods = (from p in customProductRepo.CustomProducts
-                                             select p).ToList();
-
-                List<CustomProduct> sortedProd = prods.OrderByDescending(prod => prod.CurrentPrice).ToList();
-
-                return View(sortedProd);
-            }
-
+            // return list
+            return View("Search",foundProducts);
         }
 
-       
-
-        public ViewResult GetProductBySKU(int SKU)
+        private List<CustomProduct> SearchByString(string searchString)
         {
-            RosterProduct product = new RosterProduct();
-            product = rosterProductRepo.GetRosterProducts.First(p => p.SKU == SKU);
-            
-            return View(product);
+            // clean search term
+            var cleanedSearchTerm = searchString.Trim().Split(' ');
+            // checks product tags, title, color, size, SKU, model number
+            var customProducts = customProductRepo.CustomProducts;
+            var foundProducts = new List<CustomProduct>();
+            foreach(var product in customProducts)
+            {
+                if (DoesQueryContainString(cleanedSearchTerm, product.ProductTitle))
+                    foundProducts.Add(product);
+                else if (DoesQueryContainString(cleanedSearchTerm, product.ProductTags))
+                    foundProducts.Add(product);
+                else if (DoesQueryContainString(cleanedSearchTerm, product.BaseProduct.ProductTags))
+                    foundProducts.Add(product);
+                else if (DoesQueryContainString(cleanedSearchTerm, product.BaseProduct.ModelNumber.ToString()))
+                    foundProducts.Add(product);
+                else if (DoesQueryContainString(cleanedSearchTerm, product.BaseProduct.SKU.ToString()))
+                    foundProducts.Add(product);
+                else if (DoesQueryContainString(cleanedSearchTerm, product.BaseProduct.BaseColor.ColorName))
+                    foundProducts.Add(product);
+                else if (DoesQueryContainString(cleanedSearchTerm, product.BaseProduct.BaseSize.SizeName))
+                    foundProducts.Add(product);
+                else if (DoesQueryContainString(cleanedSearchTerm, product.BaseProduct.ProductTags))
+                    foundProducts.Add(product);
+                else if (DoesQueryContainString(cleanedSearchTerm, product.BaseProduct.Category.Name))
+                    foundProducts.Add(product);
+            }
+            return foundProducts;
         }
 
-        public ViewResult GetProductByModelNumber(int productNum)
+        private bool DoesQueryContainString(string[] query, string stringToCheck)
         {
-            RosterProduct product = new RosterProduct();
-            product = rosterProductRepo.GetRosterProducts.First(p => p.ModelNumber == productNum);
-            return View(product);
+            foreach(var term in query)
+            {
+                if (term.ToUpper() == stringToCheck.ToUpper())
+                    return true;
+            }
+            return false;
+        }
+
+        private bool DoesQueryContainString(string[] query, string[] stringsToCheck)
+        {
+            foreach (var term in query)
+            {
+                foreach(var checkAgainstTerm in stringsToCheck)
+                {
+                    if (term.ToUpper() == checkAgainstTerm.ToUpper())
+                        return true;
+                }
+            }
+            return false;
+        }
+
+        private bool DoesQueryContainString(string[] query, List<Tag> tagsToCheck)
+        {
+            foreach (var term in query)
+            {
+                foreach (var tag in tagsToCheck)
+                {
+                    if (term.ToUpper() == tag.TagLine.ToUpper())
+                        return true;
+                }
+            }
+            return false;
         }
     }
 }

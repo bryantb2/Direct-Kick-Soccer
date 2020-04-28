@@ -2,6 +2,37 @@
     Layout = "_Layout";
     ViewData["Title"] = "Sign Up";
 }
+@model CreateUserViewModel
 
 <h1>Sign Up</h1>
+
+<form asp-controller="Login" asp-action="Signup" method="post">
+    <div asp-validation-summary="All" class="text-danger my-1 text-center"></div>
+
+    <br />
+
+    <label>Username</label>
+    <input type="text" placeholder="Enter Username" asp-for=@Model.Username required />
+
+    <br />
+
+    <label>First Name</label>
+    <input type="text" placeholder="Enter First Name" asp-for=@Model.FName required />
+    <label>Last Name</label>
+    <input type="text" placeholder="Enter Last Name" asp-for=@Model.LName required />
+
+    <br />
+
+    <label>Email</label>
+    <input type="email" placeholder="Enter Email" asp-for=@Model.Email required />
+
+    <br />
+
+    <label>Password</label>
+    <input type="password" placeholder="Enter Password" asp-for=@Model.Password required />
+    <br />
+    <label>Confirm Password</label>
+    <input type="password" placeholder="Confirm Password" asp-for=@Model.ConfirmPassword required />
+    <button type="submit">Create Account</button>
+</form>
 

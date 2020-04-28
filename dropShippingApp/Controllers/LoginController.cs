@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using dropShippingApp.Data.Repositories;
 using dropShippingApp.Models;
 using dropShippingApp.ViewModels;
 using Microsoft.AspNetCore.Authorization;
@@ -16,21 +17,24 @@ namespace dropShippingApp.Controllers
         
         private UserManager<AppUser> userManager;
         private SignInManager<AppUser> signInManager;
-        private IUserValidator<AppUser> userValidator;
-        private IPasswordValidator<AppUser> passwordValidator;
-        private IPasswordHasher<AppUser> passwordHasher;
+        //private IUserValidator<AppUser> userValidator;
+        //private IPasswordValidator<AppUser> passwordValidator;
+        private ICartRepo cartRepo;
+        //private IPasswordHasher<AppUser> passwordHasher;
         public LoginController(
                 UserManager<AppUser> usrMgr,
                 SignInManager<AppUser> signinMgr,
-                IUserValidator<AppUser> userValid,
-                IPasswordValidator<AppUser> passValid,
-                IPasswordHasher<AppUser> passwordHash)
+                //IUserValidator<AppUser> userValid,
+                //IPasswordValidator<AppUser> passValid,
+                //IPasswordHasher<AppUser> passwordHash,
+                ICartRepo cartRepo)
         {
             userManager = usrMgr;
             signInManager = signinMgr;
-            userValidator = userValid;
-            passwordValidator = passValid;
-            passwordHasher = passwordHash;
+            //userValidator = userValid;
+            //passwordValidator = passValid;
+            this.cartRepo = cartRepo;
+            //passwordHasher = passwordHash;
         }
         public async Task<ViewResult> Index()
         {
@@ -86,10 +90,18 @@ namespace dropShippingApp.Controllers
                     var userSearchByEmail = await userManager.FindByEmailAsync(model.Email);
                     if (userSearchByName == null && userSearchByEmail == null)
                     {
+                        // create user cart
+                        // save cart
+                        Cart newUserCart = new Cart();
+                        await cartRepo.AddCart(newUserCart);
+
                         AppUser user = new AppUser
                         {
                             UserName = model.Username,
-                            Email = model.Email
+                            Email = model.Email,
+                            FirstName = model.FName,
+                            LastName = model.LName,
+                            Cart = newUserCart
                         };
                         IdentityResult result
                             = await userManager.CreateAsync(user, model.Password);
@@ -102,6 +114,7 @@ namespace dropShippingApp.Controllers
                         }
                         else
                         {
+                            await cartRepo.RemoveCartById(newUserCart.CartID);
                             foreach (IdentityError error in result.Errors)
                             {
                                 ModelState.AddModelError("", error.Description);

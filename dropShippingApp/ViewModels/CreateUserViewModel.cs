@@ -19,5 +19,9 @@ namespace dropShippingApp.ViewModels
         [Required]
         [UIHint("password")]
         public string ConfirmPassword { get; set; }
+        [Required]
+        public string FName { get; set; }
+        [Required]
+        public string LName { get; set; }
     }
 }
