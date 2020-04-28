@@ -14,6 +14,6 @@ namespace dropShippingApp.ViewModels
         public int TotalPages => (int)Math.Ceiling((decimal)Products.Count / ItemsPerPage);
         public List<ProductSort> Sorts { get; set; }
         public List<CustomProduct> Products { get; set; }
-        public Dictionary<string, int> CurrentCategory { get; set; }
+        public ProductCategory CurrentCategory { get; set; }
     }
 }

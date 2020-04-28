@@ -19,14 +19,17 @@ namespace dropShippingApp.Controllers
         private IRosterProductRepo rosterProductRepo;
         private ICustomProductRepo customProductRepo;
         private ISortRepo sortRepo;
+        private ICategoryRepo categoryRepo;
 
         public ProductController(IRosterProductRepo rosterProductRepo,
             ICustomProductRepo customProductRepo,
-            ISortRepo sortRepo)
+            ISortRepo sortRepo,
+            ICategoryRepo categoryRepo)
         {
             this.rosterProductRepo = rosterProductRepo;
             this.customProductRepo = customProductRepo;
             this.sortRepo = sortRepo;
+            this.categoryRepo = categoryRepo;
         }
 
         public async Task<IActionResult> Index()
@@ -50,8 +53,7 @@ namespace dropShippingApp.Controllers
             var foundProducts = SearchByString(searchString);
             var availableSorts = sortRepo.Sorts;
 
-            // setup view model
-
+            // setup paging view model
             var pagingInfo = new BrowseViewModel()
             {
                 Sorts = availableSorts,
@@ -63,12 +65,31 @@ namespace dropShippingApp.Controllers
             };
 
             // return
-            return View("Search",pagingInfo);
+            return View("Search", pagingInfo);
         }
 
         public async Task<IActionResult> DisplayByCategory(int categoryId, int currentPage = -1)
         {
+            // get products by category
+            var filteredProducts = FilterProductsByCategory(customProductRepo.CustomProducts, categoryId);
+            var availableSorts = sortRepo.Sorts;
 
+            // get current category
+            var category = await categoryRepo.GetCategoryById(categoryId);
+
+            // setup paging view model
+            var pagingInfo = new BrowseViewModel()
+            {
+                Sorts = availableSorts,
+                Products = filteredProducts,
+                ItemsPerPage = 30,
+                CurrentPage = (currentPage == -1 ? 0 : currentPage),
+                SearchString = null,
+                CurrentCategory = category
+            };
+
+            // return
+            return View("Search", pagingInfo);
         }
 
         [HttpPost]
@@ -116,6 +137,12 @@ namespace dropShippingApp.Controllers
 
             // send to view
             return View(productViewModel);
+        }
+
+        private List<CustomProduct> FilterProductsByCategory(List<CustomProduct> productsToFilter, int categoryId)
+        {
+            var filteredProducts = productsToFilter.Where(product => product.BaseProduct.Category.ProductCategoryID == categoryId);
+            return filteredProducts.ToList();
         }
 
         private List<CustomProduct> SearchByString(string searchString)
