@@ -1,36 +1,67 @@
-﻿@model IEnumerable<dropShippingApp.Models.CustomProduct>
+﻿
 @{ ViewData["Title"] = "Search"; }
-<h1>Search</h1>
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<form asp-controller="Product" asp-action="Search" method="get">
-     Category: <input type="text" name="searchString" value="filter" />
-    <input type="submit" value="Search" class="btn btn-default"/>
-    <select id="sort">
-        <option value=""></option>
-    </select>
-    add drop down for list of sorts sort should send up asp-route with sortid
-</form>
-<table class="table">
-    <thead>
-        <tr>
-            <th>Product Title</th>
-            <th>Product Description</th>
-            <th>New Price</th>
-            <th>Custom Image PNG</th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (dropShippingApp.Models.CustomProduct c in Model)
+@model BrowseViewModel
+
+    <section class="pt-5">
+        <form class="text-center" asp-controller="Product" asp-action="Search" method="get">
+            <div class="d-flex flex-row">
+                <h1 class="p-2">Search for Products:</h1>
+                <input class="p-2" type="text" placeholder="Enter a Search Term" asp-for=@Model.SearchString />
+                <button class="btn" type="submit">Search</button>
+            </div>
+        </form>
+
+        <br />
+        <br />
+        <hr />
+
+        <div class="text-center p-2">
+            @if (Model == null)
+            {
+                <h5>Search for Products to Get Started</h5>
+            }
+            else if (Model.SearchString != null)
+            {
+                <h5>Results for '@Model.SearchString'</h5>
+            }
+            else if (Model.CurrentCategory != null)
+            {
+                <h5>Browsing @Model.CurrentCategory.Name Products</h5>
+            }
+            else
+            {
+                <h5>Search for Products or Browse our Sections</h5>
+            }
+        </div>
+
+        @if (Model != null)
         {
-            <tr>
-                <td>@Html.DisplayFor(modelItem => c.ProductTitle)</td>
-                <td>@Html.DisplayFor(modelItem => c.ProductDescription)</td>
-                <td>@Html.DisplayFor(modelItem => c.PricingHistory)</td>
-                <td>@Html.DisplayFor(modelItem => c.CustomImagePNG)</td>
-            </tr>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th></th>
+                        <th>Product Title</th>
+                        <th>Price</th>
+                        <th>SKU</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var product in Model.Products)
+                    {
+                        <tr>
+                            <td>
+                                <img width="100" src=@product.CustomImagePNG />
+                            </td>
+                            <td>@product.ProductTitle</td>
+                            <td>@product.CurrentPrice.ToString("c")</td>
+                            <td>@product.BaseProduct.SKU</td>
+                            <td>
+                                <a class="btn btn-link" style="display:inline-block" asp-controller="Product" asp-action="ViewProduct" asp-route-productId="@product.CustomProductID">View Product</a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
         }
-    </tbody>
-</table>
+    </section>

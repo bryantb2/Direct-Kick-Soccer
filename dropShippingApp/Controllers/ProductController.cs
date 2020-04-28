@@ -34,9 +34,7 @@ namespace dropShippingApp.Controllers
 
         public async Task<IActionResult> Index()
         {
-            //IQueryable<PricingHistory> result = await Repository.GetAllPriceHistAsync();
-            //return View(result.ToList());
-            return View();
+            return View("Search", null);
         }
 
 
@@ -71,7 +69,7 @@ namespace dropShippingApp.Controllers
         public async Task<IActionResult> DisplayByCategory(int categoryId, int currentPage = -1)
         {
             // get products by category
-            var filteredProducts = FilterProductsByCategory(customProductRepo.CustomProducts, categoryId);
+            var filteredProducts = FilterProductsByCategory(categoryId);
             var availableSorts = sortRepo.Sorts;
 
             // get current category
@@ -93,17 +91,46 @@ namespace dropShippingApp.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> SortView(int sortId, int categoryId = -1, string searchTerm = null, int currentPage = -1)
+        public async Task<IActionResult> SortProducts(int sortId, int categoryId = -1, string searchTerm = null, int currentPage = -1)
         {
+            // IMPORTANT: at no point will the user be allowed to search AND browse by category AT THE SAME TIME
+            var availableSorts = sortRepo.Sorts;
+            var filteredProducts = new List<CustomProduct>();
+            if (categoryId != -1)
+            {
+                filteredProducts = FilterProductsByCategory(categoryId);
+            }
+            else
+            {
+                filteredProducts = SearchByString(searchTerm);
+            }
+
             // get sort object and products from search
             var foundSort = sortRepo.GetSortById(sortId);
-            var foundProducts = SearchByString(searchTerm);
 
-            // perform sort
-            foundProducts.Sort(foundSort.SortOperation);
+            // check sort type
+            if(foundSort.SortName.ToUpper() == "LOWEST PRICE")
+            {
+                filteredProducts.Sort((product1, product2) => product2.CurrentPrice.CompareTo(product1.CurrentPrice));
+            }
+            else if(foundSort.SortName.ToUpper() == "HIGHEST PRICE")
+            {
+                filteredProducts.Sort((product1, product2) => product1.CurrentPrice.CompareTo(product2.CurrentPrice));
+            }
+
+            // setup paging view model
+            var pagingInfo = new BrowseViewModel()
+            {
+                Sorts = availableSorts,
+                Products = filteredProducts,
+                ItemsPerPage = 30,
+                CurrentPage = (currentPage == -1 ? 0 : currentPage),
+                SearchString = (searchTerm == null ? null : searchTerm),
+                CurrentCategory = (categoryId != -1 ? await categoryRepo.GetCategoryById(categoryId) : null)
+            };
 
             // return list
-            return View("Search", foundProducts);
+            return View("Search", pagingInfo);
         }
 
         public async Task<IActionResult> GetProductBySKU(int SKU)
@@ -139,9 +166,9 @@ namespace dropShippingApp.Controllers
             return View(productViewModel);
         }
 
-        private List<CustomProduct> FilterProductsByCategory(List<CustomProduct> productsToFilter, int categoryId)
+        private List<CustomProduct> FilterProductsByCategory(int categoryId)
         {
-            var filteredProducts = productsToFilter.Where(product => product.BaseProduct.Category.ProductCategoryID == categoryId);
+            var filteredProducts = customProductRepo.CustomProducts.Where(product => product.BaseProduct.Category.ProductCategoryID == categoryId);
             return filteredProducts.ToList();
         }
 
