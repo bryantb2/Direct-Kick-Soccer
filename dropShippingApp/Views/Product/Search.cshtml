@@ -1,19 +1,20 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
-@{
-
-}
-
-
-@model IEnumerable<dropShippingApp.Models.CustomProduct>
+﻿@model IEnumerable<dropShippingApp.Models.CustomProduct>
 @{ ViewData["Title"] = "Search"; }
+@
 <h1>Search</h1>
 <p>    <a asp-action="Create">Create New</a> </p>
 <form asp-controller="Product" asp-action="Search" method="get">
     
  Category: <input type="text" name="searchString" value="filter" />        <input type="submit" value="Search" class="btn btn-default"/>
-   
+    <select id="sort">
+        <option value=""></option>
+
+
+    </select>
+   add drop down for list of sorts
+    sort should send up asp-route with sortid
+    
+
 </form>
 <table class="table">
     <thead>
@@ -38,3 +39,4 @@
         }
     </tbody>
 </table>
+<div page-model="@Model.PagingInfo" page-action-"Search"></div>
