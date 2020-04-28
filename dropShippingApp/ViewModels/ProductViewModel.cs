@@ -10,5 +10,6 @@ namespace dropShippingApp.ViewModels
     {
         public CustomProduct Product { get; set; }
         public int Quantity { get; set; }
+
     }
 }

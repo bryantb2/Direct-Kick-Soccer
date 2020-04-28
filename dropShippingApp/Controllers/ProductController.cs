@@ -10,6 +10,7 @@ using dropShippingApp.Data;
 using dropShippingApp.Models;
 using dropShippingApp.Data.Repositories;
 using dropShippingApp.ViewModels;
+using Microsoft.Xrm.Sdk.Query;
 
 namespace dropShippingApp.Controllers
 {
@@ -17,6 +18,7 @@ namespace dropShippingApp.Controllers
     {
         private IRosterProductRepo rosterProductRepo;
         private ICustomProductRepo customProductRepo;
+        public int PageSize = 30;//num of prod per page
 
         public ProductController(IRosterProductRepo rosterProductRepo,
             ICustomProductRepo customProductRepo)
@@ -32,16 +34,26 @@ namespace dropShippingApp.Controllers
             return View();
         }
 
-        public async Task<IActionResult> Search(string searchString) 
+        public async Task<IActionResult> Search(string searchString,int productPage=1) 
         {
             var csProduct = customProductRepo.CustomProducts;
-           
-                         
+            var pagingInfo=new PagingInfoVM();
+
+
             if (!String.IsNullOrEmpty(searchString))
             {
-                csProduct = csProduct.Where(s => s.BaseProduct.Category.Name == searchString).OrderBy(p => p.CustomProductID).ToList();   
+                csProduct = csProduct.Where(s => s.BaseProduct.Category.Name == searchString).OrderBy(p => p.CustomProductID)
+                    .Skip((productPage - 1) * PageSize)
+                    .Take(PageSize)
+                    .ToList();
+                pagingInfo.CurrentPge = productPage;
+                pagingInfo.ItemsPerPage = PageSize;
+                pagingInfo.TotalItems = customProductRepo.CustomProducts.Count();
+    
+
             }
-               return View(csProduct); 
+            
+               return View((csProduct,pagingInfo)); 
         }
 
         public async Task<IActionResult> PopularItems()
