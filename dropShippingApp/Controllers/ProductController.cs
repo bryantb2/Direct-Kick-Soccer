@@ -45,10 +45,7 @@ namespace dropShippingApp.Controllers
             return View();
         }
 
-        public async Task<IActionResult> Search(string searchString) 
-
-        public async Task<IActionResult> Search(string searchString,int productPage=1) 
-
+        public async Task<IActionResult> Search(string searchString, int productPage = 1) 
         {
             // 
             var csProduct = customProductRepo.CustomProducts;
@@ -108,31 +105,16 @@ namespace dropShippingApp.Controllers
         [HttpPost]
         public async Task<IActionResult> SortView(string searchTerm, int sortId)
         {
+            // get sort object and products from search
             var foundSort = sortRepo.GetSortById(sortId);
-            
+            var foundProducts = SearchByString(searchTerm);
 
+            // perform sort
+            foundProducts.Sort(foundSort.SortOperation);
 
-            /*if (command == "Cheap")
-            {
-                List<CustomProduct> prods = (from p in customProductRepo.CustomProducts
-                                             select p).ToList();
-
-                List<CustomProduct> sortedProd = prods.OrderBy(prod => prod.CurrentPrice).ToList();
-
-                return View(sortedProd);
-            }
-            else
-            {
-                List<CustomProduct> prods = (from p in customProductRepo.CustomProducts
-                                             select p).ToList();
-
-                List<CustomProduct> sortedProd = prods.OrderByDescending(prod => prod.CurrentPrice).ToList();
-
-                return View(sortedProd);
-            }*/
-
+            // return list
+            return View("Search",foundProducts);
         }
-
 
         private List<CustomProduct> SearchByString(string searchString)
         {

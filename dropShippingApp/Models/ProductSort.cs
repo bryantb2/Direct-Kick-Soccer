@@ -9,6 +9,6 @@ namespace dropShippingApp.Models
     {
         public int ProductSortID { get; set; }
         public string SortName { get; set; }
-        public Delegate SortOperation { get; set; }
+        public Comparison<CustomProduct> SortOperation { get; set; }
     }
 }
