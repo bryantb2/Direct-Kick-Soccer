@@ -635,18 +635,18 @@ namespace dropShippingApp.Data
 
                 // ------------------------------------------- ADDING PRODUCT SORTS ------------------------------------------- //
                 var sortNames = new string[] { "Lowest Price", "Highest Price" };
-                Comparison<CustomProduct> highestSort = delegate (CustomProduct product1, CustomProduct product2) { return (product1.CurrentPrice.CompareTo(product2.CurrentPrice)); };
-                Comparison<CustomProduct> lowestSort = delegate (CustomProduct product1, CustomProduct product2) { return (product2.CurrentPrice.CompareTo(product1.CurrentPrice)); };
+                //Comparison<CustomProduct> highestSort = delegate (CustomProduct product1, CustomProduct product2) { return (product1.CurrentPrice.CompareTo(product2.CurrentPrice)); };
+                //Comparison<CustomProduct> lowestSort = delegate (CustomProduct product1, CustomProduct product2) { return (product2.CurrentPrice.CompareTo(product1.CurrentPrice)); };
 
                 ProductSort highestPriceSort = new ProductSort()
                 {
                     SortName = sortNames[0],
-                    SortOperation = highestSort
+                    //SortOperation = highestSort
                 };
                 ProductSort lowestPriceSort = new ProductSort()
                 {
                     SortName = sortNames[1],
-                    SortOperation = lowestSort
+                    //SortOperation = lowestSort
                 };
 
                 context.ProductSorts.Add(highestPriceSort);

@@ -25,7 +25,7 @@ namespace dropShippingApp.HelperUtilities
         [HtmlAttributeNotBound]
         public ViewContext ViewContext { get; set; }
 
-        public PagingInfoVM PageModel { get; set; }
+        public BrowseViewModel PageModel { get; set; }
 
         public string PageAction { get; set; }
         

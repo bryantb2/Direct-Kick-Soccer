@@ -19,7 +19,6 @@ namespace dropShippingApp.Controllers
         private IRosterProductRepo rosterProductRepo;
         private ICustomProductRepo customProductRepo;
         private ISortRepo sortRepo;
-        public int PageSize=30//num of prod per page
 
         public ProductController(IRosterProductRepo rosterProductRepo,
             ICustomProductRepo customProductRepo,
@@ -45,27 +44,45 @@ namespace dropShippingApp.Controllers
             return View();
         }
 
-        public async Task<IActionResult> Search(string searchString, int productPage = 1) 
+        public async Task<IActionResult> Search(string searchString, int currentPage = -1) 
         {
-            // 
-            var csProduct = customProductRepo.CustomProducts;
-            var pagingInfo=new PagingInfoVM();
+            // search for products
+            var foundProducts = SearchByString(searchString);
+            var availableSorts = sortRepo.Sorts;
 
+            // setup view model
 
-            if (!String.IsNullOrEmpty(searchString))
+            var pagingInfo = new BrowseViewModel()
             {
-                csProduct = csProduct.Where(s => s.BaseProduct.Category.Name == searchString).OrderBy(p => p.CustomProductID)
-                    .Skip((productPage - 1) * PageSize)
-                    .Take(PageSize)
-                    .ToList();
-                pagingInfo.CurrentPge = productPage;
-                pagingInfo.ItemsPerPage = PageSize;
-                pagingInfo.TotalItems = customProductRepo.CustomProducts.Count();
-    
+                Sorts = availableSorts,
+                Products = foundProducts,
+                ItemsPerPage = 30,
+                CurrentPage = (currentPage == -1 ? 0 : currentPage),
+                SearchString = searchString,
+                CurrentCategory = null
+            };
 
-            }
-            
-               return View((csProduct,pagingInfo)); 
+            // return
+            return View("Search",pagingInfo);
+        }
+
+        public async Task<IActionResult> DisplayByCategory(int categoryId, int currentPage = -1)
+        {
+
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> SortView(int sortId, int categoryId = -1, string searchTerm = null, int currentPage = -1)
+        {
+            // get sort object and products from search
+            var foundSort = sortRepo.GetSortById(sortId);
+            var foundProducts = SearchByString(searchTerm);
+
+            // perform sort
+            foundProducts.Sort(foundSort.SortOperation);
+
+            // return list
+            return View("Search", foundProducts);
         }
 
         public async Task<IActionResult> GetProductBySKU(int SKU)
@@ -99,28 +116,6 @@ namespace dropShippingApp.Controllers
 
             // send to view
             return View(productViewModel);
-        }
-        
-        [HttpGet]
-        public async Task<IActionResult> SortView()
-        {
-            List<CustomProduct> prods = (from p in customProductRepo.CustomProducts
-                                         select p).ToList();
-            return View(prods);
-        }
-        
-        [HttpPost]
-        public async Task<IActionResult> SortView(string searchTerm, int sortId)
-        {
-            // get sort object and products from search
-            var foundSort = sortRepo.GetSortById(sortId);
-            var foundProducts = SearchByString(searchTerm);
-
-            // perform sort
-            foundProducts.Sort(foundSort.SortOperation);
-
-            // return list
-            return View("Search",foundProducts);
         }
 
         private List<CustomProduct> SearchByString(string searchString)
