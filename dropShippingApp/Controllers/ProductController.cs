@@ -19,22 +19,22 @@ namespace dropShippingApp.Controllers
         private IRosterProductRepo rosterProductRepo;
         private ICustomProductRepo customProductRepo;
         private ISortRepo sortRepo;
-        public int PageSize=30//num of prod per page
+        private ICategoryRepo categoryRepo;
 
         public ProductController(IRosterProductRepo rosterProductRepo,
             ICustomProductRepo customProductRepo,
-            ISortRepo sortRepo)
+            ISortRepo sortRepo,
+            ICategoryRepo categoryRepo)
         {
             this.rosterProductRepo = rosterProductRepo;
             this.customProductRepo = customProductRepo;
             this.sortRepo = sortRepo;
+            this.categoryRepo = categoryRepo;
         }
 
         public async Task<IActionResult> Index()
         {
-            //IQueryable<PricingHistory> result = await Repository.GetAllPriceHistAsync();
-            //return View(result.ToList());
-            return View();
+            return View("Search", null);
         }
 
 
@@ -45,27 +45,92 @@ namespace dropShippingApp.Controllers
             return View();
         }
 
-        public async Task<IActionResult> Search(string searchString, int productPage = 1) 
+        public async Task<IActionResult> Search(string searchString, int currentPage = -1) 
         {
-            // 
-            var csProduct = customProductRepo.CustomProducts;
-            var pagingInfo=new PagingInfoVM();
+            // search for products
+            var foundProducts = SearchByString(searchString);
+            var availableSorts = sortRepo.Sorts;
 
-
-            if (!String.IsNullOrEmpty(searchString))
+            // setup paging view model
+            var pagingInfo = new BrowseViewModel()
             {
-                csProduct = csProduct.Where(s => s.BaseProduct.Category.Name == searchString).OrderBy(p => p.CustomProductID)
-                    .Skip((productPage - 1) * PageSize)
-                    .Take(PageSize)
-                    .ToList();
-                pagingInfo.CurrentPge = productPage;
-                pagingInfo.ItemsPerPage = PageSize;
-                pagingInfo.TotalItems = customProductRepo.CustomProducts.Count();
-    
+                Sorts = availableSorts,
+                Products = foundProducts,
+                ItemsPerPage = 30,
+                CurrentPage = (currentPage == -1 ? 0 : currentPage),
+                SearchString = searchString,
+                CurrentCategory = null
+            };
 
+            // return
+            return View("Search", pagingInfo);
+        }
+
+        public async Task<IActionResult> DisplayByCategory(int categoryId, int currentPage = -1)
+        {
+            // get products by category
+            var filteredProducts = FilterProductsByCategory(categoryId);
+            var availableSorts = sortRepo.Sorts;
+
+            // get current category
+            var category = await categoryRepo.GetCategoryById(categoryId);
+
+            // setup paging view model
+            var pagingInfo = new BrowseViewModel()
+            {
+                Sorts = availableSorts,
+                Products = filteredProducts,
+                ItemsPerPage = 30,
+                CurrentPage = (currentPage == -1 ? 0 : currentPage),
+                SearchString = null,
+                CurrentCategory = category
+            };
+
+            // return
+            return View("Search", pagingInfo);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> SortProducts(int sortId, int categoryId = -1, string searchTerm = null, int currentPage = -1)
+        {
+            // IMPORTANT: at no point will the user be allowed to search AND browse by category AT THE SAME TIME
+            var availableSorts = sortRepo.Sorts;
+            var filteredProducts = new List<CustomProduct>();
+            if (categoryId != -1)
+            {
+                filteredProducts = FilterProductsByCategory(categoryId);
             }
-            
-               return View((csProduct,pagingInfo)); 
+            else
+            {
+                filteredProducts = SearchByString(searchTerm);
+            }
+
+            // get sort object and products from search
+            var foundSort = sortRepo.GetSortById(sortId);
+
+            // check sort type
+            if(foundSort.SortName.ToUpper() == "LOWEST PRICE")
+            {
+                filteredProducts.Sort((product1, product2) => product2.CurrentPrice.CompareTo(product1.CurrentPrice));
+            }
+            else if(foundSort.SortName.ToUpper() == "HIGHEST PRICE")
+            {
+                filteredProducts.Sort((product1, product2) => product1.CurrentPrice.CompareTo(product2.CurrentPrice));
+            }
+
+            // setup paging view model
+            var pagingInfo = new BrowseViewModel()
+            {
+                Sorts = availableSorts,
+                Products = filteredProducts,
+                ItemsPerPage = 30,
+                CurrentPage = (currentPage == -1 ? 0 : currentPage),
+                SearchString = (searchTerm == null ? null : searchTerm),
+                CurrentCategory = (categoryId != -1 ? await categoryRepo.GetCategoryById(categoryId) : null)
+            };
+
+            // return list
+            return View("Search", pagingInfo);
         }
 
         public async Task<IActionResult> GetProductBySKU(int SKU)
@@ -100,27 +165,11 @@ namespace dropShippingApp.Controllers
             // send to view
             return View(productViewModel);
         }
-        
-        [HttpGet]
-        public async Task<IActionResult> SortView()
-        {
-            List<CustomProduct> prods = (from p in customProductRepo.CustomProducts
-                                         select p).ToList();
-            return View(prods);
-        }
-        
-        [HttpPost]
-        public async Task<IActionResult> SortView(string searchTerm, int sortId)
-        {
-            // get sort object and products from search
-            var foundSort = sortRepo.GetSortById(sortId);
-            var foundProducts = SearchByString(searchTerm);
 
-            // perform sort
-            foundProducts.Sort(foundSort.SortOperation);
-
-            // return list
-            return View("Search",foundProducts);
+        private List<CustomProduct> FilterProductsByCategory(int categoryId)
+        {
+            var filteredProducts = customProductRepo.CustomProducts.Where(product => product.BaseProduct.Category.ProductCategoryID == categoryId);
+            return filteredProducts.ToList();
         }
 
         private List<CustomProduct> SearchByString(string searchString)
