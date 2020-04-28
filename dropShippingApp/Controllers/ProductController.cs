@@ -19,7 +19,8 @@ namespace dropShippingApp.Controllers
         private IRosterProductRepo rosterProductRepo;
         private ICustomProductRepo customProductRepo;
         private ISortRepo sortRepo;
-        public int PageSize=30//num of prod per page
+        //num of prod per page
+        public int PageSize = 30;
 
         public ProductController(IRosterProductRepo rosterProductRepo,
             ICustomProductRepo customProductRepo,
@@ -45,28 +46,44 @@ namespace dropShippingApp.Controllers
             return View();
         }
 
-        public async Task<IActionResult> Search(string searchString, int productPage = 1) 
+            public ViewResult Search(string category, int productPage = 1)
+        => View(new BrowseViewModel
         {
-            // 
-            var csProduct = customProductRepo.CustomProducts;
-            var pagingInfo=new PagingInfoVM();
-
-
-            if (!String.IsNullOrEmpty(searchString))
+            Products = rosterProductRepo.RosterProducts
+                .Where(p => category == null || p.Category.ToString() == category)
+                .OrderBy(p => p.RosterProductID)
+                .Skip((productPage - 1) * PageSize)
+                .Take(PageSize),
+            PagingInfo = new BrowseViewModel
             {
-                csProduct = csProduct.Where(s => s.BaseProduct.Category.Name == searchString).OrderBy(p => p.CustomProductID)
-                    .Skip((productPage - 1) * PageSize)
-                    .Take(PageSize)
-                    .ToList();
-                pagingInfo.CurrentPge = productPage;
-                pagingInfo.ItemsPerPage = PageSize;
-                pagingInfo.TotalItems = customProductRepo.CustomProducts.Count();
-    
+                CurrentPage = productPage,
+                ItemsPerPage = PageSize,
+                TotalItems = category == null ?
+                    rosterProductRepo.RosterProducts.Count() :
+                   rosterProductRepo.RosterProducts.Where(e =>
+                        e.Category.ToString() == category).Count()
+            },
+            CurrentCategory = category
+        });
 
-            }
-            
-               return View((csProduct,pagingInfo)); 
-        }
+        //public async Task<IActionResult> Search(string searchString, int productPage = 1) 
+        //{
+        //    var csProduct = customProductRepo.CustomProducts;
+        //    var pagingInfo = new BrowseViewModel();
+
+        //    if (!String.IsNullOrEmpty(searchString))
+        //    {
+        //        csProduct = csProduct.Where(s => s.BaseProduct.Category.Name == searchString).OrderBy(p => p.CustomProductID)
+        //            .Skip((productPage - 1) * PageSize)
+        //            .Take(PageSize)
+        //            .ToList();
+        //        pagingInfo.CurrentPage = productPage;
+        //        pagingInfo.ItemsPerPage = PageSize;
+        //        pagingInfo.TotalItems = customProductRepo.CustomProducts.Count();
+        //    }
+
+        //    return View((csProduct, pagingInfo));
+        //}
 
         public async Task<IActionResult> GetProductBySKU(int SKU)
         {

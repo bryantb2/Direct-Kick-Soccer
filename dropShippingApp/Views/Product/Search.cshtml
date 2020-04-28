@@ -1,6 +1,9 @@
-﻿@model IEnumerable<dropShippingApp.Models.CustomProduct>
-@{ ViewData["Title"] = "Search"; }
-@
+﻿@*@model IEnumerable<dropShippingApp.Models.CustomProduct>*@
+@model BrowseViewModel
+@{ 
+    ViewData["Title"] = "Search";
+    Layout = "_Layout";
+}
 <h1>Search</h1>
 <p>    <a asp-action="Create">Create New</a> </p>
 <form asp-controller="Product" asp-action="Search" method="get">
