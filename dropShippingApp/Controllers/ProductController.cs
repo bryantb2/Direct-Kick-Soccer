@@ -240,7 +240,7 @@ namespace dropShippingApp.Controllers
 
         private List<CustomProduct> SearchByString(string searchString)
         {
-            if(searchString.Length <= 2)
+            if(searchString.Length >= 2)
             {
                 // clean search term
                 var cleanedSearchTerm = searchString.Trim().Split(' ');
