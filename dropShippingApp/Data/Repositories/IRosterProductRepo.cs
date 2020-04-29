@@ -8,9 +8,6 @@ namespace dropShippingApp.Data.Repositories
 {
     public interface IRosterProductRepo
     {
-       IQueryable<RosterProduct> RosterProducts { get; }
-
-        // This might not be needed
         List<RosterProduct> GetRosterProducts {get;}
         // CRUD operations for RosterProducts
         Task AddRosterProduct(RosterProduct newProduct);

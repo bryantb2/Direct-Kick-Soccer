@@ -46,7 +46,6 @@ namespace dropShippingApp.HelperUtilities
                 result.InnerHtml.AppendHtml(tag);
             }
             output.Content.AppendHtml(result.InnerHtml);*/
-        }
        
     }
 }
