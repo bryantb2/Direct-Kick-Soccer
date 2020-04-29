@@ -14,5 +14,6 @@ namespace dropShippingApp.Models
         //[Required]
         //[MaxLength(50, ErrorMessage = "Cannot be longer than 50 characters.")]
         //public string BriefDescription { get; set; }
+        public string Category { get; set; }
     }
 }

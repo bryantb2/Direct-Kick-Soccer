@@ -174,6 +174,28 @@ namespace dropShippingApp.Controllers
             // return list
             return View("Search", browseVM);
         }
+            
+            public ViewResult SearchOld(string category, int productPage = 1)
+        => View(new BrowseViewModel
+        {
+            Products = rosterProductRepo.RosterProducts
+                .Where(p => category == null || p.Category.ToString() == category)
+                .OrderBy(p => p.RosterProductID)
+                .Skip((productPage - 1) * PageSize)
+                .Take(PageSize),
+            PagingInfo = new BrowseViewModel
+            {
+                CurrentPage = productPage,
+                ItemsPerPage = PageSize,
+                TotalItems = category == null ?
+                    rosterProductRepo.RosterProducts.Count() :
+                   rosterProductRepo.RosterProducts.Where(e =>
+                        e.Category.ToString() == category).Count()
+            },
+            CurrentCategory = category
+        });
+
+
 
         public async Task<IActionResult> GetProductBySKU(int SKU)
         {
