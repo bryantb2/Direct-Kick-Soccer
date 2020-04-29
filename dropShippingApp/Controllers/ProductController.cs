@@ -37,12 +37,51 @@ namespace dropShippingApp.Controllers
             return View("Search", null);
         }
 
-
-        public async Task<IActionResult> PopularItems()
+        public async Task<IActionResult> ViewProduct(int productId)
         {
-            // TODO
-            // returns team results page 
-            return View();
+            // get product
+            var foundProduct = await customProductRepo.GetCustomProductById(productId);
+
+            var productViewModel = new ProductViewModel
+            {
+                Product = foundProduct,
+                Quantity = 1
+            };
+
+            // send to view
+            return View(productViewModel);
+        }
+
+        public async Task<IActionResult> NextPage(int currentPage, int categoryId = -1, string searchTerm = null)
+        {
+            if (searchTerm != null)
+                return RedirectToAction("Search", new
+                {
+                    searchString = searchTerm,
+                    currentPage = currentPage + 1
+                });
+            else
+                return RedirectToAction("DisplayByCategory", new
+                {
+                    categoryId = categoryId,
+                    currentPage = currentPage + 1
+                });
+        }
+
+        public async Task<IActionResult> PreviousPage(int currentPage, int categoryId = -1, string searchTerm = null)
+        {
+            if (searchTerm != null)
+                return RedirectToAction("Search", new
+                {
+                    searchString = searchTerm,
+                    currentPage = currentPage - 1
+                });
+            else
+                return RedirectToAction("DisplayByCategory", new
+                {
+                    categoryId = categoryId,
+                    currentPage = currentPage - 1
+                });
         }
 
         public async Task<IActionResult> Search(string searchString, int currentPage = -1) 
@@ -51,12 +90,17 @@ namespace dropShippingApp.Controllers
             var foundProducts = SearchByString(searchString);
             var availableSorts = sortRepo.Sorts;
 
+            // setup starting and ending product numbers
+            var itemsPerPage = 30;
+            var startProduct = (currentPage == -1 ? 0 : currentPage) * itemsPerPage;
+            var endProduct = startProduct + 30;
+
             // setup paging view model
             var pagingInfo = new BrowseViewModel()
             {
                 Sorts = availableSorts,
-                Products = foundProducts,
-                ItemsPerPage = 30,
+                Products = SplitList(foundProducts, startProduct, endProduct),
+                ItemsPerPage = itemsPerPage,
                 CurrentPage = (currentPage == -1 ? 0 : currentPage),
                 SearchString = searchString,
                 CurrentCategory = null
@@ -69,17 +113,22 @@ namespace dropShippingApp.Controllers
         public async Task<IActionResult> DisplayByCategory(int categoryId, int currentPage = -1)
         {
             // get products by category
-            var filteredProducts = FilterProductsByCategory(categoryId);
+            var categoryProducts = FilterProductsByCategory(categoryId);
             var availableSorts = sortRepo.Sorts;
 
             // get current category
             var category = await categoryRepo.GetCategoryById(categoryId);
 
+            // setup starting and ending product numbers
+            var itemsPerPage = 30;
+            var startProduct = (currentPage == -1 ? 0 : currentPage) * itemsPerPage;
+            var endProduct = startProduct + 30;
+
             // setup paging view model
             var pagingInfo = new BrowseViewModel()
             {
                 Sorts = availableSorts,
-                Products = filteredProducts,
+                Products = SplitList(categoryProducts, startProduct, endProduct),
                 ItemsPerPage = 30,
                 CurrentPage = (currentPage == -1 ? 0 : currentPage),
                 SearchString = null,
@@ -94,7 +143,8 @@ namespace dropShippingApp.Controllers
         public async Task<IActionResult> SortProducts(int sortId, int categoryId = -1, string searchTerm = null, int currentPage = -1)
         {
             // IMPORTANT: at no point will the user be allowed to search AND browse by category AT THE SAME TIME
-            var availableSorts = sortRepo.Sorts;
+
+            // get products by appropriate query
             var filteredProducts = new List<CustomProduct>();
             if (categoryId != -1)
             {
@@ -106,6 +156,7 @@ namespace dropShippingApp.Controllers
             }
 
             // get sort object and products from search
+            var availableSorts = sortRepo.Sorts;
             var foundSort = sortRepo.GetSortById(sortId);
 
             // check sort type
@@ -118,11 +169,16 @@ namespace dropShippingApp.Controllers
                 filteredProducts.Sort((product1, product2) => product1.CurrentPrice.CompareTo(product2.CurrentPrice));
             }
 
+            // setup starting and ending product numbers
+            var itemsPerPage = 30;
+            var startProduct = (currentPage == -1 ? 0 : currentPage) * itemsPerPage;
+            var endProduct = startProduct + 30;
+
             // setup paging view model
             var pagingInfo = new BrowseViewModel()
             {
                 Sorts = availableSorts,
-                Products = filteredProducts,
+                Products = SplitList(filteredProducts, startProduct, endProduct),
                 ItemsPerPage = 30,
                 CurrentPage = (currentPage == -1 ? 0 : currentPage),
                 SearchString = (searchTerm == null ? null : searchTerm),
@@ -151,19 +207,21 @@ namespace dropShippingApp.Controllers
             throw new NotImplementedException();
         }
 
-        public async Task<IActionResult> ViewProduct(int productId)
+        // private actions
+        private List<CustomProduct> SplitList(List<CustomProduct> filterableList, int start, int end)
         {
-            // get product
-            var foundProduct = await customProductRepo.GetCustomProductById(productId);
+            // remember: index is one behind the actual product number in the list
+            if (filterableList.Count == 0)
+                return filterableList;
 
-            var productViewModel = new ProductViewModel
+            // check if end parameter is higher than remain filterable list count (prevent out of range error
+            var checkedEnd = (filterableList.Count - end) < 0 ? filterableList.Count : end;
+            var splitList = new List<CustomProduct>();
+            for(var i = start; i <= checkedEnd - 1; i++)
             {
-                Product = foundProduct,
-                Quantity = 1
-            };
-
-            // send to view
-            return View(productViewModel);
+                splitList.Add(filterableList[i]);
+            }
+            return splitList;
         }
 
         private List<CustomProduct> FilterProductsByCategory(int categoryId)

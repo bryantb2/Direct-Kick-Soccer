@@ -11,6 +11,31 @@
                     <button class="btn" type="submit">Search</button>
                 </div>
             </form>
+
+            @if (Model != null)
+            {
+                <div class="dropdown">
+                    <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Sort Products
+                    </button>
+                    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                        @if (Model.SearchString != null)
+                        {
+                            @foreach (var sort in Model.Sorts)
+                            {
+                                <a class="dropdown-item" asp-controller="Product" asp-action="SortProducts" asp-route-sortId=@sort.ProductSortID asp-route-searchTerm=@Model.SearchString asp-route-currentPage=@Model.CurrentPage>@sort.SortName</a>
+                            }
+                        }
+                        else
+                        {
+                            @foreach (var sort in Model.Sorts)
+                            {
+                                <a class="dropdown-item" asp-controller="Product" asp-action="SortProducts" asp-route-sortId=@sort.ProductSortID asp-route-categoryId=@Model.CurrentCategory.ProductCategoryID asp-route-currentPage=@Model.CurrentPage>@sort.SortName</a>
+                            }
+                        }
+                    </div>
+                </div>
+            }
         </div>
 
         <br />
