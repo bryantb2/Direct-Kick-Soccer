@@ -10,16 +10,31 @@ namespace dropShippingApp.Data.Repositories.RealRepos
     public class RealCustomProductRepo : ICustomProductRepo
     {
         private ApplicationDbContext context;
-        public List<CustomProduct> CustomProducts { get { return context.CustomProducts.Include(p=>p.BaseProduct)
-                                                                                        .Include(p=>p.ProductTags)
-                                                                                        .Include(p=>p.PricingHistory)
-                                                                                        .ToList(); 
-            } }
-
- 
         public RealCustomProductRepo(ApplicationDbContext appDbContext)
         {
             context = appDbContext;
+        }
+
+        public List<CustomProduct> CustomProducts 
+        { 
+            get 
+            {
+                return this.context.CustomProducts
+                    .Include(product => product.ProductTags)
+                    .Include(product => product.PricingHistory)
+                    .Include(product => product.BaseProduct)
+                    .Include(product => product.BaseProduct)
+                        .ThenInclude(baseProduct => baseProduct.BaseColor)
+                    .Include(product => product.BaseProduct)
+                        .ThenInclude(baseProduct => baseProduct.BaseSize)
+                    .Include(product => product.BaseProduct)
+                        .ThenInclude(baseProduct => baseProduct.ProductTags)
+                    .Include(product => product.BaseProduct)
+                        .ThenInclude(baseProduct => baseProduct.PricingHistory)
+                    .Include(product => product.BaseProduct)
+                        .ThenInclude(baseProduct => baseProduct.Category)
+                    .ToList();
+            } 
         }
 
         // methods
@@ -27,25 +42,6 @@ namespace dropShippingApp.Data.Repositories.RealRepos
         {
             context.CustomProducts.Add(newProduct);
             await context.SaveChangesAsync();
-        }
-
-        public List<CustomProduct> GetAllCustomProducts()
-        {
-            return this.context.CustomProducts
-                .Include(product => product.ProductTags)
-                .Include(product => product.PricingHistory)
-                .Include(product => product.BaseProduct)
-                .Include(product => product.BaseProduct)
-                    .ThenInclude(baseProduct => baseProduct.BaseColor)
-                .Include(product => product.BaseProduct)
-                    .ThenInclude(baseProduct => baseProduct.BaseSize)
-                .Include(product => product.BaseProduct)
-                    .ThenInclude(baseProduct => baseProduct.ProductTags)
-                .Include(product => product.BaseProduct)
-                    .ThenInclude(baseProduct => baseProduct.PricingHistory)
-                .Include(product => product.BaseProduct)
-                    .ThenInclude(baseProduct => baseProduct.Category)
-                .ToList();
         }
 
         public async Task<CustomProduct> GetCustomProductById(int customProductId)

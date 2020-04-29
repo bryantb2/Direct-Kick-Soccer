@@ -205,21 +205,12 @@ namespace dropShippingApp.Controllers
 
         private bool DoesQueryContainString(string[] query, string stringToCheck)
         {
-            foreach(var term in query)
+            var stringAsTolken = stringToCheck.Split(' ');
+            foreach (var searchTerm in query)
             {
-                if (term.ToUpper() == stringToCheck.ToUpper())
-                    return true;
-            }
-            return false;
-        }
-
-        private bool DoesQueryContainString(string[] query, string[] stringsToCheck)
-        {
-            foreach (var term in query)
-            {
-                foreach(var checkAgainstTerm in stringsToCheck)
+                foreach(var checkAgainstTerm in stringAsTolken)
                 {
-                    if (term.ToUpper() == checkAgainstTerm.ToUpper())
+                    if (searchTerm.ToUpper() == checkAgainstTerm.ToUpper())
                         return true;
                 }
             }
@@ -228,15 +219,20 @@ namespace dropShippingApp.Controllers
 
         private bool DoesQueryContainString(string[] query, List<Tag> tagsToCheck)
         {
-            foreach (var term in query)
+            if (tagsToCheck == null)
+                return false;
+            else
             {
-                foreach (var tag in tagsToCheck)
+                foreach (var term in query)
                 {
-                    if (term.ToUpper() == tag.TagLine.ToUpper())
-                        return true;
+                    foreach (var tag in tagsToCheck)
+                    {
+                        if (term.ToUpper() == tag.TagLine.ToUpper())
+                            return true;
+                    }
                 }
+                return false;
             }
-            return false;
         }
     }
 }
