@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace dropShippingApp.Migrations
 {
-    public partial class initial : Migration
+    public partial class Initial : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -40,7 +40,8 @@ namespace dropShippingApp.Migrations
                 {
                     ProductCategoryID = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(nullable: false)
+                    Name = table.Column<string>(nullable: false),
+                    Category = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
                 {
@@ -86,6 +87,19 @@ namespace dropShippingApp.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_ProductSizes", x => x.ProductSizeID);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "ProductSorts",
+                columns: table => new
+                {
+                    ProductSortID = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    SortName = table.Column<string>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ProductSorts", x => x.ProductSortID);
                 });
 
             migrationBuilder.CreateTable(
@@ -826,6 +840,9 @@ namespace dropShippingApp.Migrations
 
             migrationBuilder.DropTable(
                 name: "PricingHistories");
+
+            migrationBuilder.DropTable(
+                name: "ProductSorts");
 
             migrationBuilder.DropTable(
                 name: "QuestionResponses");
