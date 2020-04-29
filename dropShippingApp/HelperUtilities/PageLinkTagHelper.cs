@@ -33,7 +33,7 @@ namespace dropShippingApp.HelperUtilities
                                         TagHelperOutput output)
         {
 
-            IUrlHelper urlHelper = urlHelperFactory.GetUrlHelper(ViewContext);
+            /*IUrlHelper urlHelper = urlHelperFactory.GetUrlHelper(ViewContext);
             TagBuilder result = new TagBuilder("div");
             for(int i=1;i<=PageModel.TotalPages;i++)
             {
@@ -42,7 +42,7 @@ namespace dropShippingApp.HelperUtilities
                 tag.InnerHtml.Append(i.ToString());
                 result.InnerHtml.AppendHtml(tag);
             }
-            output.Content.AppendHtml(result.InnerHtml);
+            output.Content.AppendHtml(result.InnerHtml);*/
         }
        
 

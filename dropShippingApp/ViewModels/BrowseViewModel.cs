@@ -9,10 +9,10 @@ namespace dropShippingApp.ViewModels
     public class BrowseViewModel
     {
         public string SearchString { get; set; }
-        public int ItemsPerPage { get; set; }
         public int CurrentPage { get; set; }
-        public int TotalPages => (int)Math.Ceiling((decimal)Products.Count / ItemsPerPage);
-        public List<ProductSort> Sorts { get; set; }
+        public bool NextPageExists { get; set; }
+        public bool PreviousPageExists { get; set; }
+        //public List<ProductSort> Sorts { get; set; }
         public List<CustomProduct> Products { get; set; }
         public ProductCategory CurrentCategory { get; set; }
     }
