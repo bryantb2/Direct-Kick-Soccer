@@ -1,7 +1,10 @@
-﻿using dropShippingApp.Models;
+﻿using dropShippingApp.Data.Repositories;
+using dropShippingApp.HelperUtilities;
+using dropShippingApp.Models;
 using dropShippingApp.ViewModels;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,33 +15,73 @@ namespace dropShippingApp.Controllers
 {
     public class AccountController:Controller
     {
+        // Private fields
+        private IUserRepo userRepo;
         private UserManager<AppUser> userManager;
-        private SignInManager<AppUser> signInManager;
+        private IConfiguration configuration;
 
-        public AccountController(UserManager<AppUser> usrMgr, SignInManager<AppUser> signInMgr)
+        public AccountController(
+            IUserRepo userRepo,
+            UserManager<AppUser> userManager,
+            IConfiguration configuration)
         {
-            signInManager = signInMgr;
-            userManager = usrMgr;
+            this.userRepo = userRepo;
+            this.userManager = userManager;
+            this.configuration = configuration;
         }
 
-        public async Task<IActionResult> Login(LoginViewModel model, string returnUrl)
+        public async Task<IActionResult> Index()
         {
-            if (ModelState.IsValid)
-            {
-                AppUser user = await userManager.FindByEmailAsync(model.Email);
-                if (user != null)
-                {
-                    await signInManager.SignOutAsync();
-                    var result = await signInManager.PasswordSignInAsync(user, model.Password, false, false);
-                    if (result.Succeeded)
-                    {
-                        return Redirect(returnUrl ?? "/");
-                    }
-                }
-                ModelState.AddModelError(nameof(LoginViewModel.Email), "Invalid user or password");
+            // get user account info
+            var user = await userRepo.GetUserDataAsync(HttpContext.User);
+            var accountData = BuildAccountData(user);
 
+            // return view
+            return View(accountData);
+        }
+
+        public async Task<IActionResult> ViewOrders()
+        {
+            // get user account info
+            var user = await userRepo.GetUserDataAsync(HttpContext.User);
+
+            // compile orders from paypal
+            var accountInfo = new AccountViewModel();
+            var orderList = new List<PayPalCheckoutSdk.Orders.Order>();
+            for(var i = 0; i < user.UserOrderHistory.Count; i++)
+            {
+                var currentUserOrder = user.UserOrderHistory[i];
+                var paypalOrder = await PaypalTransaction
+                    .GetOrder(configuration, currentUserOrder.PaypalOrderId);
+                orderList.Add(paypalOrder);
             }
-            return View(model);
+
+            accountInfo.OrderList = orderList;
+
+            // return view
+            return View(accountInfo);
+        }
+
+        public async Task<IActionResult> UpdateEmail(string newEmail)
+        {
+            // set data in user manager
+
+            // update user
+
+            // setup user data view model
+
+            // return view
+            return View("Index");
+        }
+
+        private AccountViewModel BuildAccountData(AppUser userData)
+        {
+            return new AccountViewModel()
+            {
+                Email = userData.Email,
+                FName = userData.FirstName,
+                LName = userData.LastName
+            };
         }
     }
 }

@@ -26,11 +26,11 @@ namespace dropShippingApp.HelperUtilities
          * 
          */
 
-        public async static Task<HttpResponse> GetOrder(IConfiguration configuration, string orderId)
+        public async static Task<PayPalCheckoutSdk.Orders.Order> GetOrder(IConfiguration configuration, string orderId)
         {
             var request = new OrdersGetRequest(orderId);
             var response = await PayPalClient.Client(configuration).Execute(request);
-            return response;
+            return response.Result<PayPalCheckoutSdk.Orders.Order>();
         }
 
         public async static Task<PayPalCheckoutSdk.Orders.Order> ProcessOrder(IConfiguration configuration, string orderId)
