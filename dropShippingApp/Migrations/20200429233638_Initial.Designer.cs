@@ -10,8 +10,8 @@ using dropShippingApp.Data;
 namespace dropShippingApp.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20200427212940_initial")]
-    partial class initial
+    [Migration("20200429233638_Initial")]
+    partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -436,6 +436,9 @@ namespace dropShippingApp.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+                    b.Property<string>("Category")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -480,6 +483,21 @@ namespace dropShippingApp.Migrations
                     b.HasKey("ProductSizeID");
 
                     b.ToTable("ProductSizes");
+                });
+
+            modelBuilder.Entity("dropShippingApp.Models.ProductSort", b =>
+                {
+                    b.Property<int>("ProductSortID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("SortName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("ProductSortID");
+
+                    b.ToTable("ProductSorts");
                 });
 
             modelBuilder.Entity("dropShippingApp.Models.Province", b =>

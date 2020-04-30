@@ -434,6 +434,9 @@ namespace dropShippingApp.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+                    b.Property<string>("Category")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -478,6 +481,21 @@ namespace dropShippingApp.Migrations
                     b.HasKey("ProductSizeID");
 
                     b.ToTable("ProductSizes");
+                });
+
+            modelBuilder.Entity("dropShippingApp.Models.ProductSort", b =>
+                {
+                    b.Property<int>("ProductSortID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("SortName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("ProductSortID");
+
+                    b.ToTable("ProductSorts");
                 });
 
             modelBuilder.Entity("dropShippingApp.Models.Province", b =>

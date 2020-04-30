@@ -37,121 +37,163 @@ namespace dropShippingApp.Controllers
             return View("Search", null);
         }
 
-
-        public async Task<IActionResult> PopularItems()
+        public async Task<IActionResult> ViewProduct(int productId)
         {
-            // TODO
-            // returns team results page 
-            return View();
+            // get product
+            var foundProduct = await customProductRepo.GetCustomProductById(productId);
+
+            var productViewModel = new ProductViewModel
+            {
+                Product = foundProduct,
+                Quantity = 1
+            };
+
+            // send to view
+            return View(productViewModel);
+        }
+
+        public async Task<IActionResult> BackToFirstPage(int categoryId = -1, string searchTerm = null)
+        {
+            if (searchTerm != null)
+                return RedirectToAction("Search", new
+                {
+                    searchString = searchTerm,
+                    currentPage = 0
+                });
+            else
+                return RedirectToAction("DisplayByCategory", new
+                {
+                    categoryId = categoryId,
+                    currentPage = 0
+                });
+        }
+
+        public async Task<IActionResult> NextPage(int currentPage, int categoryId = -1, string searchTerm = null)
+        {
+            if (searchTerm != null)
+                return RedirectToAction("Search", new
+                {
+                    searchString = searchTerm,
+                    currentPage = currentPage + 1
+                });
+            else
+                return RedirectToAction("DisplayByCategory", new
+                {
+                    categoryId = categoryId,
+                    currentPage = currentPage + 1
+                });
+        }
+
+        public async Task<IActionResult> PreviousPage(int currentPage, int categoryId = -1, string searchTerm = null)
+        {
+            if (searchTerm != null)
+                return RedirectToAction("Search", new
+                {
+                    searchString = searchTerm,
+                    currentPage = currentPage - 1
+                });
+            else
+                return RedirectToAction("DisplayByCategory", new
+                {
+                    categoryId = categoryId,
+                    currentPage = currentPage - 1
+                });
         }
 
         public async Task<IActionResult> Search(string searchString, int currentPage = -1) 
         {
             // search for products
             var foundProducts = SearchByString(searchString);
-            var availableSorts = sortRepo.Sorts;
 
-            // setup paging view model
-            var pagingInfo = new BrowseViewModel()
-            {
-                Sorts = availableSorts,
-                Products = foundProducts,
-                ItemsPerPage = 30,
-                CurrentPage = (currentPage == -1 ? 0 : currentPage),
-                SearchString = searchString,
-                CurrentCategory = null
-            };
+            // create browse view model
+            var browseVM = CreateBrowseObject(
+                foundProducts, 
+                currentPage == -1 ? 0 : currentPage, 
+                searchTerm: searchString);
 
-            // return
-            return View("Search", pagingInfo);
+            // return view
+            return View("Search", browseVM);
         }
 
         public async Task<IActionResult> DisplayByCategory(int categoryId, int currentPage = -1)
         {
             // get products by category
-            var filteredProducts = FilterProductsByCategory(categoryId);
-            var availableSorts = sortRepo.Sorts;
+            var categoryProducts = FilterProductsByCategory(categoryId);
 
             // get current category
             var category = await categoryRepo.GetCategoryById(categoryId);
 
-            // setup paging view model
-            var pagingInfo = new BrowseViewModel()
-            {
-                Sorts = availableSorts,
-                Products = filteredProducts,
-                ItemsPerPage = 30,
-                CurrentPage = (currentPage == -1 ? 0 : currentPage),
-                SearchString = null,
-                CurrentCategory = category
-            };
+            // create browse view model
+            var browseVM = CreateBrowseObject(
+                categoryProducts,
+                currentPage == -1 ? 0 : currentPage,
+                categoryObj: category);
 
-            // return
-            return View("Search", pagingInfo);
+            // return view
+            return View("Search", browseVM);
         }
 
-        [HttpPost]
         public async Task<IActionResult> SortProducts(int sortId, int categoryId = -1, string searchTerm = null, int currentPage = -1)
         {
             // IMPORTANT: at no point will the user be allowed to search AND browse by category AT THE SAME TIME
-            var availableSorts = sortRepo.Sorts;
-            var filteredProducts = new List<CustomProduct>();
-            if (categoryId != -1)
-            {
-                filteredProducts = FilterProductsByCategory(categoryId);
-            }
-            else
-            {
-                filteredProducts = SearchByString(searchTerm);
-            }
 
-            // get sort object and products from search
+            // get products by appropriate query
+            var filteredProducts = categoryId != -1 ? FilterProductsByCategory(categoryId) : SearchByString(searchTerm);
+
+            // get sort and check sort type
             var foundSort = sortRepo.GetSortById(sortId);
-
-            // check sort type
             if(foundSort.SortName.ToUpper() == "LOWEST PRICE")
-            {
-                filteredProducts.Sort((product1, product2) => product2.CurrentPrice.CompareTo(product1.CurrentPrice));
-            }
-            else if(foundSort.SortName.ToUpper() == "HIGHEST PRICE")
             {
                 filteredProducts.Sort((product1, product2) => product1.CurrentPrice.CompareTo(product2.CurrentPrice));
             }
-
-            // setup paging view model
-            var pagingInfo = new BrowseViewModel()
+            else if(foundSort.SortName.ToUpper() == "HIGHEST PRICE")
             {
-                Sorts = availableSorts,
-                Products = filteredProducts,
-                ItemsPerPage = 30,
-                CurrentPage = (currentPage == -1 ? 0 : currentPage),
-                SearchString = (searchTerm == null ? null : searchTerm),
-                CurrentCategory = (categoryId != -1 ? await categoryRepo.GetCategoryById(categoryId) : null)
-            };
+                filteredProducts.Sort((product1, product2) => product2.CurrentPrice.CompareTo(product1.CurrentPrice));
+            }
+
+            // create browse view model
+            BrowseViewModel browseVM = null;
+            if (categoryId != -1)
+            {
+                // means user is browsing by category
+                var foundCategory = await categoryRepo.GetCategoryById(categoryId);
+                browseVM = CreateBrowseObject(
+                    filteredProducts,
+                    currentPage == -1 ? 0 : currentPage,
+                    categoryObj: foundCategory);
+            }
+            else
+            {
+                // user is browsing products THEY searched
+                browseVM = CreateBrowseObject(
+                    filteredProducts,
+                    currentPage == -1 ? 0 : currentPage,
+                    searchTerm: searchTerm);
+            }
 
             // return list
-            return View("Search", pagingInfo);
+            return View("Search", browseVM);
         }
             
-            public ViewResult SearchOld(string category, int productPage = 1)
-        => View(new BrowseViewModel
-        {
-            Products = rosterProductRepo.RosterProducts
-                .Where(p => category == null || p.Category.ToString() == category)
-                .OrderBy(p => p.RosterProductID)
-                .Skip((productPage - 1) * PageSize)
-                .Take(PageSize),
-            PagingInfo = new BrowseViewModel
-            {
-                CurrentPage = productPage,
-                ItemsPerPage = PageSize,
-                TotalItems = category == null ?
-                    rosterProductRepo.RosterProducts.Count() :
-                   rosterProductRepo.RosterProducts.Where(e =>
-                        e.Category.ToString() == category).Count()
-            },
-            CurrentCategory = category
-        });
+        //    public ViewResult SearchOld(string category, int productPage = 1)
+        //=> View(new BrowseViewModel
+        //{
+        //    Products = rosterProductRepo.RosterProducts
+        //        .Where(p => category == null || p.Category.ToString() == category)
+        //        .OrderBy(p => p.RosterProductID)
+        //        .Skip((productPage - 1) * PageSize)
+        //        .Take(PageSize),
+        //    PagingInfo = new BrowseViewModel
+        //    {
+        //        CurrentPage = productPage,
+        //        ItemsPerPage = PageSize,
+        //        TotalItems = category == null ?
+        //            rosterProductRepo.RosterProducts.Count() :
+        //           rosterProductRepo.RosterProducts.Where(e =>
+        //                e.Category.ToString() == category).Count()
+        //    },
+        //    CurrentCategory = category
+        //});
 
 
 
@@ -173,19 +215,43 @@ namespace dropShippingApp.Controllers
             throw new NotImplementedException();
         }
 
-        public async Task<IActionResult> ViewProduct(int productId)
+        // private actions
+        private BrowseViewModel CreateBrowseObject(List<CustomProduct> queriedProducts, int currentPageNumber, ProductCategory categoryObj = null, string searchTerm = null)
         {
-            // get product
-            var foundProduct = await customProductRepo.GetCustomProductById(productId);
+            // setup starting and ending product indexes
+            var itemsPerPage = 30;
+            var startProduct = currentPageNumber * itemsPerPage;
+            var endProduct = startProduct + 30;
 
-            var productViewModel = new ProductViewModel
+            // setup paging view model
+            var pagingInfo = new BrowseViewModel()
             {
-                Product = foundProduct,
-                Quantity = 1
+                Products = SplitList(queriedProducts, startProduct, endProduct),
+                CurrentPage = currentPageNumber,
+                SearchString = searchTerm == null ? null : searchTerm,
+                CurrentCategory = categoryObj == null ? null : categoryObj,
+                // next page exists if the number of products left in the query is greater than the total number of dispalyed products
+                NextPageExists = queriedProducts.Count > endProduct ? true : false,
+                PreviousPageExists = startProduct - itemsPerPage > 0 ? true : false
             };
 
-            // send to view
-            return View(productViewModel);
+            return pagingInfo;
+        }
+
+        private List<CustomProduct> SplitList(List<CustomProduct> filterableList, int start, int end)
+        {
+            // remember: index is one behind the actual product number in the list
+            if (filterableList.Count == 0)
+                return filterableList;
+
+            // check if end parameter is higher than remain filterable list count (prevent out of range error
+            var checkedEnd = (filterableList.Count - end) < 0 ? filterableList.Count : end;
+            var splitList = new List<CustomProduct>();
+            for(var i = start; i <= checkedEnd - 1; i++)
+            {
+                splitList.Add(filterableList[i]);
+            }
+            return splitList;
         }
 
         private List<CustomProduct> FilterProductsByCategory(int categoryId)
@@ -196,52 +262,47 @@ namespace dropShippingApp.Controllers
 
         private List<CustomProduct> SearchByString(string searchString)
         {
-            // clean search term
-            var cleanedSearchTerm = searchString.Trim().Split(' ');
-            // checks product tags, title, color, size, SKU, model number
-            var customProducts = customProductRepo.CustomProducts;
-            var foundProducts = new List<CustomProduct>();
-            foreach(var product in customProducts)
+            if(searchString.Length >= 2)
             {
-                if (DoesQueryContainString(cleanedSearchTerm, product.ProductTitle))
-                    foundProducts.Add(product);
-                else if (DoesQueryContainString(cleanedSearchTerm, product.ProductTags))
-                    foundProducts.Add(product);
-                else if (DoesQueryContainString(cleanedSearchTerm, product.BaseProduct.ProductTags))
-                    foundProducts.Add(product);
-                else if (DoesQueryContainString(cleanedSearchTerm, product.BaseProduct.ModelNumber.ToString()))
-                    foundProducts.Add(product);
-                else if (DoesQueryContainString(cleanedSearchTerm, product.BaseProduct.SKU.ToString()))
-                    foundProducts.Add(product);
-                else if (DoesQueryContainString(cleanedSearchTerm, product.BaseProduct.BaseColor.ColorName))
-                    foundProducts.Add(product);
-                else if (DoesQueryContainString(cleanedSearchTerm, product.BaseProduct.BaseSize.SizeName))
-                    foundProducts.Add(product);
-                else if (DoesQueryContainString(cleanedSearchTerm, product.BaseProduct.ProductTags))
-                    foundProducts.Add(product);
-                else if (DoesQueryContainString(cleanedSearchTerm, product.BaseProduct.Category.Name))
-                    foundProducts.Add(product);
+                // clean search term
+                var cleanedSearchTerm = searchString.Trim().Split(' ');
+                // checks product tags, title, color, size, SKU, model number
+                var customProducts = customProductRepo.CustomProducts;
+                var foundProducts = new List<CustomProduct>();
+                foreach (var product in customProducts)
+                {
+                    if (DoesQueryContainString(cleanedSearchTerm, product.ProductTitle))
+                        foundProducts.Add(product);
+                    else if (DoesQueryContainString(cleanedSearchTerm, product.ProductTags))
+                        foundProducts.Add(product);
+                    else if (DoesQueryContainString(cleanedSearchTerm, product.BaseProduct.ProductTags))
+                        foundProducts.Add(product);
+                    else if (DoesQueryContainString(cleanedSearchTerm, product.BaseProduct.ModelNumber.ToString()))
+                        foundProducts.Add(product);
+                    else if (DoesQueryContainString(cleanedSearchTerm, product.BaseProduct.SKU.ToString()))
+                        foundProducts.Add(product);
+                    else if (DoesQueryContainString(cleanedSearchTerm, product.BaseProduct.BaseColor.ColorName))
+                        foundProducts.Add(product);
+                    else if (DoesQueryContainString(cleanedSearchTerm, product.BaseProduct.BaseSize.SizeName))
+                        foundProducts.Add(product);
+                    else if (DoesQueryContainString(cleanedSearchTerm, product.BaseProduct.ProductTags))
+                        foundProducts.Add(product);
+                    else if (DoesQueryContainString(cleanedSearchTerm, product.BaseProduct.Category.Name))
+                        foundProducts.Add(product);
+                }
+                return foundProducts;
             }
-            return foundProducts;
+            return new List<CustomProduct>();
         }
 
         private bool DoesQueryContainString(string[] query, string stringToCheck)
         {
-            foreach(var term in query)
+            var stringAsTolken = stringToCheck.Split(' ');
+            foreach (var searchTerm in query)
             {
-                if (term.ToUpper() == stringToCheck.ToUpper())
-                    return true;
-            }
-            return false;
-        }
-
-        private bool DoesQueryContainString(string[] query, string[] stringsToCheck)
-        {
-            foreach (var term in query)
-            {
-                foreach(var checkAgainstTerm in stringsToCheck)
+                foreach(var checkAgainstTerm in stringAsTolken)
                 {
-                    if (term.ToUpper() == checkAgainstTerm.ToUpper())
+                    if (searchTerm.ToUpper() == checkAgainstTerm.ToUpper() || checkAgainstTerm.ToUpper().Contains(searchTerm.ToUpper()))
                         return true;
                 }
             }
@@ -250,15 +311,20 @@ namespace dropShippingApp.Controllers
 
         private bool DoesQueryContainString(string[] query, List<Tag> tagsToCheck)
         {
-            foreach (var term in query)
+            if (tagsToCheck == null)
+                return false;
+            else
             {
-                foreach (var tag in tagsToCheck)
+                foreach (var term in query)
                 {
-                    if (term.ToUpper() == tag.TagLine.ToUpper())
-                        return true;
+                    foreach (var tag in tagsToCheck)
+                    {
+                        if (term.ToUpper() == tag.TagLine.ToUpper())
+                            return true;
+                    }
                 }
+                return false;
             }
-            return false;
         }
     }
 }

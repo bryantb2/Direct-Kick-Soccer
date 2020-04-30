@@ -30,18 +30,7 @@ namespace dropShippingApp.HelperUtilities
 
         public string PageAction { get; set; }
 
-        [HtmlAttributeName(DictionaryAttributePrefix = "page-url-")]
-        public Dictionary<string, object> PageUrlValues { get; set; }
-            = new Dictionary<string, object>();
-
-        public bool PageClassesEnabled { get; set; } = false;
-        public string PageClass { get; set; }
-        public string PageClassNormal { get; set; }
-        public string PageClassSelected { get; set; }
-
-        public override void Process(TagHelperContext context, TagHelperOutput output)
-        {
-            IUrlHelper urlHelper = urlHelperFactory.GetUrlHelper(ViewContext);
+            /*IUrlHelper urlHelper = urlHelperFactory.GetUrlHelper(ViewContext);
             TagBuilder result = new TagBuilder("div");
             for (int i = 1; i <= PageModel.TotalPages; i++)
             {
@@ -56,8 +45,7 @@ namespace dropShippingApp.HelperUtilities
                 tag.InnerHtml.Append(i.ToString());
                 result.InnerHtml.AppendHtml(tag);
             }
-            output.Content.AppendHtml(result.InnerHtml);
-        }
+            output.Content.AppendHtml(result.InnerHtml);*/
        
     }
 }
