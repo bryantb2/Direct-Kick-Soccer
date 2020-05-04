@@ -620,15 +620,15 @@ namespace dropShippingApp.Data
 
                 for (int i = 0; i < c.Length; i++)
                 {
-                    ProductCategory newCatagory = new ProductCategory()
+                    ProductCategory newCategory = new ProductCategory()
                     {
                         Name = c[i]
                     };
                     // Add to the DB
-                    context.Categories.Add(newCatagory);
+                    context.Categories.Add(newCategory);
 
                     // Add to the local list 
-                    categories.Add(newCatagory);
+                    categories.Add(newCategory);
                 }
                 await context.SaveChangesAsync();
 
