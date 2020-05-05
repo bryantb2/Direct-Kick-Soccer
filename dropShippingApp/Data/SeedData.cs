@@ -173,6 +173,25 @@ namespace dropShippingApp.Data
                 context.RosterProducts.Add(product3);
                 context.RosterProducts.Add(product4);
 
+
+                // ------------------------------------------- ADDING PRODUCT FAMILIES ------------------------------------------- //
+                var groupNames = new string[] { "Best Socks", "Lazy Pants", "Bedazzled Shirts" };
+                var groupDesc = new string[] { "Mhmmmm tasty", "For the morbidly obese", "Extremely gay" };
+                var groupList = new List<ProductGroup>();
+
+                for(var i = 0; i < 3; i++)
+                {
+                    ProductGroup group = new ProductGroup()
+                    {
+                        Title = groupNames[i],
+                        Description = groupDesc[i]
+                    };
+                    context.ProductGroups.Add(group);
+                    await context.SaveChangesAsync();
+                    groupList.Add(group);
+                }
+
+
                 // ------------------------------------------- ADDING CUSTOM PRODUCTS ------------------------------------------- //
                 CustomProduct customProduct = new CustomProduct
                 {
@@ -181,6 +200,7 @@ namespace dropShippingApp.Data
                     ProductDescription = "These socks make you run so fast!",
                     CustomImagePNG = "http://placekitten.com/200/300",
                     IsProductActive = true,
+                    ProductGroup = groupList[0]
                 };
                 PricingHistory pricingHistory9 = new PricingHistory
                 {
@@ -203,6 +223,7 @@ namespace dropShippingApp.Data
                     ProductDescription = "Official Unofficial socks for the Eugene Goats!",
                     CustomImagePNG = "http://placekitten.com/200/300",
                     IsProductActive = true,
+                    ProductGroup = groupList[0]
                 };
                 PricingHistory pricingHistory11 = new PricingHistory
                 {
@@ -225,6 +246,7 @@ namespace dropShippingApp.Data
                     ProductDescription = "Unofficial Official socks for the Eugene NHL team the Ice Squids!",
                     CustomImagePNG = "http://placekitten.com/200/300",
                     IsProductActive = true,
+                    ProductGroup = groupList[0]
                 };
                 PricingHistory pricingHistory13 = new PricingHistory
                 {
@@ -247,6 +269,7 @@ namespace dropShippingApp.Data
                     ProductDescription = "Great for keeping the sun out of your eyes, can also be used to hold stuff!",
                     CustomImagePNG = "http://placekitten.com/200/300",
                     IsProductActive = true,
+                    ProductGroup = groupList[1]
                 };
                 PricingHistory pricingHistory15 = new PricingHistory
                 {
@@ -269,6 +292,7 @@ namespace dropShippingApp.Data
                     ProductDescription = "Hat supporting the local junior baseball team, the Fighting Honey Badgers",
                     CustomImagePNG = "http://placekitten.com/200/300",
                     IsProductActive = true,
+                    ProductGroup = groupList[1]
                 };
                 PricingHistory pricingHistory17 = new PricingHistory
                 {
@@ -291,6 +315,7 @@ namespace dropShippingApp.Data
                     ProductDescription = "Hat for parents of the local stickball team the Jumping Jellybeans!",
                     CustomImagePNG = "http://placekitten.com/200/300",
                     IsProductActive = true,
+                    ProductGroup = groupList[1]
                 };
                 PricingHistory pricingHistory19 = new PricingHistory
                 {
@@ -313,6 +338,7 @@ namespace dropShippingApp.Data
                     ProductDescription = "Hat for team members of the Jets Power Walking Team",
                     CustomImagePNG = "http://placekitten.com/200/300",
                     IsProductActive = true,
+                    ProductGroup = groupList[2]
                 };
                 PricingHistory pricingHistory21 = new PricingHistory
                 {
