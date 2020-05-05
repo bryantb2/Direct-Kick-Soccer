@@ -6,12 +6,12 @@ using System.Threading.Tasks;
 
 namespace dropShippingApp.Data.Repositories
 {
-    public interface ISortRepo
+    public interface ITeamSortRepo
     {
-        public List<Sort> Sorts { get; }
-        public Sort GetSortById(int teamId);
-        public Task UpdateSort(Sort sort);
-        public Task AddSort(Sort sort);
-        public Task<Sort> RemoveSort(int sortId);
+        List<Sort> Sorts { get; }
+        Sort GetSortById(int teamId);
+        Task UpdateSort(Sort sort);
+        Task AddSort(Sort sort);
+        Task<Sort> RemoveSort(int sortId);
     }
 }
