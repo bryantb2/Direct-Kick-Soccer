@@ -95,18 +95,26 @@ namespace dropShippingApp.Controllers
             return View();
         }
 
-        public async Task<IActionResult> AddTeamProduct()
+        public async Task<IActionResult> AddTeamProduct(Team team, CustomProduct customProduct)
         {
             // TODO
             // redirects to team product management page
-            return View();
+            Team mTeam = await teamRepo.FindTeamById(team.TeamID);
+            mTeam.AddProduct(customProduct);
+            await teamRepo.UpdateTeam(mTeam);
+            return RedirectToAction("/TeamManagement/Index");
         }
 
-        public async Task<IActionResult> UpdateTeamProduct()
+        public async Task<IActionResult> UpdateTeamProduct(Team team, CustomProduct updatedCustomProduct)
         {
             // TODO
             // redirects to team product management page
-            return View();
+            Team mTeam = await teamRepo.FindTeamById(team.TeamID);
+            CustomProduct cProduct = mTeam.TeamProducts.Find(item => item.CustomProductID == updatedCustomProduct.CustomProductID);
+            mTeam.RemoveProduct(cProduct);
+            mTeam.AddProduct(updatedCustomProduct);
+            await teamRepo.UpdateTeam(mTeam);
+            return RedirectToAction("/TeamManagement/Index");
         }
 
         public async Task<IActionResult> RemoveTeamProduct(Team team, CustomProduct customProduct)
