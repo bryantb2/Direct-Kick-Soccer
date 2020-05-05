@@ -638,12 +638,12 @@ namespace dropShippingApp.Data
                 //Comparison<CustomProduct> highestSort = delegate (CustomProduct product1, CustomProduct product2) { return (product1.CurrentPrice.CompareTo(product2.CurrentPrice)); };
                 //Comparison<CustomProduct> lowestSort = delegate (CustomProduct product1, CustomProduct product2) { return (product2.CurrentPrice.CompareTo(product1.CurrentPrice)); };
 
-                ProductSort highestPriceSort = new ProductSort()
+                Sort highestPriceSort = new Sort()
                 {
                     SortName = sortNames[0],
                     //SortOperation = highestSort
                 };
-                ProductSort lowestPriceSort = new ProductSort()
+                Sort lowestPriceSort = new Sort()
                 {
                     SortName = sortNames[1],
                     //SortOperation = lowestSort

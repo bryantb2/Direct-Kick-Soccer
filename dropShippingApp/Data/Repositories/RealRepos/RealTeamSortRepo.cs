@@ -6,46 +6,46 @@ using System.Threading.Tasks;
 
 namespace dropShippingApp.Data.Repositories.RealRepos
 {
-    public class RealTeamSortRepo : ITeamSortRepo
+    public class RealSortRepo : ISortRepo
     {
         private ApplicationDbContext context;
-        public RealTeamSortRepo(ApplicationDbContext c)
+        public RealSortRepo(ApplicationDbContext c)
         {
             this.context = c;
         }
 
-        public List<TeamSort> Sorts
+        public List<Sort> ProductSorts
         {
             get
             {
-                return this.context.TeamSorts.ToList();
+                return this.context.ProductSorts.ToList();
             }
         }
 
-        public TeamSort GetSortById(int sortId)
+        public Sort GetSortById(int sortId)
         {
-            var teamSort = this.context.TeamSorts.ToList().Find(team => team.TeamSortID == sortId);
-            return teamSort;
+            var Sort = this.context.ProductSorts.ToList().Find(team => team.SortID == sortId);
+            return Sort;
         }
 
-        public async Task AddSort(TeamSort sort)
+        public async Task AddSort(Sort sort)
         {
-            this.context.TeamSorts.Add(sort);
+            this.context.ProductSorts.Add(sort);
             await this.context.SaveChangesAsync();
         }
 
-        public async Task UpdateSort(TeamSort team)
+        public async Task UpdateSort(Sort team)
         {
-            this.context.TeamSorts.Update(team);
+            this.context.ProductSorts.Update(team);
             await this.context.SaveChangesAsync();
         }
 
-        public async Task<TeamSort> RemoveSort(int sortId)
+        public async Task<Sort> RemoveSort(int sortId)
         {
-            var teamSort = this.context.TeamSorts.ToList().Find(team => team.TeamSortID == sortId);
-            this.context.TeamSorts.Remove(teamSort);
+            var Sort = this.context.ProductSorts.ToList().Find(team => team.SortID == sortId);
+            this.context.ProductSorts.Remove(Sort);
             await this.context.SaveChangesAsync();
-            return teamSort;
+            return Sort;
         }
     }
 }

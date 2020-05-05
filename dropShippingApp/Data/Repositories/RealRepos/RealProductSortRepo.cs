@@ -14,7 +14,7 @@ namespace dropShippingApp.Data.Repositories.RealRepos
             this.context = context;
         }
 
-        public List<ProductSort> Sorts 
+        public List<Sort> Sorts 
         {
             get
             {
@@ -22,21 +22,21 @@ namespace dropShippingApp.Data.Repositories.RealRepos
             }
         }
 
-        public ProductSort GetSortById(int sortId)
+        public Sort GetSortById(int sortId)
         {
             return this.context.ProductSorts.ToList()
-                .Find(sort => sort.ProductSortID == sortId);
+                .Find(sort => sort.SortID == sortId);
         }
 
-        public async Task AddSort(ProductSort sort)
+        public async Task AddSort(Sort sort)
         {
             this.context.ProductSorts.Add(sort);
             await this.context.SaveChangesAsync();
         }
 
-        public async Task<ProductSort> RemoveSortById(int sortId)
+        public async Task<Sort> RemoveSortById(int sortId)
         {
-            var foundSort = this.context.ProductSorts.ToList().Find(sort => sort.ProductSortID == sortId);
+            var foundSort = this.context.ProductSorts.ToList().Find(sort => sort.SortID == sortId);
             this.context.ProductSorts.Remove(foundSort);
             await this.context.SaveChangesAsync();
             return foundSort;

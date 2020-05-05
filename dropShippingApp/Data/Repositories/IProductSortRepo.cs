@@ -8,9 +8,9 @@ namespace dropShippingApp.Data.Repositories
 {
     public interface IProductSortRepo
     {
-        List<ProductSort> Sorts { get; }
-        ProductSort GetSortById(int sortId);
-        Task AddSort(ProductSort sort);
-        Task<ProductSort> RemoveSortById(int sortId);
+        List<Sort> Sorts { get; }
+        Sort GetSortById(int sortId);
+        Task AddSort(Sort sort);
+        Task<Sort> RemoveSortById(int sortId);
     }
 }
