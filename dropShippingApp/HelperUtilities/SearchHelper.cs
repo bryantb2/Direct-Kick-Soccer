@@ -1,4 +1,5 @@
 ﻿using dropShippingApp.Models;
+using dropShippingApp.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,6 +9,33 @@ namespace dropShippingApp.HelperUtilities
 {
     public static class SearchHelper
     {
+        public static BrowseViewModel CreateBrowseObject(
+            int currentPageNumber, 
+            List<CustomProduct> queriedProducts = null, 
+            List<Team> queriedTeams = null, 
+            Category categoryObj = null, 
+            string searchTerm = null)
+        {
+            // setup starting and ending product indexes
+            var itemsPerPage = 30;
+            var startProduct = currentPageNumber * itemsPerPage;
+            var endProduct = startProduct + 30;
+
+            // setup paging view model
+            var pagingInfo = new BrowseViewModel()
+            {
+                Products = SplitList(queriedProducts, startProduct, endProduct),
+                CurrentPage = currentPageNumber,
+                SearchString = searchTerm == null ? null : searchTerm,
+                CurrentCategory = categoryObj == null ? null : categoryObj,
+                // next page exists if the number of products left in the query is greater than the total number of dispalyed products
+                NextPageExists = queriedProducts.Count > endProduct ? true : false,
+                PreviousPageExists = startProduct - itemsPerPage > 0 ? true : false
+            };
+
+            return pagingInfo;
+        }
+
         public static List<T> SplitList<T>(List<T> filterableList, int start, int end)
         {
             // remember: index is one behind the actual product number in the list
