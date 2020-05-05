@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
 
 namespace dropShippingApp.Controllers
@@ -108,11 +109,24 @@ namespace dropShippingApp.Controllers
             return View();
         }
 
-        public async Task<IActionResult> RemoveTeamProduct()
+        public async Task<IActionResult> RemoveTeamProduct(Team team, CustomProduct customProduct)
         {
             // TODO
             // redirects to team product management page
-            return View();
+            Team mTeam = await teamRepo.FindTeamById(team.TeamID);
+            mTeam.RemoveProduct(customProduct);
+            return RedirectToAction("/TeamManagement/Index");
+        }
+
+        public async Task<IActionResult> MarkProductInActive(Team team, CustomProduct customProduct)
+        {
+            Team mTeam = await teamRepo.FindTeamById(team.TeamID);
+            CustomProduct cProduct = mTeam.TeamProducts.Find(item => item.CustomProductID == customProduct.CustomProductID);
+            mTeam.RemoveProduct(cProduct);
+            cProduct.IsProductActive = false;
+            mTeam.AddProduct(cProduct);
+            await teamRepo.UpdateTeam(mTeam);
+            return RedirectToAction("/TeamManagement/Index");
         }
 
         public async Task<IActionResult> UpdateTeamSettings(Team updatedTeam)
