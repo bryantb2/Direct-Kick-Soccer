@@ -26,6 +26,8 @@ namespace dropShippingApp.Data.Repositories
             }
         }
 
+        public IQueryable<RosterProduct> RosterProducts => throw new NotImplementedException();
+
         // methods
         public async Task AddRosterProduct(RosterProduct newProduct)
         {
