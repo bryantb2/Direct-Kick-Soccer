@@ -38,7 +38,8 @@ namespace dropShippingApp.Models
         public bool IsTeamInactive { get; set; }
         [Required]
         public bool IsHostTeam { get; set; }
-
+        [Required]
+        public DateTime DateJoined { get; set; }
         [Required]
         public Category Category { get; set; }
 

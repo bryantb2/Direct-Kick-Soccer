@@ -20,12 +20,12 @@ namespace dropShippingApp.Controllers
         private IRosterProductRepo rosterProductRepo;
         private ICustomProductRepo customProductRepo;
         private IProductSortRepo sortRepo;
-        private ITeamCategoryRepo categoryRepo;
+        private IProductCategoryRepo categoryRepo;
 
         public ProductController(IRosterProductRepo rosterProductRepo,
             ICustomProductRepo customProductRepo,
             IProductSortRepo sortRepo,
-            ITeamCategoryRepo categoryRepo)
+            IProductCategoryRepo categoryRepo)
         {
             this.rosterProductRepo = rosterProductRepo;
             this.customProductRepo = customProductRepo;

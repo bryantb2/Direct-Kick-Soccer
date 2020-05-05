@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using dropShippingApp.HelperUtilities;
 
 namespace dropShippingApp.Controllers
 {
@@ -13,10 +14,15 @@ namespace dropShippingApp.Controllers
     {
         private ITeamRepo teamRepo;
         private ITeamSortRepo teamSortRepo;
-        public TeamController(ITeamRepo teamRepo, ITeamSortRepo sortRepo)
+        private ITeamCategoryRepo categoryRepo;
+        public TeamController(
+            ITeamRepo teamRepo, 
+            ITeamSortRepo sortRepo,
+            ITeamCategoryRepo categoryRepo)
         {
             this.teamRepo = teamRepo;
             this.teamSortRepo = sortRepo;
+            this.categoryRepo = categoryRepo;
         }
 
         public async Task<IActionResult> Index()
@@ -84,13 +90,13 @@ namespace dropShippingApp.Controllers
         public async Task<IActionResult> Search(string searchString, int currentPage = -1)
         {
             // search for teams
-            var foundTeams = SearchByString(searchString);
+            var foundTeams = SearchHelper.SearchByString<Team>(teamRepo.GetTeams, searchString);
 
             // create browse view model
-            var browseVM = CreateBrowseObject(
-                foundProducts,
+            var browseVM = SearchHelper.CreateBrowseObject(
                 currentPage == -1 ? 0 : currentPage,
-                searchTerm: searchString);
+                searchTerm: searchString,
+                queriedTeams: foundTeams);
 
             // return view
             return View("Search", browseVM);
@@ -99,35 +105,41 @@ namespace dropShippingApp.Controllers
         public async Task<IActionResult> DisplayByCategory(int categoryId, int currentPage = -1)
         {
             // get products by category
-            var categoryProducts = FilterProductsByCategory(categoryId);
+            var categoryTeams = SearchHelper.FilterByCategory<Team>(teamRepo.GetTeams, categoryId);
 
             // get current category
-            var category = await categoryRepo.GetCategoryById(categoryId);
+            var category = categoryRepo.GetCategoryById(categoryId);
 
             // create browse view model
-            var browseVM = CreateBrowseObject(
-                categoryProducts,
+            var browseVM = SearchHelper.CreateBrowseObject(
                 currentPage == -1 ? 0 : currentPage,
-                categoryObj: category);
+                categoryObj: category,
+                queriedTeams: categoryTeams);
 
             // return view
             return View("Search", browseVM);
         }
 
-        public async Task<IActionResult> SortProducts(int sortId, int categoryId = -1, string searchTerm = null, int currentPage = -1)
+        public async Task<IActionResult> SortTeams(int sortId, int categoryId = -1, string searchTerm = null, int currentPage = -1)
         {
             // IMPORTANT: at no point will the user be allowed to search AND browse by category AT THE SAME TIME
 
             // get products by appropriate query
-            var filteredProducts = categoryId != -1 ? FilterProductsByCategory(categoryId) : SearchByString(searchTerm);
+            var filteredProducts = categoryId != -1 ? 
+                SearchHelper.FilterByCategory<Team>(teamRepo.GetTeams, categoryId) 
+                : SearchHelper.SearchByString<Team>(teamRepo.GetTeams, searchTerm);
 
             // get sort and check sort type
-            var foundSort = sortRepo.GetSortById(sortId);
-            if (foundSort.SortName.ToUpper() == "LOWEST PRICE")
+            var foundSort = teamSortRepo.GetSortById(sortId);
+            if (foundSort.SortName.ToUpper() == "OLDEST")
             {
-                filteredProducts.Sort((product1, product2) => product1.CurrentPrice.CompareTo(product2.CurrentPrice));
+                filteredProducts.Sort((team1, team2) => team1.DateJoined.CompareTo(team2.DateJoined));
             }
-            else if (foundSort.SortName.ToUpper() == "HIGHEST PRICE")
+            else if (foundSort.SortName.ToUpper() == "NEWEST")
+            {
+                filteredProducts.Sort((team1, team2) => team2.DateJoined.CompareTo(team1.DateJoined));
+            }
+            else if (foundSort.SortName.ToUpper() == "MOST POPULAR")
             {
                 filteredProducts.Sort((product1, product2) => product2.CurrentPrice.CompareTo(product1.CurrentPrice));
             }

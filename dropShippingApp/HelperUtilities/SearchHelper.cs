@@ -9,6 +9,36 @@ namespace dropShippingApp.HelperUtilities
 {
     public static class SearchHelper
     {
+        public static List<T> SortByMostPopular<T>(List<T> filterableList, List<Order> orderList)
+        {
+            // setup for type comparisons
+            Type team = typeof(Team);
+            Type customProduct = typeof(CustomProduct);
+
+            if (typeof(T) == team)
+            {
+                // sort by most popular team
+                var listAsTeam = filterableList.Cast<Team>().ToList();
+                listAsTeam.Sort((team1, team2) => 
+                    GetPurchaseCount<Team>(team1.TeamID, orderList).CompareTo(GetPurchaseCount<Team>(team1.TeamID, orderList))
+                );
+                return listAsTeam.Cast<T>().ToList();
+            }
+            else if (typeof(T) == customProduct)
+            {
+                // sort by most popular product
+                var listAsProducts = filterableList.Cast<CustomProduct>().ToList();
+                listAsProducts.Sort((product1, product2) =>
+                    GetPurchaseCount<CustomProduct>(product1.CustomProductID, orderList).CompareTo(GetPurchaseCount<CustomProduct>(product2.CustomProductID, orderList))
+                );
+                return listAsProducts.Cast<T>().ToList();
+            }
+            else
+            {
+                return new List<T>();
+            }
+        }
+
         public static BrowseViewModel CreateBrowseObject(
             int currentPageNumber, 
             List<CustomProduct> queriedProducts = null, 
@@ -34,22 +64,6 @@ namespace dropShippingApp.HelperUtilities
             };
 
             return pagingInfo;
-        }
-
-        public static List<T> SplitList<T>(List<T> filterableList, int start, int end)
-        {
-            // remember: index is one behind the actual product number in the list
-            if (filterableList.Count == 0)
-                return filterableList;
-
-            // check if end parameter is higher than remain filterable list count (prevent out of range error
-            var checkedEnd = (filterableList.Count - end) < 0 ? filterableList.Count : end;
-            var splitList = new List<T>();
-            for (var i = start; i <= checkedEnd - 1; i++)
-            {
-                splitList.Add(filterableList[i]);
-            }
-            return splitList;
         }
 
         public static List<T> FilterByCategory<T>(List<T> filterableList, int categoryId)
@@ -98,6 +112,42 @@ namespace dropShippingApp.HelperUtilities
         }
 
         // private methods
+        private static int GetPurchaseCount<T>(int itemIdArg, List<Order> orderList)
+        {
+            // setup for type comparisons
+            Type team = typeof(Team);
+            Type customProduct = typeof(CustomProduct);
+
+            var purchaseCount = 0;
+            foreach (var order in orderList)
+            {
+                foreach (var itemId in
+                    typeof(T) == team ? order.TeamIDs : order.ProductIDs)
+                {
+                    if (itemId == itemIdArg.ToString())
+                        purchaseCount++;
+                }
+            }
+
+            return purchaseCount;
+        }
+
+        private static List<T> SplitList<T>(List<T> filterableList, int start, int end)
+        {
+            // remember: index is one behind the actual product number in the list
+            if (filterableList.Count == 0)
+                return filterableList;
+
+            // check if end parameter is higher than remain filterable list count (prevent out of range error
+            var checkedEnd = (filterableList.Count - end) < 0 ? filterableList.Count : end;
+            var splitList = new List<T>();
+            for (var i = start; i <= checkedEnd - 1; i++)
+            {
+                splitList.Add(filterableList[i]);
+            }
+            return splitList;
+        }
+
         private static List<object> SearchTeams(List<Team> searchableTeams, string searchString)
         {
             if (searchString.Length >= 2)
