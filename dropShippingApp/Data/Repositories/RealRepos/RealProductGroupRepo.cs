@@ -1,4 +1,5 @@
 ﻿using dropShippingApp.Models;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,7 +19,27 @@ namespace dropShippingApp.Data.Repositories
         {
             get
             {
-                return this.context.ProductGroups.ToList();
+                return this.context.ProductGroups
+                    .Include(groups => groups.ChildProducts)
+                        .ThenInclude(product => product.ProductTags)
+                    .Include(groups => groups.ChildProducts)
+                        .ThenInclude(product => product.PricingHistory)
+                    .Include(groups => groups.ChildProducts)
+                        .ThenInclude(product => product.BaseProduct)
+                            .ThenInclude(rosterProduct => rosterProduct.BaseColor)
+                    .Include(groups => groups.ChildProducts)
+                        .ThenInclude(product => product.BaseProduct)
+                            .ThenInclude(rosterProduct => rosterProduct.BasePrice)
+                    .Include(groups => groups.ChildProducts)
+                        .ThenInclude(product => product.BaseProduct)
+                            .ThenInclude(rosterProduct => rosterProduct.BaseSize)
+                    .Include(groups => groups.ChildProducts)
+                        .ThenInclude(product => product.BaseProduct)
+                            .ThenInclude(rosterProduct => rosterProduct.Category)
+                    .Include(groups => groups.ChildProducts)
+                        .ThenInclude(product => product.BaseProduct)
+                            .ThenInclude(rosterProduct => rosterProduct.PricingHistory)
+                    .ToList();
             }
         }
 

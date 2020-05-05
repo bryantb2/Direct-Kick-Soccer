@@ -93,6 +93,7 @@ namespace dropShippingApp.HelperUtilities
             // setup for type comparisons
             Type team = typeof(Team);
             Type customProduct = typeof(CustomProduct);
+            Type productGroup = typeof(ProductGroup);
 
             if(typeof(T) == team)
             {
@@ -105,6 +106,12 @@ namespace dropShippingApp.HelperUtilities
                 // beigin search on custom product
                 var listAsProducts = searchableList.Cast<CustomProduct>().ToList();
                 return SearchCustomProducts(listAsProducts, searchString).Cast<T>().ToList();
+            }
+            else if(typeof(T) == productGroup)
+            {
+                // begin search on product family
+                var listAsProductGroups = searchableList.Cast<ProductGroup>().ToList();
+                return 
             }
 
             // error occured in type comparisons

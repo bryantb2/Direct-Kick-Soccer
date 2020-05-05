@@ -200,8 +200,7 @@ namespace dropShippingApp.Data
                     ProductTitle = "Socks",
                     ProductDescription = "These socks make you run so fast!",
                     ProductPNG = "http://placekitten.com/200/300",
-                    IsProductActive = true,
-                    ProductGroup = groupList[0]
+                    IsProductActive = true
                 };
                 PricingHistory pricingHistory9 = new PricingHistory
                 {
@@ -223,8 +222,7 @@ namespace dropShippingApp.Data
                     ProductTitle = "Team Goats Socks",
                     ProductDescription = "Official Unofficial socks for the Eugene Goats!",
                     ProductPNG = "http://placekitten.com/200/300",
-                    IsProductActive = true,
-                    ProductGroup = groupList[0]
+                    IsProductActive = true
                 };
                 PricingHistory pricingHistory11 = new PricingHistory
                 {
@@ -246,8 +244,7 @@ namespace dropShippingApp.Data
                     ProductTitle = "Ice Squid Socks",
                     ProductDescription = "Unofficial Official socks for the Eugene NHL team the Ice Squids!",
                     ProductPNG = "http://placekitten.com/200/300",
-                    IsProductActive = true,
-                    ProductGroup = groupList[0]
+                    IsProductActive = true
                 };
                 PricingHistory pricingHistory13 = new PricingHistory
                 {
@@ -269,8 +266,7 @@ namespace dropShippingApp.Data
                     ProductTitle = "Hat",
                     ProductDescription = "Great for keeping the sun out of your eyes, can also be used to hold stuff!",
                     ProductPNG = "http://placekitten.com/200/300",
-                    IsProductActive = true,
-                    ProductGroup = groupList[1]
+                    IsProductActive = true
                 };
                 PricingHistory pricingHistory15 = new PricingHistory
                 {
@@ -292,8 +288,7 @@ namespace dropShippingApp.Data
                     ProductTitle = "Fighting Honey Badgers Hat",
                     ProductDescription = "Hat supporting the local junior baseball team, the Fighting Honey Badgers",
                     ProductPNG = "http://placekitten.com/200/300",
-                    IsProductActive = true,
-                    ProductGroup = groupList[1]
+                    IsProductActive = true
                 };
                 PricingHistory pricingHistory17 = new PricingHistory
                 {
@@ -315,8 +310,7 @@ namespace dropShippingApp.Data
                     ProductTitle = "Jumping Jellybeans Hat",
                     ProductDescription = "Hat for parents of the local stickball team the Jumping Jellybeans!",
                     ProductPNG = "http://placekitten.com/200/300",
-                    IsProductActive = true,
-                    ProductGroup = groupList[1]
+                    IsProductActive = true
                 };
                 PricingHistory pricingHistory19 = new PricingHistory
                 {
@@ -338,8 +332,7 @@ namespace dropShippingApp.Data
                     ProductTitle = "Jets Hat",
                     ProductDescription = "Hat for team members of the Jets Power Walking Team",
                     ProductPNG = "http://placekitten.com/200/300",
-                    IsProductActive = true,
-                    ProductGroup = groupList[2]
+                    IsProductActive = true
                 };
                 PricingHistory pricingHistory21 = new PricingHistory
                 {
@@ -362,6 +355,11 @@ namespace dropShippingApp.Data
                 context.CustomProducts.Add(customProduct5);
                 context.CustomProducts.Add(customProduct6);
                 context.CustomProducts.Add(customProduct7);
+
+                // adding products to group
+                groupList[0].ChildProducts = new List<CustomProduct>() { customProduct, customProduct2, customProduct3 };
+                groupList[1].ChildProducts = new List<CustomProduct>() { customProduct4, customProduct5, customProduct6 };
+                groupList[2].ChildProducts = new List<CustomProduct>() { customProduct7 };
 
                 // ------------------------------------------- ADDING AND ASSIGNMENT CARTS TO USERS ------------------------------------------- //
                 Country america = new Country()

@@ -15,5 +15,6 @@ namespace dropShippingApp.Models
         public string Title { get; set; }
         [Required]
         public string GeneralThumbnail { get; set; }
+        public List<CustomProduct> ChildProducts { get; set; }
     }
 }
