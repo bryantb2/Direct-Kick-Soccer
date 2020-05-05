@@ -23,8 +23,7 @@ namespace dropShippingApp.Models
         [Required]
         public string ProductDescription { get; set; }
         [Required]
-        public string CustomImagePNG { get; set; }
-        public string CustomImageSVG { get; set; }
+        public string ProductPNG { get; set; }
         [Required]
         public bool IsProductActive { get; set; }
         public List<PricingHistory> PricingHistory { get { return this.pricingHistory; } }

@@ -184,7 +184,8 @@ namespace dropShippingApp.Data
                     ProductGroup group = new ProductGroup()
                     {
                         Title = groupNames[i],
-                        Description = groupDesc[i]
+                        Description = groupDesc[i],
+                        GeneralThumbnail = "https://i.picsum.photos/id/174/200/200.jpg"
                     };
                     context.ProductGroups.Add(group);
                     await context.SaveChangesAsync();
@@ -198,7 +199,7 @@ namespace dropShippingApp.Data
                     BaseProduct = product1,
                     ProductTitle = "Socks",
                     ProductDescription = "These socks make you run so fast!",
-                    CustomImagePNG = "http://placekitten.com/200/300",
+                    ProductPNG = "http://placekitten.com/200/300",
                     IsProductActive = true,
                     ProductGroup = groupList[0]
                 };
@@ -221,7 +222,7 @@ namespace dropShippingApp.Data
                     BaseProduct = product1,
                     ProductTitle = "Team Goats Socks",
                     ProductDescription = "Official Unofficial socks for the Eugene Goats!",
-                    CustomImagePNG = "http://placekitten.com/200/300",
+                    ProductPNG = "http://placekitten.com/200/300",
                     IsProductActive = true,
                     ProductGroup = groupList[0]
                 };
@@ -244,7 +245,7 @@ namespace dropShippingApp.Data
                     BaseProduct = product1,
                     ProductTitle = "Ice Squid Socks",
                     ProductDescription = "Unofficial Official socks for the Eugene NHL team the Ice Squids!",
-                    CustomImagePNG = "http://placekitten.com/200/300",
+                    ProductPNG = "http://placekitten.com/200/300",
                     IsProductActive = true,
                     ProductGroup = groupList[0]
                 };
@@ -267,7 +268,7 @@ namespace dropShippingApp.Data
                     BaseProduct = product2,
                     ProductTitle = "Hat",
                     ProductDescription = "Great for keeping the sun out of your eyes, can also be used to hold stuff!",
-                    CustomImagePNG = "http://placekitten.com/200/300",
+                    ProductPNG = "http://placekitten.com/200/300",
                     IsProductActive = true,
                     ProductGroup = groupList[1]
                 };
@@ -290,7 +291,7 @@ namespace dropShippingApp.Data
                     BaseProduct = product2,
                     ProductTitle = "Fighting Honey Badgers Hat",
                     ProductDescription = "Hat supporting the local junior baseball team, the Fighting Honey Badgers",
-                    CustomImagePNG = "http://placekitten.com/200/300",
+                    ProductPNG = "http://placekitten.com/200/300",
                     IsProductActive = true,
                     ProductGroup = groupList[1]
                 };
@@ -313,7 +314,7 @@ namespace dropShippingApp.Data
                     BaseProduct = product2,
                     ProductTitle = "Jumping Jellybeans Hat",
                     ProductDescription = "Hat for parents of the local stickball team the Jumping Jellybeans!",
-                    CustomImagePNG = "http://placekitten.com/200/300",
+                    ProductPNG = "http://placekitten.com/200/300",
                     IsProductActive = true,
                     ProductGroup = groupList[1]
                 };
@@ -336,7 +337,7 @@ namespace dropShippingApp.Data
                     BaseProduct = product2,
                     ProductTitle = "Jets Hat",
                     ProductDescription = "Hat for team members of the Jets Power Walking Team",
-                    CustomImagePNG = "http://placekitten.com/200/300",
+                    ProductPNG = "http://placekitten.com/200/300",
                     IsProductActive = true,
                     ProductGroup = groupList[2]
                 };
