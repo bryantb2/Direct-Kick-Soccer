@@ -11,12 +11,13 @@
     <title>@ViewData["Title"] - dropShippingApp</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" />
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
 </head>
 <body>
     <header>
         <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
             <div class="container">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">dropShippingApp</a>
+                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">Team Sports NW</a>
                 <button class="navbar-toggler" type="button" data-toggle="collapse" data-target=".navbar-collapse" aria-controls="navbarSupportedContent"
                         aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
@@ -27,7 +28,7 @@
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Cart" asp-action="Index">Cart</a>
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Team" asp-action="Index">Teams</a>
                         </li>
                         <li class="nav-item dropdown">
                             <a class="nav-link text-dark dropdown-toggle" data-toggle="dropdown" asp-area="" asp-controller="Product" asp-action="Index">Apparel</a>
@@ -43,24 +44,29 @@
                 <ul class="nav navbar-nav navbar-right">
                     @if (SignInManager.IsSignedIn(User))
                     {
-                        <li>
-                            <a class="nav-link text-dark"><span class="glyphicon glyphicon-user" style="padding-right: 5px"></span>Welcome @UserManager.GetUserName(User)</a>
-                        </li>
-                        <li>
-                            <a class="nav-link text-dark" asp-controller="Account" asp-action="Logout"><span class="glyphicon glyphicon-log-out" style="padding-right: 5px"></span>Logout</a>
-                        </li>
+                    <li class="nav-item dropdown">
+                        @*<a class="nav-link text-dark dropdown-toggle"><span class="glyphicon glyphicon-user" data-toggle="dropdown" style="padding-right: 5px"></span>Welcome @UserManager.GetUserName(User)</a>*@
+                        <a class="nav-link text-dark dropdown-toggle" data-toggle="dropdown" asp-area="" asp-controller="Account" asp-action="Index">Welcome @UserManager.GetUserName(User)</a>
+                        <ul class="dropdown-menu">
+                            <li><a class="nav-link text-dark" asp-controller="" asp-action=""><span class="glyphicon glyphicon-log-out" style="padding-right: 5px"></span>Orders (Not Active)</a></li>
+                            <li><a class="nav-link text-dark" asp-controller="Account" asp-action="Logout"><span class="glyphicon glyphicon-log-out" style="padding-right: 5px"></span>Logout (Not Active)</a></li>
+                        </ul>
+                    </li>
                     }
                     else
                     {
                         <li><a class="nav-link text-dark" asp-controller="Login" asp-action="Signup"><span class="glyphicon glyphicon-user" style="padding-right: 5px"></span>Register</a></li>
                         <li><a class="nav-link text-dark" asp-controller="Login" asp-action="Login"><span class="glyphicon glyphicon-log-in" style="padding-right: 5px"></span>Login</a></li>
                     }
+                    <li class="nav-item">
+                        <a class="nav-link text-dark" asp-area="" asp-controller="Cart" asp-action="Index"><i class="fa fa-shopping-cart"></i></a>
+                    </li>
                 </ul>
             </div>
         </nav>
     </header>
 
-    
+
     <div class="container">
         <main role="main" class="pb-3">
             @RenderBody()

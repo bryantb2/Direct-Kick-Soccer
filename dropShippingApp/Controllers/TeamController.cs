@@ -16,6 +16,11 @@ namespace dropShippingApp.Controllers
             teamRepo = t;
         }
 
+        public async Task<IActionResult> Index()
+        {
+            return View();
+        }
+
         public async Task<ViewResult> BuildTeam(Team team)
         {
             // TODO
