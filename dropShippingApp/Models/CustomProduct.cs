@@ -17,10 +17,6 @@ namespace dropShippingApp.Models
         public RosterProduct BaseProduct { get; set; } // parent <------
         public List<Tag> ProductTags { get; set; }
         [Required]
-        public string ProductTitle { get; set; }
-        [Required]
-        public string ProductDescription { get; set; }
-        [Required]
         public string ProductPNG { get; set; }
         [Required]
         public bool IsProductActive { get; set; }
