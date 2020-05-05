@@ -27,6 +27,7 @@ namespace dropShippingApp.Data
         public DbSet<Cart> Carts { get; set; }
         public DbSet<CartItem> CartItems { get; set; }
         public DbSet<Category> ProductCategories { get; set; }
+        public DbSet<Category> TeamCategories { get; set; }
         public DbSet<Sort> ProductSorts { get; set; }
         public DbSet<Sort> TeamSorts { get; set; }
     }
