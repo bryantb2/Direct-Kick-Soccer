@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace dropShippingApp.Data.Repositories.RealRepos
 {
-    public class RealTeamCategoryRepo : ICategoryRepo
+    public class RealTeamCategoryRepo : ITeamCategoryRepo
     {
         private ApplicationDbContext context;
         public RealTeamCategoryRepo(ApplicationDbContext c)

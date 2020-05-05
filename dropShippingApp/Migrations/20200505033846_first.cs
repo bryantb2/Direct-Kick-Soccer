@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace dropShippingApp.Migrations
 {
-    public partial class Initial : Migration
+    public partial class first : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -35,17 +35,16 @@ namespace dropShippingApp.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Categories",
+                name: "Category",
                 columns: table => new
                 {
-                    ProductCategoryID = table.Column<int>(nullable: false)
+                    CategoryID = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(nullable: false),
-                    Category = table.Column<string>(nullable: true)
+                    Name = table.Column<string>(nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Categories", x => x.ProductCategoryID);
+                    table.PrimaryKey("PK_Category", x => x.CategoryID);
                 });
 
             migrationBuilder.CreateTable(
@@ -90,16 +89,16 @@ namespace dropShippingApp.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "ProductSorts",
+                name: "Sort",
                 columns: table => new
                 {
-                    ProductSortID = table.Column<int>(nullable: false)
+                    SortID = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     SortName = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_ProductSorts", x => x.ProductSortID);
+                    table.PrimaryKey("PK_Sort", x => x.SortID);
                 });
 
             migrationBuilder.CreateTable(
@@ -159,11 +158,18 @@ namespace dropShippingApp.Migrations
                     BusinessEmail = table.Column<string>(nullable: false),
                     PhoneNumber = table.Column<string>(nullable: false),
                     IsTeamInactive = table.Column<bool>(nullable: false),
-                    IsHostTeam = table.Column<bool>(nullable: false)
+                    IsHostTeam = table.Column<bool>(nullable: false),
+                    CategoryID = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Teams", x => x.TeamID);
+                    table.ForeignKey(
+                        name: "FK_Teams_Category_CategoryID",
+                        column: x => x.CategoryID,
+                        principalTable: "Category",
+                        principalColumn: "CategoryID",
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_Teams_Countries_CountryID",
                         column: x => x.CountryID,
@@ -393,7 +399,7 @@ namespace dropShippingApp.Migrations
                     BaseSizeProductSizeID = table.Column<int>(nullable: false),
                     BasePrice = table.Column<decimal>(nullable: false),
                     IsProductActive = table.Column<bool>(nullable: false),
-                    CategoryProductCategoryID = table.Column<int>(nullable: false),
+                    CategoryID = table.Column<int>(nullable: false),
                     AppUserId = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
@@ -418,10 +424,10 @@ namespace dropShippingApp.Migrations
                         principalColumn: "ProductSizeID",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_RosterProducts_Categories_CategoryProductCategoryID",
-                        column: x => x.CategoryProductCategoryID,
-                        principalTable: "Categories",
-                        principalColumn: "ProductCategoryID",
+                        name: "FK_RosterProducts_Category_CategoryID",
+                        column: x => x.CategoryID,
+                        principalTable: "Category",
+                        principalColumn: "CategoryID",
                         onDelete: ReferentialAction.Cascade);
                 });
 
@@ -762,9 +768,9 @@ namespace dropShippingApp.Migrations
                 column: "BaseSizeProductSizeID");
 
             migrationBuilder.CreateIndex(
-                name: "IX_RosterProducts_CategoryProductCategoryID",
+                name: "IX_RosterProducts_CategoryID",
                 table: "RosterProducts",
-                column: "CategoryProductCategoryID");
+                column: "CategoryID");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Tags_CustomProductID",
@@ -800,6 +806,11 @@ namespace dropShippingApp.Migrations
                 name: "IX_TeamCreationRequests_ProvidenceProvinceID",
                 table: "TeamCreationRequests",
                 column: "ProvidenceProvinceID");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Teams_CategoryID",
+                table: "Teams",
+                column: "CategoryID");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Teams_CountryID",
@@ -842,10 +853,10 @@ namespace dropShippingApp.Migrations
                 name: "PricingHistories");
 
             migrationBuilder.DropTable(
-                name: "ProductSorts");
+                name: "QuestionResponses");
 
             migrationBuilder.DropTable(
-                name: "QuestionResponses");
+                name: "Sort");
 
             migrationBuilder.DropTable(
                 name: "Tags");
@@ -875,13 +886,13 @@ namespace dropShippingApp.Migrations
                 name: "ProductSizes");
 
             migrationBuilder.DropTable(
-                name: "Categories");
-
-            migrationBuilder.DropTable(
                 name: "Carts");
 
             migrationBuilder.DropTable(
                 name: "Teams");
+
+            migrationBuilder.DropTable(
+                name: "Category");
 
             migrationBuilder.DropTable(
                 name: "Provinces");

@@ -305,6 +305,22 @@ namespace dropShippingApp.Migrations
                     b.ToTable("CartItems");
                 });
 
+            modelBuilder.Entity("dropShippingApp.Models.Category", b =>
+                {
+                    b.Property<int>("CategoryID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("CategoryID");
+
+                    b.ToTable("Category");
+                });
+
             modelBuilder.Entity("dropShippingApp.Models.Country", b =>
                 {
                     b.Property<int>("CountryID")
@@ -427,25 +443,6 @@ namespace dropShippingApp.Migrations
                     b.ToTable("PricingHistories");
                 });
 
-            modelBuilder.Entity("dropShippingApp.Models.ProductCategory", b =>
-                {
-                    b.Property<int>("ProductCategoryID")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<string>("Category")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("ProductCategoryID");
-
-                    b.ToTable("Categories");
-                });
-
             modelBuilder.Entity("dropShippingApp.Models.ProductColor", b =>
                 {
                     b.Property<int>("ProductColorID")
@@ -481,21 +478,6 @@ namespace dropShippingApp.Migrations
                     b.HasKey("ProductSizeID");
 
                     b.ToTable("ProductSizes");
-                });
-
-            modelBuilder.Entity("dropShippingApp.Models.ProductSort", b =>
-                {
-                    b.Property<int>("ProductSortID")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<string>("SortName")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("ProductSortID");
-
-                    b.ToTable("ProductSorts");
                 });
 
             modelBuilder.Entity("dropShippingApp.Models.Province", b =>
@@ -591,7 +573,7 @@ namespace dropShippingApp.Migrations
                     b.Property<int>("BaseSizeProductSizeID")
                         .HasColumnType("int");
 
-                    b.Property<int>("CategoryProductCategoryID")
+                    b.Property<int>("CategoryID")
                         .HasColumnType("int");
 
                     b.Property<bool>("IsProductActive")
@@ -611,9 +593,24 @@ namespace dropShippingApp.Migrations
 
                     b.HasIndex("BaseSizeProductSizeID");
 
-                    b.HasIndex("CategoryProductCategoryID");
+                    b.HasIndex("CategoryID");
 
                     b.ToTable("RosterProducts");
+                });
+
+            modelBuilder.Entity("dropShippingApp.Models.Sort", b =>
+                {
+                    b.Property<int>("SortID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("SortName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("SortID");
+
+                    b.ToTable("Sort");
                 });
 
             modelBuilder.Entity("dropShippingApp.Models.Tag", b =>
@@ -657,6 +654,9 @@ namespace dropShippingApp.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int>("CategoryID")
+                        .HasColumnType("int");
+
                     b.Property<string>("CorporatePageURL")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -694,6 +694,8 @@ namespace dropShippingApp.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("TeamID");
+
+                    b.HasIndex("CategoryID");
 
                     b.HasIndex("CountryID");
 
@@ -922,9 +924,9 @@ namespace dropShippingApp.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("dropShippingApp.Models.ProductCategory", "Category")
+                    b.HasOne("dropShippingApp.Models.Category", "Category")
                         .WithMany()
-                        .HasForeignKey("CategoryProductCategoryID")
+                        .HasForeignKey("CategoryID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
@@ -946,6 +948,12 @@ namespace dropShippingApp.Migrations
 
             modelBuilder.Entity("dropShippingApp.Models.Team", b =>
                 {
+                    b.HasOne("dropShippingApp.Models.Category", "Category")
+                        .WithMany()
+                        .HasForeignKey("CategoryID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("dropShippingApp.Models.Country", "Country")
                         .WithMany()
                         .HasForeignKey("CountryID")

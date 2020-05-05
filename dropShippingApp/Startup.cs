@@ -70,9 +70,10 @@ namespace dropShippingApp
             services.AddTransient<ITeamRepo, RealTeamRepo>();
             services.AddTransient<ITeamCreationReqRepo, RealTeamReqRepo>();
             services.AddTransient<IUserRepo, RealUserRepo>();
-            services.AddTransient<ICategoryRepo, RealCategoryRepo>();
             services.AddTransient<IProductSortRepo, RealProductSortRepo>();
             services.AddTransient<ITeamSortRepo, RealTeamSortRepo>();
+            services.AddTransient<ITeamCategoryRepo, RealTeamCategoryRepo>();
+            services.AddTransient<IProductCategoryRepo, RealProductCategoryRepo>();
 
         }
 

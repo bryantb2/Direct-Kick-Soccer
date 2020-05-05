@@ -6,11 +6,11 @@ using System.Threading.Tasks;
 
 namespace dropShippingApp.Data.Repositories.RealRepos
 {
-    public class RealCategoryRepo : ICategoryRepo
+    public class RealProductCategoryRepo : IProductCategoryRepo
     {
         private ApplicationDbContext context;
 
-        public RealCategoryRepo(ApplicationDbContext c)
+        public RealProductCategoryRepo(ApplicationDbContext c)
         {
             this.context = c;
         }
@@ -23,10 +23,10 @@ namespace dropShippingApp.Data.Repositories.RealRepos
             }
         }
 
-        public async Task<Category> GetCategoryById(int categoryId)
+        public Category GetCategoryById(int categoryId)
         {
             return this.context.ProductCategories.ToList()
-                .Find(category => category.ProductCategoryID == categoryId);
+                .Find(category => category.CategoryID == categoryId);
         }
 
         public async Task AddCategory(Category category)
@@ -38,7 +38,7 @@ namespace dropShippingApp.Data.Repositories.RealRepos
         public async Task<Category> RemoveCategory(int categoryId)
         {
             var foundCategory = this.context.ProductCategories.ToList()
-                .Find(category => category.ProductCategoryID == categoryId);
+                .Find(category => category.CategoryID == categoryId);
             this.context.ProductCategories.Remove(foundCategory);
             await this.context.SaveChangesAsync();
             return foundCategory;

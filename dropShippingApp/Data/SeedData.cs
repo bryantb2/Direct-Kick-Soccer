@@ -25,12 +25,14 @@ namespace dropShippingApp.Data
                 // ------------------------------------------- ADDING PRODUCT PROPERTIES ------------------------------------------- //
                 var colorArr = new string[] { "Blue", "Green", "Red" };
                 var sizeArr = new string[] { "Small", "Medium", "Large" };
-                var categoryArr = new string[] { "Pants", "Shirt", "Jersey" };
+                var productCategoryArr = new string[] { "Pants", "Shirt", "Jersey" };
+                var teamCategoryArr = new string[] { "Sports", "Business", "Casual" };
                 //var categoryDesc = new string[] { "For your legs", "For your torso", "For your team" };
 
                 var colors = new List<ProductColor>();
                 var sizes = new List<ProductSize>();
-                var categories = new List<Category>();
+                var productCategories = new List<Category>();
+                var teamCategories = new List<Category>();
 
                 for (var i = 0; i < 3; i++)
                 {
@@ -44,22 +46,28 @@ namespace dropShippingApp.Data
                         IsSizeActive = true,
                         SizeName = sizeArr[i]
                     };
-                    var category = new Category()
+                    var productCategory = new Category()
                     {
-                        Name = categoryArr[i],
+                        Name = productCategoryArr[i],
                         //BriefDescription = categoryDesc[i]
+                    };
+                    var teamCategory = new Category()
+                    {
+                        Name = teamCategoryArr[i],
                     };
 
                     context.ProductColors.Add(color);
                     context.ProductSizes.Add(size);
-                    context.ProductCategories.Add(category);
+                    context.ProductCategories.Add(productCategory);
+                    context.TeamCategories.Add(teamCategory);
 
                     await context.SaveChangesAsync();
 
                     // add to local lists
                     colors.Add(color);
                     sizes.Add(size);
-                    categories.Add(category);
+                    productCategories.Add(productCategory);
+                    teamCategories.Add(teamCategory);
                 }
 
 
@@ -72,7 +80,7 @@ namespace dropShippingApp.Data
                     SKU = 1,
                     BaseColor = colors[0],
                     BaseSize = sizes[0],
-                    Category = categories[0]
+                    Category = productCategories[0]
                 };
                 PricingHistory pricingHistory = new PricingHistory
                 {
@@ -96,7 +104,7 @@ namespace dropShippingApp.Data
                     SKU = 1,
                     BaseColor = colors[1],
                     BaseSize = sizes[1],
-                    Category = categories[1]
+                    Category = productCategories[1]
                 };
                 PricingHistory pricingHistory3 = new PricingHistory
                 {
@@ -120,7 +128,7 @@ namespace dropShippingApp.Data
                     SKU = 1,
                     BaseColor = colors[2],
                     BaseSize = sizes[2],
-                    Category = categories[2]
+                    Category = productCategories[2]
                 };
                 PricingHistory pricingHistory5 = new PricingHistory
                 {
@@ -144,7 +152,7 @@ namespace dropShippingApp.Data
                     SKU = 1,
                     BaseColor = colors[0],
                     BaseSize = sizes[1],
-                    Category = categories[2]
+                    Category = productCategories[2]
                 };
                 PricingHistory pricingHistory7 = new PricingHistory
                 {
@@ -358,7 +366,8 @@ namespace dropShippingApp.Data
                     BusinessEmail = "abc@gmail.com",
                     PhoneNumber = "541-234-4040",
                     IsTeamInactive = false,
-                    IsHostTeam = true
+                    IsHostTeam = true,
+                    Category = teamCategories[0]
                 };
 
                 team.AddProduct(customProduct);
@@ -628,7 +637,7 @@ namespace dropShippingApp.Data
                     context.ProductCategories.Add(newCategory);
 
                     // Add to the local list 
-                    categories.Add(newCategory);
+                    productCategories.Add(newCategory);
                 }
                 await context.SaveChangesAsync();
 

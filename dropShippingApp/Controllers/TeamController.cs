@@ -74,7 +74,7 @@ namespace dropShippingApp.Controllers
                 });
         }
 
-        public async Task<IActionResult> Search(string searchString, int currentPage = -1)
+        /*public async Task<IActionResult> Search(string searchString, int currentPage = -1)
         {
             // search for teams
             var foundTeams = SearchByString(searchString);
@@ -178,7 +178,7 @@ namespace dropShippingApp.Controllers
             // returns redirect to view team
             await teamRepo.AddTeam(team);
             return View(team);
-        }
+        }*/
 
         public async Task<ViewResult> MarkTeamInactive(int teamId)
         {

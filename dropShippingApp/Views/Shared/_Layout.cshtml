@@ -1,4 +1,4 @@
-﻿@inject ICategoryRepo categoryRepo
+﻿@inject IProductCategoryRepo categoryRepo
 @inject SignInManager<AppUser> SignInManager
 @inject UserManager<AppUser> UserManager
 
@@ -34,7 +34,7 @@
                             <ul class="dropdown-menu">
                                 @foreach (var category in categoryRepo.GetCategories)
                                 {
-                                    <li><a class="nav-link text-dark" asp-controller="Product" asp-action="DisplayByCategory" asp-route-categoryID="@category.ProductCategoryID">@category.Name</a></li>
+                                    <li><a class="nav-link text-dark" asp-controller="Product" asp-action="DisplayByCategory" asp-route-categoryID="@category.CategoryID">@category.Name</a></li>
                                 }
                             </ul>
                         </li>

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace dropShippingApp.Data.Repositories
 {
-    public interface ITeamCategory
+    public interface ITeamCategoryRepo
     {
         List<Category> GetCategories { get; }
         Category GetCategoryById(int categoryId);
