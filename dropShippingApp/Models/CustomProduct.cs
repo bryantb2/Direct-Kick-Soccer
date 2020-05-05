@@ -15,6 +15,8 @@ namespace dropShippingApp.Models
         public int CustomProductID { get; set; }
         [Required]
         public RosterProduct BaseProduct { get; set; } // parent <------
+        [Required]
+        public ProductGroup ProductGroup { get; set; }
         public List<Tag> ProductTags { get; set; }
         [Required]
         public string ProductTitle { get; set; }
@@ -25,8 +27,7 @@ namespace dropShippingApp.Models
         public string CustomImageSVG { get; set; }
         [Required]
         public bool IsProductActive { get; set; }
-        public List<PricingHistory> PricingHistory { get { return this.pricingHistory; } } // <---- Users set this
-        // Does the pricing history INCLUDE the basePrice from the "parent"?
+        public List<PricingHistory> PricingHistory { get { return this.pricingHistory; } }
 
         public decimal CurrentPrice
         {
