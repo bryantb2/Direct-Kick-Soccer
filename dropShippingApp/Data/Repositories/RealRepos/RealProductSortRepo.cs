@@ -6,10 +6,10 @@ using System.Threading.Tasks;
 
 namespace dropShippingApp.Data.Repositories.RealRepos
 {
-    public class RealSortRepo : ISortRepo
+    public class RealProductSortRepo : IProductSortRepo
     {
         private ApplicationDbContext context;
-        public RealSortRepo(ApplicationDbContext context)
+        public RealProductSortRepo(ApplicationDbContext context)
         {
             this.context = context;
         }

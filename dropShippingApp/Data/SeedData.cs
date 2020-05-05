@@ -30,7 +30,7 @@ namespace dropShippingApp.Data
 
                 var colors = new List<ProductColor>();
                 var sizes = new List<ProductSize>();
-                var categories = new List<ProductCategory>();
+                var categories = new List<Category>();
 
                 for (var i = 0; i < 3; i++)
                 {
@@ -44,7 +44,7 @@ namespace dropShippingApp.Data
                         IsSizeActive = true,
                         SizeName = sizeArr[i]
                     };
-                    var category = new ProductCategory()
+                    var category = new Category()
                     {
                         Name = categoryArr[i],
                         //BriefDescription = categoryDesc[i]
@@ -52,7 +52,7 @@ namespace dropShippingApp.Data
 
                     context.ProductColors.Add(color);
                     context.ProductSizes.Add(size);
-                    context.Categories.Add(category);
+                    context.ProductCategories.Add(category);
 
                     await context.SaveChangesAsync();
 
@@ -620,12 +620,12 @@ namespace dropShippingApp.Data
 
                 for (int i = 0; i < c.Length; i++)
                 {
-                    ProductCategory newCategory = new ProductCategory()
+                    Category newCategory = new Category()
                     {
                         Name = c[i]
                     };
                     // Add to the DB
-                    context.Categories.Add(newCategory);
+                    context.ProductCategories.Add(newCategory);
 
                     // Add to the local list 
                     categories.Add(newCategory);

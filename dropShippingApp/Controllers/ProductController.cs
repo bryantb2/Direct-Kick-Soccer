@@ -18,12 +18,12 @@ namespace dropShippingApp.Controllers
     {
         private IRosterProductRepo rosterProductRepo;
         private ICustomProductRepo customProductRepo;
-        private ISortRepo sortRepo;
+        private IProductSortRepo sortRepo;
         private ICategoryRepo categoryRepo;
 
         public ProductController(IRosterProductRepo rosterProductRepo,
             ICustomProductRepo customProductRepo,
-            ISortRepo sortRepo,
+            IProductSortRepo sortRepo,
             ICategoryRepo categoryRepo)
         {
             this.rosterProductRepo = rosterProductRepo;
@@ -174,28 +174,6 @@ namespace dropShippingApp.Controllers
             // return list
             return View("Search", browseVM);
         }
-            
-        //    public ViewResult SearchOld(string category, int productPage = 1)
-        //=> View(new BrowseViewModel
-        //{
-        //    Products = rosterProductRepo.RosterProducts
-        //        .Where(p => category == null || p.Category.ToString() == category)
-        //        .OrderBy(p => p.RosterProductID)
-        //        .Skip((productPage - 1) * PageSize)
-        //        .Take(PageSize),
-        //    PagingInfo = new BrowseViewModel
-        //    {
-        //        CurrentPage = productPage,
-        //        ItemsPerPage = PageSize,
-        //        TotalItems = category == null ?
-        //            rosterProductRepo.RosterProducts.Count() :
-        //           rosterProductRepo.RosterProducts.Where(e =>
-        //                e.Category.ToString() == category).Count()
-        //    },
-        //    CurrentCategory = category
-        //});
-
-
 
         public async Task<IActionResult> GetProductBySKU(int SKU)
         {
@@ -216,7 +194,7 @@ namespace dropShippingApp.Controllers
         }
 
         // private actions
-        private BrowseViewModel CreateBrowseObject(List<CustomProduct> queriedProducts, int currentPageNumber, ProductCategory categoryObj = null, string searchTerm = null)
+        private BrowseViewModel CreateBrowseObject(List<CustomProduct> queriedProducts, int currentPageNumber, Category categoryObj = null, string searchTerm = null)
         {
             // setup starting and ending product indexes
             var itemsPerPage = 30;

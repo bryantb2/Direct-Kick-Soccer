@@ -114,7 +114,7 @@ namespace dropShippingApp.Data.Repositories.RealRepos
                         .ThenInclude(baseProduct => baseProduct.ProductTags)
                 .ToList()
                     .Find(team => team.TeamProducts
-                        .Find(product => product.CustomProductID == productId) 
+                        .Find(product => product.CustomProductID == productId)
                     != null);
         }
 

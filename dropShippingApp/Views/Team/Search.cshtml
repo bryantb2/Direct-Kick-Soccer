@@ -1,13 +1,15 @@
-@{ ViewData["Title"] = "Search"; }
+﻿
+@{
+    ViewData["Title"] = "Team Search";
+}
 @model BrowseViewModel
-@inject IProductSortRepo sortRepo
-
+@inject ITeamSortRepo teamSortRepo
 
     <section class="pt-5">
         <div>
             <form asp-controller="Product" asp-action="Search" method="get">
                 <div class="d-flex flex-row justify-content-center">
-                    <h1 class="p-2">Search for Products:</h1>
+                    <h1 class="p-2">Search for Teams:</h1>
                     <input class="p-2" type="text" placeholder="Enter a Search Term" asp-for=@Model.SearchString />
                     <button class="btn" type="submit">Search</button>
                 </div>

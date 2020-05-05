@@ -9,6 +9,6 @@ namespace dropShippingApp.ViewModels
 {
 	public class ProductCategoriesViewModel
 	{
-		public List<ProductCategory> Categories { get; set; }
+		public List<Category> Categories { get; set; }
 	}
 }
