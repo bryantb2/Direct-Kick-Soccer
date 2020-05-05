@@ -18,6 +18,7 @@ namespace dropShippingApp.Controllers
             this.teamRepo = teamRepo;
             this.teamSortRepo = sortRepo;
         }
+
         public async Task<IActionResult> ViewTeam(int teamId)
         {
             // TODO
@@ -75,8 +76,8 @@ namespace dropShippingApp.Controllers
 
         public async Task<IActionResult> Search(string searchString, int currentPage = -1)
         {
-            // search for products
-            var foundProducts = SearchByString(searchString);
+            // search for teams
+            var foundTeams = SearchByString(searchString);
 
             // create browse view model
             var browseVM = CreateBrowseObject(
@@ -170,99 +171,6 @@ namespace dropShippingApp.Controllers
 
             return pagingInfo;
         }
-
-        private List<Team> SplitList(List<Team> filterableList, int start, int end)
-        {
-            // remember: index is one behind the actual product number in the list
-            if (filterableList.Count == 0)
-                return filterableList;
-
-            // check if end parameter is higher than remain filterable list count (prevent out of range error
-            var checkedEnd = (filterableList.Count - end) < 0 ? filterableList.Count : end;
-            var splitList = new List<Team>();
-            for (var i = start; i <= checkedEnd - 1; i++)
-            {
-                splitList.Add(filterableList[i]);
-            }
-            return splitList;
-        }
-
-        private List<CustomProduct> FilterProductsByCategory(int categoryId)
-        {
-            var filteredProducts = customProductRepo.CustomProducts.Where(product => product.BaseProduct.Category.ProductCategoryID == categoryId);
-            return filteredProducts.ToList();
-        }
-
-        private List<CustomProduct> SearchByString(string searchString)
-        {
-            if (searchString.Length >= 2)
-            {
-                // clean search term
-                var cleanedSearchTerm = searchString.Trim().Split(' ');
-                // checks product tags, title, color, size, SKU, model number
-                var customProducts = customProductRepo.CustomProducts;
-                var foundProducts = new List<CustomProduct>();
-                foreach (var product in customProducts)
-                {
-                    if (DoesQueryContainString(cleanedSearchTerm, product.ProductTitle))
-                        foundProducts.Add(product);
-                    else if (DoesQueryContainString(cleanedSearchTerm, product.ProductTags))
-                        foundProducts.Add(product);
-                    else if (DoesQueryContainString(cleanedSearchTerm, product.BaseProduct.ProductTags))
-                        foundProducts.Add(product);
-                    else if (DoesQueryContainString(cleanedSearchTerm, product.BaseProduct.ModelNumber.ToString()))
-                        foundProducts.Add(product);
-                    else if (DoesQueryContainString(cleanedSearchTerm, product.BaseProduct.SKU.ToString()))
-                        foundProducts.Add(product);
-                    else if (DoesQueryContainString(cleanedSearchTerm, product.BaseProduct.BaseColor.ColorName))
-                        foundProducts.Add(product);
-                    else if (DoesQueryContainString(cleanedSearchTerm, product.BaseProduct.BaseSize.SizeName))
-                        foundProducts.Add(product);
-                    else if (DoesQueryContainString(cleanedSearchTerm, product.BaseProduct.ProductTags))
-                        foundProducts.Add(product);
-                    else if (DoesQueryContainString(cleanedSearchTerm, product.BaseProduct.Category.Name))
-                        foundProducts.Add(product);
-                }
-                return foundProducts;
-            }
-            return new List<CustomProduct>();
-        }
-
-        private bool DoesQueryContainString(string[] query, string stringToCheck)
-        {
-            var stringAsTolken = stringToCheck.Split(' ');
-            foreach (var searchTerm in query)
-            {
-                foreach (var checkAgainstTerm in stringAsTolken)
-                {
-                    if (searchTerm.ToUpper() == checkAgainstTerm.ToUpper() || checkAgainstTerm.ToUpper().Contains(searchTerm.ToUpper()))
-                        return true;
-                }
-            }
-            return false;
-        }
-
-        private bool DoesQueryContainString(string[] query, List<Tag> tagsToCheck)
-        {
-            if (tagsToCheck == null)
-                return false;
-            else
-            {
-                foreach (var term in query)
-                {
-                    foreach (var tag in tagsToCheck)
-                    {
-                        if (term.ToUpper() == tag.TagLine.ToUpper())
-                            return true;
-                    }
-                }
-                return false;
-            }
-        }
-
-
-
-
 
         public async Task<ViewResult> BuildTeam(Team team)
         {

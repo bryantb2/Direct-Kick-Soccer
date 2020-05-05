@@ -39,6 +39,9 @@ namespace dropShippingApp.Models
         [Required]
         public bool IsHostTeam { get; set; }
 
+        [Required]
+        public Category Category { get; set; }
+
         // methods
         public void AddTag(Tag tag) => teamTags.Add(tag);
         public Tag RemoveTag(Tag tag)
