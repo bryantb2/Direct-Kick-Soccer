@@ -203,28 +203,33 @@ namespace dropShippingApp.Controllers
         public async Task<IActionResult> GetAndSaveOrder([FromBody] OrderResponse order)
         {
             // get user from DB
-            // get order from paypal
-            // parse response body
             var user = await userManager.GetUserAsync(HttpContext.User);
-            //var response = await PaypalTransaction.GetOrder(configuration, order.OrderID);
-            //var responseData = response.Result<PayPalCheckoutSdk.Orders.Order>();
-
+            // process paypal order
             var processedOrder = await PaypalTransaction.ProcessOrder(configuration, order.OrderID);
 
-            var newOrder = new Order()
-            {
-                PaypalOrderId = order.OrderID
-            };
-
+            // create order log to store in DB
             // save order to DB
-            await orderRepo.AddOrder(newOrder);
+            var newDatabaseOrder = await PaypalTransaction.BuildDatabaseOrder(groupRepo, teamRepo, user, order.OrderID);
+            await orderRepo.AddOrder(newDatabaseOrder);
 
             // update user in DB
-            user.AddPurchaseOrder(newOrder);
+            user.AddPurchaseOrder(newDatabaseOrder);
             await userManager.UpdateAsync(user);
+
+            // clear user cart
+            await ClearCart(user.Cart);
 
             // redirect to main cart page
             return RedirectToAction("Index");
+        }
+
+        private async Task ClearCart(Cart userCart)
+        {
+            for(var i = 0; i < userCart.CartItems.Count; i++)
+            {
+                var currentCartItem = userCart.CartItems[i];
+                await cartRepo.RemoveCartItem(currentCartItem.CartItemID);
+            }
         }
     }
 }
