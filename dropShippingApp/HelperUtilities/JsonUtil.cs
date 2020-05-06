@@ -12,7 +12,7 @@ namespace dropShippingApp.Data
     public class JsonUtil
     {
         //used to create country and state seed data from json
-        public List<Country> DeserializeCountry()
+        public static List<Country> DeserializeCountry()
         {
             using (StreamReader reader = new StreamReader("country.json"))
             {
@@ -21,13 +21,14 @@ namespace dropShippingApp.Data
                 return countries;
             }
         }
-        public List<Province>DeserializeProvinces()
+        public static List<Province>DeserializeProvinces()
         {
            using(StreamReader reader=new StreamReader("state.json"))
-            {
+           {
                 string json = reader.ReadToEnd();
                 List<Province> provinces = JsonConvert.DeserializeObject<List<Province>>(json);
-            }
+                return provinces;
+           }
         }
     }
 }
