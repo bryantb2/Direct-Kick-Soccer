@@ -23,7 +23,6 @@ namespace dropShippingApp.Data.Repositories.RealRepos
                 return this.context.Teams
                     .Include(team => team.TeamTags)
                     .Include(team => team.TeamProducts)
-                        .ThenInclude(product => product.ProductTags)
                     .Include(team => team.TeamProducts)
                         .ThenInclude(product => product.PricingHistory)
                     .Include(team => team.TeamProducts)
@@ -70,7 +69,6 @@ namespace dropShippingApp.Data.Repositories.RealRepos
             return this.context.Teams
                 .Include(team => team.TeamTags)
                 .Include(team => team.TeamProducts)
-                    .ThenInclude(product => product.ProductTags)
                 .Include(team => team.TeamProducts)
                     .ThenInclude(product => product.PricingHistory)
                 .Include(team => team.TeamProducts)
@@ -95,7 +93,6 @@ namespace dropShippingApp.Data.Repositories.RealRepos
             return this.context.Teams
                 .Include(team => team.TeamTags)
                 .Include(team => team.TeamProducts)
-                    .ThenInclude(product => product.ProductTags)
                 .Include(team => team.TeamProducts)
                     .ThenInclude(product => product.PricingHistory)
                 .Include(team => team.TeamProducts)

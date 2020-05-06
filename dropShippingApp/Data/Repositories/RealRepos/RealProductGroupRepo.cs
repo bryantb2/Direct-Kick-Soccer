@@ -21,7 +21,6 @@ namespace dropShippingApp.Data.Repositories
             {
                 return this.context.ProductGroups
                     .Include(groups => groups.ChildProducts)
-                        .ThenInclude(product => product.ProductTags)
                     .Include(groups => groups.ChildProducts)
                         .ThenInclude(product => product.PricingHistory)
                     .Include(groups => groups.ChildProducts)

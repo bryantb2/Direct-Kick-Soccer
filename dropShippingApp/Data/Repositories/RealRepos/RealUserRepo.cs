@@ -48,7 +48,6 @@ namespace dropShippingApp.Data.Repositories.RealRepos
                             .ThenInclude(baseProduct => baseProduct.PricingHistory)
                 .Include(user => user.ManagedTeam) // get team product tags
                     .ThenInclude(team => team.TeamProducts)
-                        .ThenInclude(product => product.ProductTags)
                 .Include(user => user.ManagedTeam) // get team product tags
                     .ThenInclude(team => team.TeamProducts)
                         .ThenInclude(product => product.PricingHistory)
@@ -74,7 +73,6 @@ namespace dropShippingApp.Data.Repositories.RealRepos
                     .ThenInclude(product => product.BaseProduct)
                         .ThenInclude(baseProduct => baseProduct.PricingHistory)
                 .Include(user => user.CreatedCustomProducts)
-                    .ThenInclude(product => product.ProductTags)
 
                 .Include(user => user.AskedQuestions)
 
@@ -85,7 +83,6 @@ namespace dropShippingApp.Data.Repositories.RealRepos
                 .Include(user => user.Cart)
                     .ThenInclude(cart => cart.CartItems)
                         .ThenInclude(cartItem => cartItem.ProductSelection)
-                            .ThenInclude(selectedProduct => selectedProduct.ProductTags)
                 .Include(user => user.Cart)
                     .ThenInclude(cart => cart.CartItems)
                         .ThenInclude(cartItem => cartItem.ProductSelection)
@@ -168,7 +165,6 @@ namespace dropShippingApp.Data.Repositories.RealRepos
                             .ThenInclude(baseProduct => baseProduct.PricingHistory)
                 .Include(user => user.ManagedTeam) // get team product tags
                     .ThenInclude(team => team.TeamProducts)
-                        .ThenInclude(product => product.ProductTags)
                 .Include(user => user.ManagedTeam) // get team tags
                     .ThenInclude(team => team.TeamTags)
                 .Include(user => user.ManagedTeam) // get team country
@@ -191,7 +187,6 @@ namespace dropShippingApp.Data.Repositories.RealRepos
                     .ThenInclude(product => product.BaseProduct)
                         .ThenInclude(baseProduct => baseProduct.PricingHistory)
                 .Include(user => user.CreatedCustomProducts)
-                    .ThenInclude(product => product.ProductTags)
 
                 .Include(user => user.AskedQuestions)
 
@@ -202,7 +197,6 @@ namespace dropShippingApp.Data.Repositories.RealRepos
                 .Include(user => user.Cart)
                     .ThenInclude(cart => cart.CartItems)
                         .ThenInclude(cartItem => cartItem.ProductSelection)
-                            .ThenInclude(selectedProduct => selectedProduct.ProductTags)
                 .Include(user => user.Cart)
                     .ThenInclude(cart => cart.CartItems)
                         .ThenInclude(cartItem => cartItem.ProductSelection)
