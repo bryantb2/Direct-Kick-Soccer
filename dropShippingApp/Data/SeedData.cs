@@ -197,8 +197,6 @@ namespace dropShippingApp.Data
                 CustomProduct customProduct = new CustomProduct
                 {
                     BaseProduct = product1,
-                    ProductTitle = "Socks",
-                    ProductDescription = "These socks make you run so fast!",
                     ProductPNG = "http://placekitten.com/200/300",
                     IsProductActive = true
                 };
@@ -219,8 +217,6 @@ namespace dropShippingApp.Data
                 CustomProduct customProduct2 = new CustomProduct
                 {
                     BaseProduct = product1,
-                    ProductTitle = "Team Goats Socks",
-                    ProductDescription = "Official Unofficial socks for the Eugene Goats!",
                     ProductPNG = "http://placekitten.com/200/300",
                     IsProductActive = true
                 };
@@ -241,8 +237,6 @@ namespace dropShippingApp.Data
                 CustomProduct customProduct3 = new CustomProduct
                 {
                     BaseProduct = product1,
-                    ProductTitle = "Ice Squid Socks",
-                    ProductDescription = "Unofficial Official socks for the Eugene NHL team the Ice Squids!",
                     ProductPNG = "http://placekitten.com/200/300",
                     IsProductActive = true
                 };
@@ -263,8 +257,6 @@ namespace dropShippingApp.Data
                 CustomProduct customProduct4 = new CustomProduct
                 {
                     BaseProduct = product2,
-                    ProductTitle = "Hat",
-                    ProductDescription = "Great for keeping the sun out of your eyes, can also be used to hold stuff!",
                     ProductPNG = "http://placekitten.com/200/300",
                     IsProductActive = true
                 };
@@ -285,8 +277,6 @@ namespace dropShippingApp.Data
                 CustomProduct customProduct5 = new CustomProduct
                 {
                     BaseProduct = product2,
-                    ProductTitle = "Fighting Honey Badgers Hat",
-                    ProductDescription = "Hat supporting the local junior baseball team, the Fighting Honey Badgers",
                     ProductPNG = "http://placekitten.com/200/300",
                     IsProductActive = true
                 };
@@ -307,8 +297,6 @@ namespace dropShippingApp.Data
                 CustomProduct customProduct6 = new CustomProduct
                 {
                     BaseProduct = product2,
-                    ProductTitle = "Jumping Jellybeans Hat",
-                    ProductDescription = "Hat for parents of the local stickball team the Jumping Jellybeans!",
                     ProductPNG = "http://placekitten.com/200/300",
                     IsProductActive = true
                 };
@@ -329,8 +317,6 @@ namespace dropShippingApp.Data
                 CustomProduct customProduct7 = new CustomProduct
                 {
                     BaseProduct = product2,
-                    ProductTitle = "Jets Hat",
-                    ProductDescription = "Hat for team members of the Jets Power Walking Team",
                     ProductPNG = "http://placekitten.com/200/300",
                     IsProductActive = true
                 };

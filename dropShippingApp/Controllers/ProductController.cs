@@ -107,7 +107,6 @@ namespace dropShippingApp.Controllers
         public async Task<IActionResult> Search(string searchString, int currentPage = -1) 
         {
             // search for products
-            //var foundProducts = SearchHelper.SearchByString<CustomProduct>(customProductRepo.CustomProducts, searchString);
             var foundGroups = SearchHelper.SearchByString<ProductGroup>(productGroupRepo.Groups, searchString);
 
             // create browse view model
@@ -138,23 +137,28 @@ namespace dropShippingApp.Controllers
             return View("Search", browseVM);
         }
 
-        public async Task<IActionResult> SortProducts(int sortId, int categoryId = -1, string searchTerm = null, int currentPage = -1)
+        public async Task<IActionResult> SortProductGroups(int sortId, int categoryId = -1, string searchTerm = null, int currentPage = -1)
         {
             // IMPORTANT: at no point will the user be allowed to search AND browse by category AT THE SAME TIME
+
             // get products by appropriate query
-            var searchableList = customProductRepo.CustomProducts;
-            var filteredProducts = categoryId != -1 ? SearchHelper.FilterByCategory<CustomProduct>(searchableList, categoryId) : SearchHelper.SearchByString<CustomProduct>(searchableList, searchTerm);
+            var searchableList = productGroupRepo.Groups;
+            var filteredGroups = categoryId != -1 ? 
+                SearchHelper.FilterByCategory<ProductGroup>(searchableList, categoryId) 
+                    : SearchHelper.SearchByString<ProductGroup>(searchableList, searchTerm);
 
             // get sort and check sort type
             var foundSort = sortRepo.GetSortById(sortId);
+            var productGroupSortArgument = 0;
             if(foundSort.SortName.ToUpper() == "LOWEST PRICE")
             {
-                filteredProducts.Sort((product1, product2) => product1.CurrentPrice.CompareTo(product2.CurrentPrice));
+                productGroupSortArgument = -1;
             }
             else if(foundSort.SortName.ToUpper() == "HIGHEST PRICE")
             {
-                filteredProducts.Sort((product1, product2) => product2.CurrentPrice.CompareTo(product1.CurrentPrice));
+                productGroupSortArgument = 1;
             }
+            SearchHelper.SortGroupsByPrice(ref filteredGroups, sortBy: productGroupSortArgument);
 
             // create browse view model
             BrowseViewModel browseVM = null;
@@ -165,7 +169,7 @@ namespace dropShippingApp.Controllers
                 browseVM = SearchHelper.CreateBrowseObject(
                     currentPage == -1 ? 0 : currentPage,
                     categoryObj: foundCategory,
-                    queriedProducts: filteredProducts);
+                    queriedGroups: filteredGroups);
             }
             else
             {
@@ -173,7 +177,7 @@ namespace dropShippingApp.Controllers
                 browseVM = SearchHelper.CreateBrowseObject(
                     currentPage == -1 ? 0 : currentPage,
                     searchTerm: searchTerm,
-                    queriedProducts: filteredProducts);
+                    queriedGroups: filteredGroups);
             }
 
             // return list

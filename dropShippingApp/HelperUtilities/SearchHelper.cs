@@ -9,6 +9,34 @@ namespace dropShippingApp.HelperUtilities
 {
     public static class SearchHelper
     {
+        public static List<ProductGroup> SortGroupsByPrice(ref List<ProductGroup> filterableList, int sortBy = 1)
+        {
+            // sortby parameter is 1 by default. Sort by highest price is 1 and lowest is -1
+            if(sortBy != -1 && sortBy != 1)
+            {
+                // sort child products as setup
+                // done in ascending order (so we always know the first child's price is the highest in the group!)
+                foreach (var group in filterableList)
+                {
+                    group.ChildProducts.Sort((product1, product2) => product2.CurrentPrice.CompareTo(product1.CurrentPrice));
+                }
+                // sort groups
+                if (sortBy == -1)
+                {
+                    // sort by lowest price
+                    filterableList.Sort((group1, group2) => 
+                        group1.ChildProducts[0].CurrentPrice.CompareTo(group2.ChildProducts[0].CurrentPrice));
+                }
+                else
+                {
+                    // sort by highest price
+                    filterableList.Sort((group1, group2) =>
+                        group2.ChildProducts[0].CurrentPrice.CompareTo(group1.ChildProducts[0].CurrentPrice));
+                }
+            }
+            return filterableList;
+        }
+
         public static List<T> SortByMostPopular<T>(List<T> filterableList, List<Order> orderList)
         {
             // setup for type comparisons
@@ -158,13 +186,13 @@ namespace dropShippingApp.HelperUtilities
                         hasMatch = true;
                     else if (DoesQueryContainString(cleanedSearchTerm, group.Title))
                         hasMatch = true;
-                    if(!hasMatch)
+                    else if (DoesQueryContainString(cleanedSearchTerm, group.ProductTags))
+                        hasMatch = true;
+                    if (!hasMatch)
                     {
                         foreach (var product in group.ChildProducts)
                         {
-                            if (DoesQueryContainString(cleanedSearchTerm, product.ProductTags))
-                                hasMatch = true;
-                            else if (DoesQueryContainString(cleanedSearchTerm, product.BaseProduct.ProductTags))
+                            if (DoesQueryContainString(cleanedSearchTerm, product.BaseProduct.ProductTags))
                                 hasMatch = true;
                             else if (DoesQueryContainString(cleanedSearchTerm, product.BaseProduct.ModelNumber.ToString()))
                                 hasMatch = true;

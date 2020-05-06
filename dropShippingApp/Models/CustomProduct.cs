@@ -15,7 +15,6 @@ namespace dropShippingApp.Models
         public int CustomProductID { get; set; }
         [Required]
         public RosterProduct BaseProduct { get; set; } // parent <------
-        public List<Tag> ProductTags { get; set; }
         [Required]
         public string ProductPNG { get; set; }
         [Required]

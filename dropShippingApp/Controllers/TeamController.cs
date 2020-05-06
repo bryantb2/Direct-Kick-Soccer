@@ -120,7 +120,7 @@ namespace dropShippingApp.Controllers
             return View("Search", browseVM);
         }
 
-        public async Task<IActionResult> SortTeams(int sortId, int categoryId = -1, string searchTerm = null, int currentPage = -1)
+        /*public async Task<IActionResult> SortTeams(int sortId, int categoryId = -1, string searchTerm = null, int currentPage = -1)
         {
             // IMPORTANT: at no point will the user be allowed to search AND browse by category AT THE SAME TIME
 
@@ -166,7 +166,7 @@ namespace dropShippingApp.Controllers
 
             // return list
             return View("Search", browseVM);
-        }
+        }*/
 
         public async Task<ViewResult> BuildTeam(Team team)
         {
