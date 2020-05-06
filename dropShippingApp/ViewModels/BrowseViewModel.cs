@@ -13,6 +13,7 @@ namespace dropShippingApp.ViewModels
         public bool NextPageExists { get; set; }
         public bool PreviousPageExists { get; set; }
         public List<CustomProduct> Products { get; set; }
+        public List<ProductGroup> ProductGroups { get; set; }
         public Category CurrentCategory { get; set; }
         public List<Team> Teams { get; set; }
     }

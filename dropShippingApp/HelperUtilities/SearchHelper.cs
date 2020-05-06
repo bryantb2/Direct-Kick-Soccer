@@ -41,7 +41,7 @@ namespace dropShippingApp.HelperUtilities
 
         public static BrowseViewModel CreateBrowseObject(
             int currentPageNumber, 
-            List<CustomProduct> queriedProducts = null, 
+            List<ProductGroup> queriedGroups = null, 
             List<Team> queriedTeams = null, 
             Category categoryObj = null, 
             string searchTerm = null)
@@ -54,12 +54,12 @@ namespace dropShippingApp.HelperUtilities
             // setup paging view model
             var pagingInfo = new BrowseViewModel()
             {
-                Products = SplitList(queriedProducts, startProduct, endProduct),
+                ProductGroups = SplitList(queriedGroups, startProduct, endProduct),
                 CurrentPage = currentPageNumber,
                 SearchString = searchTerm == null ? null : searchTerm,
                 CurrentCategory = categoryObj == null ? null : categoryObj,
                 // next page exists if the number of products left in the query is greater than the total number of dispalyed products
-                NextPageExists = queriedProducts.Count > endProduct ? true : false,
+                NextPageExists = queriedGroups.Count > endProduct ? true : false,
                 PreviousPageExists = startProduct - itemsPerPage > 0 ? true : false
             };
 
@@ -70,17 +70,24 @@ namespace dropShippingApp.HelperUtilities
         {
             // setup for type comparisons
             Type team = typeof(Team);
-            Type customProduct = typeof(CustomProduct);
+            Type productGroup = typeof(ProductGroup);
 
             if (typeof(T) == team)
             {
                 var listAsTeams = filterableList.Cast<Team>().ToList();
                 return listAsTeams.Where(team => team.Category.CategoryID == categoryId).Cast<T>().ToList();
             }
-            else if(typeof(T) == customProduct)
+            else if(typeof(T) == productGroup)
             {
-                var listAsProducts = filterableList.Cast<CustomProduct>().ToList();
-                return listAsProducts.Where(product => product.BaseProduct.Category.CategoryID == categoryId).Cast<T>().ToList();
+                var listAsGroups = filterableList.Cast<ProductGroup>().ToList();
+                foreach(var group in listAsGroups)
+                {
+                    // remove current item if it's product does not contain the current category
+                    var filteredGroupProducts = group.ChildProducts.Where(product => product.BaseProduct.Category.CategoryID == categoryId);
+                    if (filteredGroupProducts.Count() == 0)
+                        listAsGroups.Remove(group);
+                }
+                return listAsGroups.Cast<T>().ToList();
             }
             else
             {

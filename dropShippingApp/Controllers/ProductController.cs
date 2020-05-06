@@ -21,16 +21,19 @@ namespace dropShippingApp.Controllers
         private ICustomProductRepo customProductRepo;
         private IProductSortRepo sortRepo;
         private IProductCategoryRepo categoryRepo;
+        private IProductGroupRepo productGroupRepo;
 
         public ProductController(IRosterProductRepo rosterProductRepo,
             ICustomProductRepo customProductRepo,
             IProductSortRepo sortRepo,
-            IProductCategoryRepo categoryRepo)
+            IProductCategoryRepo categoryRepo,
+            IProductGroupRepo productGroupRepo)
         {
             this.rosterProductRepo = rosterProductRepo;
             this.customProductRepo = customProductRepo;
             this.sortRepo = sortRepo;
             this.categoryRepo = categoryRepo;
+            this.productGroupRepo = productGroupRepo;
         }
 
         public async Task<IActionResult> Index()
@@ -104,13 +107,14 @@ namespace dropShippingApp.Controllers
         public async Task<IActionResult> Search(string searchString, int currentPage = -1) 
         {
             // search for products
-            var foundProducts = SearchHelper.SearchByString<CustomProduct>(customProductRepo.CustomProducts, searchString);
+            //var foundProducts = SearchHelper.SearchByString<CustomProduct>(customProductRepo.CustomProducts, searchString);
+            var foundGroups = SearchHelper.SearchByString<ProductGroup>(productGroupRepo.Groups, searchString);
 
             // create browse view model
             var browseVM = SearchHelper.CreateBrowseObject(
                     currentPage == -1 ? 0 : currentPage,
                     searchTerm: searchString,
-                    queriedProducts: foundProducts);
+                    queriedGroups: foundGroups);
 
             // return view
             return View("Search", browseVM);
@@ -119,9 +123,7 @@ namespace dropShippingApp.Controllers
         public async Task<IActionResult> DisplayByCategory(int categoryId, int currentPage = -1)
         {
             // get products by category
-            var categoryProducts = SearchHelper.FilterByCategory<CustomProduct>(
-                customProductRepo.CustomProducts,
-                categoryId);
+            var categoryGroups = SearchHelper.FilterByCategory<ProductGroup>(productGroupRepo.Groups, categoryId);
 
             // get current category
             var category = categoryRepo.GetCategoryById(categoryId);
@@ -130,7 +132,7 @@ namespace dropShippingApp.Controllers
             var browseVM = SearchHelper.CreateBrowseObject(
                 currentPage == -1 ? 0 : currentPage,
                 categoryObj: category,
-                queriedProducts: categoryProducts);
+                queriedGroups: categoryGroups);
 
             // return view
             return View("Search", browseVM);
