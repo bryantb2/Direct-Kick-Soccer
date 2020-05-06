@@ -44,7 +44,55 @@ namespace dropShippingApp.Data.Repositories
 
         public ProductGroup GetGroupById(int groupId)
         {
-            return this.context.ProductGroups.ToList().Find(group => group.ProductGroupID == groupId);
+            return this.context.ProductGroups
+                    .Include(groups => groups.ChildProducts)
+                    .Include(groups => groups.ChildProducts)
+                        .ThenInclude(product => product.PricingHistory)
+                    .Include(groups => groups.ChildProducts)
+                        .ThenInclude(product => product.BaseProduct)
+                            .ThenInclude(rosterProduct => rosterProduct.BaseColor)
+                    .Include(groups => groups.ChildProducts)
+                        .ThenInclude(product => product.BaseProduct)
+                            .ThenInclude(rosterProduct => rosterProduct.BasePrice)
+                    .Include(groups => groups.ChildProducts)
+                        .ThenInclude(product => product.BaseProduct)
+                            .ThenInclude(rosterProduct => rosterProduct.BaseSize)
+                    .Include(groups => groups.ChildProducts)
+                        .ThenInclude(product => product.BaseProduct)
+                            .ThenInclude(rosterProduct => rosterProduct.Category)
+                    .Include(groups => groups.ChildProducts)
+                        .ThenInclude(product => product.BaseProduct)
+                            .ThenInclude(rosterProduct => rosterProduct.PricingHistory)
+                    .ToList()
+                    .Find(group => group.ProductGroupID == groupId);
+        }
+
+        public ProductGroup GetGroupByProductId(int productId)
+        {
+            var foundCustomProduct = this.context.CustomProducts.ToList().Find(product => product.CustomProductID == productId);
+            // search each group and return if it contains the product id
+            var foundGroup = this.context.ProductGroups
+                    .Include(groups => groups.ChildProducts)
+                    .Include(groups => groups.ChildProducts)
+                        .ThenInclude(product => product.PricingHistory)
+                    .Include(groups => groups.ChildProducts)
+                        .ThenInclude(product => product.BaseProduct)
+                            .ThenInclude(rosterProduct => rosterProduct.BaseColor)
+                    .Include(groups => groups.ChildProducts)
+                        .ThenInclude(product => product.BaseProduct)
+                            .ThenInclude(rosterProduct => rosterProduct.BasePrice)
+                    .Include(groups => groups.ChildProducts)
+                        .ThenInclude(product => product.BaseProduct)
+                            .ThenInclude(rosterProduct => rosterProduct.BaseSize)
+                    .Include(groups => groups.ChildProducts)
+                        .ThenInclude(product => product.BaseProduct)
+                            .ThenInclude(rosterProduct => rosterProduct.Category)
+                    .Include(groups => groups.ChildProducts)
+                        .ThenInclude(product => product.BaseProduct)
+                            .ThenInclude(rosterProduct => rosterProduct.PricingHistory)
+                    .ToList()
+                    .Find(group => group.ChildProducts.Contains(foundCustomProduct) == true);
+            return foundGroup;
         }
 
         public async Task UpdateProductGroup(ProductGroup group)

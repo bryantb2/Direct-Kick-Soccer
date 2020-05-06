@@ -34,28 +34,38 @@ namespace dropShippingApp.HelperUtilities
 
     public class PaypalOrder
     {
-        public async static Task<PayPalCheckoutSdk.Orders.Order> CreateOrder(IConfiguration configuration, ITeamRepo teamRepo, AppUser user, decimal shippingPrice = 0)
+        private PayPalCheckoutSdk.Orders.Order generatedOrder;
+        private AppUser user;
+        private IConfiguration configuration;
+        private ITeamRepo teamRepo;
+        private IProductGroupRepo groupRepo;
+
+        public async static Task<PayPalCheckoutSdk.Orders.Order> CreateOrder(IConfiguration configuration, ITeamRepo teamRepo, IProductGroupRepo groupRepo, AppUser user, decimal shippingPrice = 0)
         {
             // build out request and order JSON
             var request = new OrdersCreateRequest();
             request.Headers.Add("prefer", "return=representation");
             request.RequestBody(
-                await BuildOrderRequestBody(teamRepo, 
-                    user.Id.ToString(), 
-                    user.Cart, 
+                await BuildOrderRequestBody(
+                    teamRepo,
+                    groupRepo,
+                    user, 
                     configuration["PaypalCredentials:MerchantID"]));
 
             // setup transaction
-            var response = await PayPalClient.Client(configuration)
-                .Execute(request);
+            var response = await PayPalClient.Client(configuration).Execute(request);
             return response.Result<PayPalCheckoutSdk.Orders.Order>();
         }
 
-        private async static Task<OrderRequest> BuildOrderRequestBody(ITeamRepo teamRepo, string appUserID, Cart cart, string DKMerchantID)
+        private async static Task<OrderRequest> BuildOrderRequestBody(
+            ITeamRepo teamRepo, 
+            IProductGroupRepo groupRepo, 
+            AppUser user, 
+            string DKMerchantID)
         {
             // build purchase units
             // construct order request object
-            var purchaseUnits = await GenerateUnitsByTeam(teamRepo, appUserID, cart.CartItems, DKMerchantID);
+            var purchaseUnits = await GenerateUnitsByTeam(teamRepo, groupRepo, user, DKMerchantID);
 
             OrderRequest orderRequest = new OrderRequest()
             {
@@ -77,24 +87,28 @@ namespace dropShippingApp.HelperUtilities
             return orderRequest;
         }
 
-        private async static Task<List<PurchaseUnitRequest>> GenerateUnitsByTeam(ITeamRepo teamRepo, string userID, List<CartItem> cartItems, string merchantID)
+        private async static Task<List<PurchaseUnitRequest>> GenerateUnitsByTeam(
+            ITeamRepo teamRepo, 
+            IProductGroupRepo groupRepo, 
+            AppUser user, 
+            string merchantID)
         {
             // get unique teams list
             // create unit foreach unique team
                 // generate items
                 // generate breakdown
             var purchaseUnits = new List<PurchaseUnitRequest>();
-            var teamProduct = await FindAndReturnTeamProducts(teamRepo, cartItems);
+            var teamProduct = await FindAndReturnTeamProducts(teamRepo, user.Cart.CartItems);
             foreach(var team in teamProduct)
             {
-                var teamItems = GeneratePUnitItems(team.Products);
+                var teamItems = GeneratePUnitItems(groupRepo, team.Products);
                 var teamBreakdown = GeneratePUnitBreakdown(team.Products);
 
                 purchaseUnits.Add(new PurchaseUnitRequest()
                 {
                     ReferenceId = merchantID,
                     Description = "Clothing and Apparel",
-                    CustomId = userID, // links transaction to app user
+                    CustomId = user.Id.ToString(), // links transaction to app user
                     AmountWithBreakdown = teamBreakdown,
                     Items = teamItems
                 });
@@ -152,15 +166,19 @@ namespace dropShippingApp.HelperUtilities
             return teamList;
         }
 
-        private static List<Item> GeneratePUnitItems(List<CartItem> cartItems)
+        private static List<Item> GeneratePUnitItems(IProductGroupRepo groupRepo, List<CartItem> cartItems)
         {
+            // this generates a purchase unit for a set of cart items (we assume that these cart items are grouped by team)
             var itemList = new List<Item>();
-            foreach(var item in cartItems)
+            for(var i = 0; i < cartItems.Count; i++)
             {
+                // must use group repo to find product family, because the ProductGroup object contains the product descrip and title
+                var item = cartItems[i];
+                var foundGroup = groupRepo.GetGroupByProductId(item.ProductSelection.CustomProductID);
                 itemList.Add(new Item()
                 {
-                    Name = item.ProductSelection.ProductTitle,
-                    Description = item.ProductSelection.ProductDescription,
+                    Name = foundGroup.Title,
+                    Description = foundGroup.Description,
                     Sku = item.ProductSelection.BaseProduct.SKU.ToString(),
                     UnitAmount = new Money()
                     {
@@ -176,23 +194,23 @@ namespace dropShippingApp.HelperUtilities
 
         private static AmountWithBreakdown GeneratePUnitBreakdown(List<CartItem> cartItems)
         {
-            // calc cart item total
+            // breakdown of each of the cost factors in a given purchase unit 
             var itemTotal = CalculateItemTotal(cartItems);
             var breakdown = new AmountWithBreakdown()
             {
                 CurrencyCode = "USD",
-                Value = itemTotal.ToString("0.##"),
+                Value = itemTotal.ToString("0.##"), // total cart value
                 AmountBreakdown = new AmountBreakdown()
                 {
                     ItemTotal = new Money
                     {
                         CurrencyCode = "USD",
-                        Value = itemTotal.ToString("0.##")
+                        Value = itemTotal.ToString("0.##") // unit price
                     },
                     Shipping = new Money
                     {
                         CurrencyCode = "USD",
-                        Value = "0.00" // fix this later
+                        Value = "0.00" // shipping price
                     }
                 }
             };

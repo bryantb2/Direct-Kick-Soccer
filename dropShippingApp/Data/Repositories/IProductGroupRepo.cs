@@ -10,6 +10,7 @@ namespace dropShippingApp.Data.Repositories
     {
         List<ProductGroup> Groups { get; }
         ProductGroup GetGroupById(int groupId);
+        ProductGroup GetGroupByProductId(int productId);
         Task UpdateProductGroup(ProductGroup group);
         Task AddProductGroup(ProductGroup group);
         Task<ProductGroup> RemoveProductGroup(int groupId);
