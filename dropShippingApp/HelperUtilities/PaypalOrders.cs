@@ -34,39 +34,56 @@ namespace dropShippingApp.HelperUtilities
 
     public class PaypalOrder
     {
-        private PayPalCheckoutSdk.Orders.Order generatedOrder;
+        private PayPalCheckoutSdk.Orders.Order generatedOrder = null;
         private AppUser user;
         private IConfiguration configuration;
         private ITeamRepo teamRepo;
         private IProductGroupRepo groupRepo;
+        private decimal shippingPrice;
 
-        public async static Task<PayPalCheckoutSdk.Orders.Order> CreateOrder(IConfiguration configuration, ITeamRepo teamRepo, IProductGroupRepo groupRepo, AppUser user, decimal shippingPrice = 0)
+        public PaypalOrder (
+            IConfiguration configuration, 
+            ITeamRepo teamRepo, 
+            IProductGroupRepo groupRepo, 
+            AppUser user, 
+            decimal shippingPrice = 0)
+        {
+            // set private fields
+            this.user = user;
+            this.configuration = configuration;
+            this.teamRepo = teamRepo;
+            this.groupRepo = groupRepo;
+            this.shippingPrice = shippingPrice;
+        }
+
+        public async Task<PayPalCheckoutSdk.Orders.Order> GetOrder()
+        {
+            // build order first if null
+            if(this.generatedOrder == null)
+            {
+                var order = await this.CreateOrder();
+                this.generatedOrder = order;
+            }
+            return this.generatedOrder;
+        }
+
+        private async Task<PayPalCheckoutSdk.Orders.Order> CreateOrder()
         {
             // build out request and order JSON
             var request = new OrdersCreateRequest();
             request.Headers.Add("prefer", "return=representation");
-            request.RequestBody(
-                await BuildOrderRequestBody(
-                    teamRepo,
-                    groupRepo,
-                    user, 
-                    configuration["PaypalCredentials:MerchantID"]));
+            request.RequestBody(await BuildOrderRequestBody());
 
             // setup transaction
             var response = await PayPalClient.Client(configuration).Execute(request);
             return response.Result<PayPalCheckoutSdk.Orders.Order>();
         }
 
-        private async static Task<OrderRequest> BuildOrderRequestBody(
-            ITeamRepo teamRepo, 
-            IProductGroupRepo groupRepo, 
-            AppUser user, 
-            string DKMerchantID)
+        private async Task<OrderRequest> BuildOrderRequestBody()
         {
             // build purchase units
             // construct order request object
-            var purchaseUnits = await GenerateUnitsByTeam(teamRepo, groupRepo, user, DKMerchantID);
-
+            var purchaseUnits = await GenerateUnitsByTeam();
             OrderRequest orderRequest = new OrderRequest()
             {
                 CheckoutPaymentIntent = "CAPTURE",
@@ -83,41 +100,36 @@ namespace dropShippingApp.HelperUtilities
                 // there are many purchase units if there are many sellers (AKA team shops)
                 PurchaseUnits = purchaseUnits
             };
-
             return orderRequest;
         }
 
-        private async static Task<List<PurchaseUnitRequest>> GenerateUnitsByTeam(
-            ITeamRepo teamRepo, 
-            IProductGroupRepo groupRepo, 
-            AppUser user, 
-            string merchantID)
+        private async Task<List<PurchaseUnitRequest>> GenerateUnitsByTeam()
         {
             // get unique teams list
             // create unit foreach unique team
                 // generate items
                 // generate breakdown
             var purchaseUnits = new List<PurchaseUnitRequest>();
-            var teamProduct = await FindAndReturnTeamProducts(teamRepo, user.Cart.CartItems);
+            var teamProduct = await FindAndReturnTeamProducts(user.Cart.CartItems);
             foreach(var team in teamProduct)
             {
-                var teamItems = GeneratePUnitItems(groupRepo, team.Products);
+                // go through all of the cart items, grouped by team, and generate an item list and breakdown
+                var teamItems = GeneratePUnitItems(team.Products);
                 var teamBreakdown = GeneratePUnitBreakdown(team.Products);
 
                 purchaseUnits.Add(new PurchaseUnitRequest()
                 {
-                    ReferenceId = merchantID,
+                    ReferenceId = team.TeamID.ToString(), // links purchase unit to team
                     Description = "Clothing and Apparel",
                     CustomId = user.Id.ToString(), // links transaction to app user
                     AmountWithBreakdown = teamBreakdown,
                     Items = teamItems
                 });
             }
-
             return purchaseUnits;
         }
 
-        private async static Task<List<TeamProduct>> FindAndReturnTeamProducts(ITeamRepo teamRepo, List<CartItem> cartItems)
+        private async Task<List<TeamProduct>> FindAndReturnTeamProducts(List<CartItem> cartItems)
         {
             // go through all products in cart
             // find team based on productId
@@ -166,7 +178,7 @@ namespace dropShippingApp.HelperUtilities
             return teamList;
         }
 
-        private static List<Item> GeneratePUnitItems(IProductGroupRepo groupRepo, List<CartItem> cartItems)
+        private List<Item> GeneratePUnitItems(List<CartItem> cartItems)
         {
             // this generates a purchase unit for a set of cart items (we assume that these cart items are grouped by team)
             var itemList = new List<Item>();
@@ -192,7 +204,7 @@ namespace dropShippingApp.HelperUtilities
             return itemList;
         }
 
-        private static AmountWithBreakdown GeneratePUnitBreakdown(List<CartItem> cartItems)
+        private AmountWithBreakdown GeneratePUnitBreakdown(List<CartItem> cartItems)
         {
             // breakdown of each of the cost factors in a given purchase unit 
             var itemTotal = CalculateItemTotal(cartItems);
@@ -217,7 +229,7 @@ namespace dropShippingApp.HelperUtilities
             return breakdown;
         }
 
-        private static decimal CalculateItemTotal(List<CartItem> cartItems)
+        private decimal CalculateItemTotal(List<CartItem> cartItems)
         {
             decimal totalPrice = 0m;
             foreach (var item in cartItems)

@@ -27,6 +27,7 @@ namespace dropShippingApp.Controllers
         private ICartRepo cartRepo;
         private IUserRepo userRepo;
         private ICustomProductRepo customProductRepo;
+        private IProductGroupRepo groupRepo;
 
         public CartController(
                 UserManager<AppUser> usrMgr,
@@ -36,7 +37,8 @@ namespace dropShippingApp.Controllers
                 IOrderRepo orderRepo,
                 ICartRepo cartRepo,
                 IUserRepo userRepo,
-                ICustomProductRepo customProductRepo)
+                ICustomProductRepo customProductRepo,
+                IProductGroupRepo groupRepo)
         {
             this.userManager = usrMgr;
             this.signInManager = signinMgr;
@@ -46,6 +48,7 @@ namespace dropShippingApp.Controllers
             this.cartRepo = cartRepo;
             this.userRepo = userRepo;
             this.customProductRepo = customProductRepo;
+            this.groupRepo = groupRepo;
         }
 
         // ------------------- PHASE 1
@@ -187,7 +190,11 @@ namespace dropShippingApp.Controllers
         {
             // get user from DB
             var user = await userRepo.GetUserDataAsync(HttpContext.User);
-            var paypalOrder = await PaypalOrder.CreateOrder(configuration, teamRepo, user);
+            // create custom order provider
+            var orderProvider = new PaypalOrder(configuration, teamRepo, groupRepo, user);
+            // get order from provider
+            var paypalOrder = await orderProvider.GetOrder();
+            // serialize order and return
             var orderJSON = JsonConvert.SerializeObject(paypalOrder);
             return Ok(orderJSON);
         }
