@@ -12,6 +12,9 @@
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" />
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
 </head>
 <body>
     <header>
@@ -44,14 +47,14 @@
                 <ul class="nav navbar-nav navbar-right">
                     @if (SignInManager.IsSignedIn(User))
                     {
-                    <li class="nav-item dropdown">
-                        @*<a class="nav-link text-dark dropdown-toggle"><span class="glyphicon glyphicon-user" data-toggle="dropdown" style="padding-right: 5px"></span>Welcome @UserManager.GetUserName(User)</a>*@
-                        <a class="nav-link text-dark dropdown-toggle" data-toggle="dropdown" asp-area="" asp-controller="Account" asp-action="Index">Welcome @UserManager.GetUserName(User)</a>
-                        <ul class="dropdown-menu">
-                            <li><a class="nav-link text-dark" asp-controller="" asp-action=""><span class="glyphicon glyphicon-log-out" style="padding-right: 5px"></span>Orders (Not Active)</a></li>
-                            <li><a class="nav-link text-dark" asp-controller="Account" asp-action="Logout"><span class="glyphicon glyphicon-log-out" style="padding-right: 5px"></span>Logout (Not Active)</a></li>
-                        </ul>
-                    </li>
+                        <li class="nav-item dropdown">
+                            @*<a class="nav-link text-dark dropdown-toggle"><span class="glyphicon glyphicon-user" data-toggle="dropdown" style="padding-right: 5px"></span>Welcome @UserManager.GetUserName(User)</a>*@
+                            <a class="nav-link text-dark dropdown-toggle" data-toggle="dropdown" asp-area="" asp-controller="Account" asp-action="Index">Welcome @UserManager.GetUserName(User)</a>
+                            <ul class="dropdown-menu">
+                                <li><a class="nav-link text-dark" asp-controller="" asp-action=""><span class="glyphicon glyphicon-log-out" style="padding-right: 5px"></span>Orders (Not Active)</a></li>
+                                <li><a class="nav-link text-dark" asp-controller="Account" asp-action="Logout"><span class="glyphicon glyphicon-log-out" style="padding-right: 5px"></span>Logout (Not Active)</a></li>
+                            </ul>
+                        </li>
                     }
                     else
                     {
@@ -75,7 +78,7 @@
 
     <footer class="border-top footer text-muted">
         <div class="container">
-            &copy; 2020 - dropShippingApp - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+            &copy; 2020 - Team Sports NW - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
         </div>
     </footer>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>

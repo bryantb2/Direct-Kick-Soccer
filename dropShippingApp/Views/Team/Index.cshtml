@@ -1,4 +1,5 @@
-﻿@{
+﻿@model List<Team>
+@{
     Layout = "_Layout";
     ViewData["Title"] = "Teams";
 }
@@ -9,3 +10,54 @@
         </div>
     </div>
 
+    <div class="container" >
+        <div id="myCarousel" class="carousel slide" data-ride="carousel" style="width:75%; height:25%; margin: 5px auto">
+            <!-- Indicators -->
+            <ol class="carousel-indicators">
+                <li data-target="#myCarousel" data-slide-to="0" class="active"></li>
+                <li data-target="#myCarousel" data-slide-to="1"></li>
+                <li data-target="#myCarousel" data-slide-to="2"></li>
+            </ol>
+
+            <!-- Wrapper for slides -->
+            <div class="carousel-inner">
+
+                <div class="item active">
+                    <a asp-controller="Team" asp-action="ViewTeam" asp-route-teamId="@Model[0].TeamID">
+                        <img src="http://placekitten.com/300/100" alt="Popular Team" style="width:100%">
+                        <div class="carousel-caption">
+                            <h3>Popular Team #1 - @Model[0].Name</h3>
+                        </div>
+                    </a>
+                </div>
+
+                <div class="item">
+                    <a asp-controller="Team" asp-action="ViewTeam" asp-route-teamId="@Model[0].TeamID">
+                        <img src="http://placekitten.com/300/100" alt="Popular Team" style="width:100%">
+                        <div class="carousel-caption">
+                            <h3>Popular Team #2 - @Model[0].Name</h3>
+                        </div>
+                    </a>
+                </div>
+
+                <div class="item">
+                    <a asp-controller="Team" asp-action="ViewTeam" asp-route-teamId="@Model[0].TeamID">
+                        <img src="http://placekitten.com/300/100" alt="Popular Team" style="width:100%;">
+                        <div class="carousel-caption">
+                            <h3>Popular Team #3 - @Model[0].Name</h3>
+                        </div>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Left and right controls -->
+            <a class="left carousel-control" href="#myCarousel" data-slide="prev">
+                <span class="glyphicon glyphicon-chevron-left"></span>
+                <span class="sr-only">Previous</span>
+            </a>
+            <a class="right carousel-control" href="#myCarousel" data-slide="next">
+                <span class="glyphicon glyphicon-chevron-right"></span>
+                <span class="sr-only">Next</span>
+            </a>
+        </div>
+    </div>
