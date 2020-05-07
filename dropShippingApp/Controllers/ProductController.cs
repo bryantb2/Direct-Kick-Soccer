@@ -41,19 +41,13 @@ namespace dropShippingApp.Controllers
             return View("Search", null);
         }
 
-        public async Task<IActionResult> ViewProduct(int productId)
+        public async Task<IActionResult> ViewProduct(int productGroupdId)
         {
-            // get product
-            var foundProduct = await customProductRepo.GetCustomProductById(productId);
-
-            var productViewModel = new ProductViewModel
-            {
-                Product = foundProduct,
-                Quantity = 1
-            };
+            // get product group
+            var foundProduct = productGroupRepo.GetGroupById(productGroupdId);
 
             // send to view
-            return View(productViewModel);
+            return View(foundProduct);
         }
 
         public async Task<IActionResult> BackToFirstPage(int categoryId = -1, string searchTerm = null)

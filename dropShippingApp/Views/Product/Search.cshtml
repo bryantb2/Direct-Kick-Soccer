@@ -64,30 +64,30 @@
 
         @if (Model != null)
         {
-            @if (Model.Products.Count != 0)
+            @if (Model.ProductGroups.Count != 0)
             {
                 <table class="table">
                     <thead>
                         <tr>
                             <th></th>
-                            <th>Product Title</th>
+                            <th>Product</th>
                             <th>Price</th>
-                            <th>SKU</th>
+                            <th>Description</th>
                             <th>Actions</th>
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach (var product in Model.Products)
+                        @foreach (var group in Model.ProductGroups)
                         {
                             <tr>
                                 <td>
-                                    <img width="100" src=@product.CustomImagePNG />
+                                    <img width="100" src=@group.GeneralThumbnail />
                                 </td>
-                                <td>@product.ProductTitle</td>
-                                <td>@product.CurrentPrice.ToString("c")</td>
-                                <td>@product.BaseProduct.SKU</td>
+                                <td>@group.Title</td>
+                                <td>@group.ChildProducts[0].CurrentPrice.ToString("c")</td>
+                                <td>@group.Description</td>
                                 <td>
-                                    <a class="btn btn-link" style="display:inline-block" asp-controller="Product" asp-action="ViewProduct" asp-route-productId="@product.CustomProductID">View Product</a>
+                                    <a class="btn btn-link" style="display:inline-block" asp-controller="Product" asp-action="ViewProduct" asp-route-productGroupdId="@group.ProductGroupID">View Product</a>
                                 </td>
                             </tr>
                         }

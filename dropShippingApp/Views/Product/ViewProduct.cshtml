@@ -2,23 +2,24 @@
     Layout = "_Layout";
     ViewData["Title"] = "View Product";
 }
-@model ProductViewModel;
+@model ProductGroup;
 
     <section>
-        <h1>@Model.Product.ProductTitle</h1>
+        <h1>@Model.Title</h1>
         <form asp-controller="Cart" asp-action="AddToCart" method="post" asp-route-productId="@Model.Product.CustomProductID">
             <div class="d-flex flex-column">
                 <div class="p-2">
-                    <img src=@Model.Product.CustomImagePNG width="300" />
+                    <img src=@Model.GeneralThumbnail width="300" />
                 </div>
+                <select>
+                    <option selected>Choose a Variant</option>
+                    @foreach (var product in Model.ChildProducts)
+                    {
+                        <option>Size - @Model.Product.BaseProduct.BaseSize.SizeName && Color - @Model.Product.BaseProduct.BaseColor.ColorName</option>
+                    }
+                </select>
                 <div class="p-2">
-                    Size - @Model.Product.BaseProduct.BaseSize.SizeName
-                </div>
-                <div class="p-2">
-                    Color - @Model.Product.BaseProduct.BaseColor.ColorName
-                </div>
-                <div class="p-2">
-                    Price - @Model.Product.CurrentPrice.ToString("c")
+                    Price - @Model.ChildProducts[0].CurrentPrice.ToString("c")
                 </div>
                 <div class="p-2">
                     Quantity - <input class="qnty_input" type="number" asp-for="Quantity" min="1" value=@Model.Quantity />
