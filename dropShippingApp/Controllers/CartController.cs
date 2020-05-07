@@ -70,20 +70,39 @@ namespace dropShippingApp.Controllers
         // view cart
         public async Task<IActionResult> Index()
         {
+            // get user
             var user = await userRepo.GetUserDataAsync(HttpContext.User);
             if (user != null)
             {
-                CartViewModel cartVM = new CartViewModel();
-                var cartItemList = new List<CartItem>();
-                foreach(CartItem item in user.Cart.CartItems)
+                // build cart item VM objects
+                var totalCartPrice = 0m;
+                var cartItemVMList = new List<CartItemViewModel>();
+                for(var i = 0; i < user.Cart.CartItems.Count; i++)
                 {
+                    // get the actual cart item
                     // add to running cart total
-                    cartVM.CartPrice += (item.Quantity * item.ProductSelection.CurrentPrice);
-                    // add item to list
-                    cartItemList.Add(item);
+                    var currentCartitem = user.Cart.CartItems[i];
+                    totalCartPrice += (currentCartitem.Quantity * currentCartitem.ProductSelection.CurrentPrice);
+
+                    // get the product group item belongs to
+                    var productGroup = groupRepo.GetGroupByProductId(currentCartitem.ProductSelection.CustomProductID);
+
+                    // build cart item VM object and add to list
+                    var newCartItemVM = new CartItemViewModel()
+                    {
+                        CartItem = currentCartitem,
+                        ProductTitle = productGroup.Title,
+                        ProductDescription = productGroup.Description,
+                        GeneralThumbnail = productGroup.GeneralThumbnail
+                    };
+                    cartItemVMList.Add(newCartItemVM);
                 }
-                // set item list
-                cartVM.CartItems = cartItemList;
+                // create cart view model
+                CartViewModel cartVM = new CartViewModel()
+                {
+                    CartPrice = totalCartPrice,
+                    CartItemVMs = cartItemVMList
+                };
                 return View(cartVM);
             }
             
@@ -154,16 +173,16 @@ namespace dropShippingApp.Controllers
 
         // update cart contents
         [HttpPost]
-        public async Task<IActionResult> UpdateCart([FromBody] List<CartItemViewModel> cartItems) //UpdateCartVM cart)
+        public async Task<IActionResult> UpdateCart([FromBody] List<UpdateCartItemViewModel> cartItems)
         {
             // change cart items quantities
             var user = await userManager.GetUserAsync(HttpContext.User);
 
             // update cart items
-            for (var i = 0; i < cartItems.Count; i++) //cart.CartItems.Count; i++)
+            for (var i = 0; i < cartItems.Count; i++)
             {
                 // find item and update
-                var currentItem = cartItems[i]; //cart.CartItems[i];
+                var currentItem = cartItems[i];
                 if(currentItem.Quantity > 0)
                 {
                     // update if greater than 0
