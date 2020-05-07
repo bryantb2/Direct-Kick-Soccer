@@ -366,7 +366,7 @@ namespace dropShippingApp.Data
 
                     };
                     context.Add(aProvience);
-                    //us.AddProvidence(aProvience);
+                    us.AddProvidence(aProvience);
 
                 }
                 await context.SaveChangesAsync();
@@ -375,7 +375,7 @@ namespace dropShippingApp.Data
 
                 Country america = (from country in context.Countries
                                    where country.CountryName.ToLower() == "united states of america"
-                                   select country).Include("proviences").First();
+                                   select country).First();
 
                 Province oregon = (from state in context.Provinces
                                    where state.ProvinceName.ToLower() == "oregon"
