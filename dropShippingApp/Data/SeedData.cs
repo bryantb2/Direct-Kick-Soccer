@@ -551,15 +551,15 @@ namespace dropShippingApp.Data
                 var teamSortNames = new string[] { "Oldest", "Newest", "Most Popular" };
                 Sort oldestSort = new Sort()
                 {
-                    SortName = sortNames[0]
+                    SortName = teamSortNames[0]
                 };
                 Sort newestSort = new Sort()
                 {
-                    SortName = sortNames[1]
+                    SortName = teamSortNames[1]
                 };
                 Sort mostPopular = new Sort()
                 {
-                    SortName = sortNames[2]
+                    SortName = teamSortNames[2]
                 };
 
                 context.TeamSorts.Add(oldestSort);

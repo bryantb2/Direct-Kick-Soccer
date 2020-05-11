@@ -15,8 +15,11 @@ namespace dropShippingApp.Models
         public string SETrackingId { get; set; }
         public string SEReturnTrackingId { get; set; }
         public bool ReturnRequested { get; set; }
-        public List<string> ProductFamilyIDs { get; set; }
-        public List<string> ProductIDs { get; set; }
-        public List<string> TeamIDs { get; set; }
+        [NotMapped]
+        public string[] ProductFamilyIDs { get; set; }
+        [NotMapped]
+        public string[] ProductIDs { get; set; }
+        [NotMapped]
+        public string[] TeamIDs { get; set; }
     }
 }

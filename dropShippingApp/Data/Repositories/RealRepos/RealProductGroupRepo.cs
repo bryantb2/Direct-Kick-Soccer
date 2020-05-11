@@ -20,15 +20,18 @@ namespace dropShippingApp.Data.Repositories
             get
             {
                 return this.context.ProductGroups
+                    .Include(groups => groups.ProductTags)
                     .Include(groups => groups.ChildProducts)
                     .Include(groups => groups.ChildProducts)
                         .ThenInclude(product => product.PricingHistory)
                     .Include(groups => groups.ChildProducts)
                         .ThenInclude(product => product.BaseProduct)
+                    .Include(groups => groups.ChildProducts)
+                        .ThenInclude(product => product.BaseProduct)
                             .ThenInclude(rosterProduct => rosterProduct.BaseColor)
                     .Include(groups => groups.ChildProducts)
                         .ThenInclude(product => product.BaseProduct)
-                            .ThenInclude(rosterProduct => rosterProduct.BasePrice)
+                            .ThenInclude(rosterProduct => rosterProduct.ProductTags)
                     .Include(groups => groups.ChildProducts)
                         .ThenInclude(product => product.BaseProduct)
                             .ThenInclude(rosterProduct => rosterProduct.BaseSize)
@@ -45,15 +48,18 @@ namespace dropShippingApp.Data.Repositories
         public ProductGroup GetGroupById(int groupId)
         {
             return this.context.ProductGroups
+                    .Include(groups => groups.ProductTags)
                     .Include(groups => groups.ChildProducts)
                     .Include(groups => groups.ChildProducts)
                         .ThenInclude(product => product.PricingHistory)
                     .Include(groups => groups.ChildProducts)
                         .ThenInclude(product => product.BaseProduct)
+                    .Include(groups => groups.ChildProducts)
+                        .ThenInclude(product => product.BaseProduct)
                             .ThenInclude(rosterProduct => rosterProduct.BaseColor)
                     .Include(groups => groups.ChildProducts)
                         .ThenInclude(product => product.BaseProduct)
-                            .ThenInclude(rosterProduct => rosterProduct.BasePrice)
+                            .ThenInclude(rosterProduct => rosterProduct.ProductTags)
                     .Include(groups => groups.ChildProducts)
                         .ThenInclude(product => product.BaseProduct)
                             .ThenInclude(rosterProduct => rosterProduct.BaseSize)
@@ -69,18 +75,22 @@ namespace dropShippingApp.Data.Repositories
 
         public ProductGroup GetGroupByProductId(int productId)
         {
-            var foundCustomProduct = this.context.CustomProducts.ToList().Find(product => product.CustomProductID == productId);
+            var foundCustomProduct = this.context.CustomProducts.ToList()
+                .Find(product => product.CustomProductID == productId);
             // search each group and return if it contains the product id
             var foundGroup = this.context.ProductGroups
+                    .Include(groups => groups.ProductTags)
                     .Include(groups => groups.ChildProducts)
                     .Include(groups => groups.ChildProducts)
                         .ThenInclude(product => product.PricingHistory)
                     .Include(groups => groups.ChildProducts)
                         .ThenInclude(product => product.BaseProduct)
+                    .Include(groups => groups.ChildProducts)
+                        .ThenInclude(product => product.BaseProduct)
                             .ThenInclude(rosterProduct => rosterProduct.BaseColor)
                     .Include(groups => groups.ChildProducts)
                         .ThenInclude(product => product.BaseProduct)
-                            .ThenInclude(rosterProduct => rosterProduct.BasePrice)
+                            .ThenInclude(rosterProduct => rosterProduct.ProductTags)
                     .Include(groups => groups.ChildProducts)
                         .ThenInclude(product => product.BaseProduct)
                             .ThenInclude(rosterProduct => rosterProduct.BaseSize)

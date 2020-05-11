@@ -10,9 +10,12 @@ namespace dropShippingApp.Models
     {
         // private fields
         private List<PricingHistory> pricingHistory = new List<PricingHistory>();
-        
+
         // public properties
         public int RosterProductID { get; set; }
+        [Required]
+        public decimal BasePrice { get; set; } // <--- Raza sets this
+        public bool IsProductActive { get; set; }
         [Required]
         public int ModelNumber { get; set; }
         [Required]
@@ -22,9 +25,6 @@ namespace dropShippingApp.Models
         [Required]
         public ProductSize BaseSize { get; set; }
         public List<Tag> ProductTags { get; set; }
-        [Required]
-        public decimal BasePrice { get; set; } // <--- Raza sets this
-        public bool IsProductActive { get; set; }
         [Required]
         public Category Category { get; set; }
         public List<PricingHistory> PricingHistory { get { return this.pricingHistory; } }

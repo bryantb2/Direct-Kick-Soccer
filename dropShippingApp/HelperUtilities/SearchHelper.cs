@@ -12,26 +12,20 @@ namespace dropShippingApp.HelperUtilities
         public static List<ProductGroup> SortGroupsByPrice(ref List<ProductGroup> filterableList, int sortBy = 1)
         {
             // sortby parameter is 1 by default. Sort by highest price is 1 and lowest is -1
-            if(sortBy != -1 && sortBy != 1)
+            if(sortBy != -1 || sortBy != 1)
             {
-                // sort child products as setup
-                // done in ascending order (so we always know the first child's price is the highest in the group!)
-                foreach (var group in filterableList)
-                {
-                    group.ChildProducts.Sort((product1, product2) => product2.CurrentPrice.CompareTo(product1.CurrentPrice));
-                }
                 // sort groups
                 if (sortBy == -1)
                 {
                     // sort by lowest price
                     filterableList.Sort((group1, group2) => 
-                        group1.ChildProducts[0].CurrentPrice.CompareTo(group2.ChildProducts[0].CurrentPrice));
+                        group1.GetHighestPrice.CompareTo(group2.GetHighestPrice));
                 }
                 else
                 {
                     // sort by highest price
                     filterableList.Sort((group1, group2) =>
-                        group2.ChildProducts[0].CurrentPrice.CompareTo(group1.ChildProducts[0].CurrentPrice));
+                        group2.GetHighestPrice.CompareTo(group1.GetHighestPrice));
                 }
             }
             return filterableList;
@@ -108,14 +102,15 @@ namespace dropShippingApp.HelperUtilities
             else if(typeof(T) == productGroup)
             {
                 var listAsGroups = filterableList.Cast<ProductGroup>().ToList();
-                foreach(var group in listAsGroups)
+                var filteredGroups = new List<ProductGroup>(listAsGroups.ToArray());
+                foreach (var group in listAsGroups)
                 {
                     // remove current item if it's product does not contain the current category
                     var filteredGroupProducts = group.ChildProducts.Where(product => product.BaseProduct.Category.CategoryID == categoryId);
                     if (filteredGroupProducts.Count() == 0)
-                        listAsGroups.Remove(group);
+                        filteredGroups.Remove(group);
                 }
-                return listAsGroups.Cast<T>().ToList();
+                return filteredGroups.Cast<T>().ToList();
             }
             else
             {

@@ -14,11 +14,11 @@ namespace dropShippingApp.Models
         // public properties
         public int CustomProductID { get; set; }
         [Required]
-        public RosterProduct BaseProduct { get; set; } // parent <------
-        [Required]
         public string ProductPNG { get; set; }
         [Required]
         public bool IsProductActive { get; set; }
+        [Required]
+        public RosterProduct BaseProduct { get; set; } // parent <------
         public List<PricingHistory> PricingHistory { get { return this.pricingHistory; } }
 
         public decimal CurrentPrice

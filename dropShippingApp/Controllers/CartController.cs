@@ -125,49 +125,52 @@ namespace dropShippingApp.Controllers
         }
 
         // add item to cart
-        public async Task<IActionResult> AddToCart(int productId, int quantity)
+        public async Task<IActionResult> AddToCart(int productGroupId, int? productId, int? quantity)
         {
-            // get user
-            var user = await userRepo.GetUserDataAsync(HttpContext.User);
-            
-            if(quantity > 0)
+            if(productId != null && quantity != null)
             {
-                // check if product already in cart
-                var existingCartItem = user.Cart.CartItems.Find(item => item.ProductSelection.CustomProductID == productId);
-                if (existingCartItem != null)
-                {
-                    // update existing
-                    existingCartItem.Quantity += quantity;
-                    await cartRepo.UpdateCartItem(existingCartItem);
-                }
-                else
-                {
-                    // add new item
-                    // get product
-                    var foundProduct = await customProductRepo.GetCustomProductById(productId);
-                    if (foundProduct == null)
-                        return NotFound();
+                // get user
+                var user = await userRepo.GetUserDataAsync(HttpContext.User);
 
-                    // add to DB
-                    var newItem = new CartItem()
+                if (quantity > 0)
+                {
+                    // check if product already in cart
+                    var existingCartItem = user.Cart.CartItems.Find(item => item.ProductSelection.CustomProductID == productId);
+                    if (existingCartItem != null)
                     {
-                        Quantity = quantity,
-                        ProductSelection = foundProduct
-                    };
-                    await cartRepo.AddCartItem(newItem);
+                        // update existing
+                        existingCartItem.Quantity += (int)quantity;
+                        await cartRepo.UpdateCartItem(existingCartItem);
+                    }
+                    else
+                    {
+                        // add new item
+                        // get product
+                        var foundProduct = await customProductRepo.GetCustomProductById((int)productId);
+                        if (foundProduct == null)
+                            return NotFound();
 
-                    // add to cart and user
-                    user.Cart.AddItem(newItem);
-                    await userManager.UpdateAsync(user);
+                        // add to DB
+                        var newItem = new CartItem()
+                        {
+                            Quantity = (int)quantity,
+                            ProductSelection = foundProduct
+                        };
+                        await cartRepo.AddCartItem(newItem);
+
+                        // add to cart and user
+                        user.Cart.AddItem(newItem);
+                        await userManager.UpdateAsync(user);
+                    }
+
+                    // redirect to cart
+                    return RedirectToAction("Index");
                 }
-
-                // redirect to cart
-                return RedirectToAction("Index");
             }
 
             return RedirectToAction("ViewProduct", "Product", new
             {
-                productId = productId
+                productGroupId
             });
         }
 

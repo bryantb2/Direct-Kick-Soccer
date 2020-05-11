@@ -31,5 +31,5 @@ namespace dropShippingApp.Data
         public DbSet<Sort> ProductSorts { get; set; }
         public DbSet<Sort> TeamSorts { get; set; }
         public DbSet<ProductGroup> ProductGroups { get; set; }
-    }
+    }   
 }

@@ -77,9 +77,9 @@ namespace dropShippingApp.HelperUtilities
             dropShippingApp.Models.Order newDBOrder = new dropShippingApp.Models.Order()
             {
                 PaypalOrderId = paypalOrderID,
-                ProductFamilyIDs = groupIdsList,
-                ProductIDs = productIdsList,
-                TeamIDs = teamIdsList
+                ProductFamilyIDs = groupIdsList.ToArray(),
+                ProductIDs = productIdsList.ToArray(),
+                TeamIDs = teamIdsList.ToArray()
             };
             return newDBOrder;
         }
