@@ -123,6 +123,7 @@ namespace dropShippingApp.Controllers
             // redirects to team product management page
             Team mTeam = await teamRepo.FindTeamById(team.TeamID);
             mTeam.RemoveProduct(customProduct);
+            await teamRepo.UpdateTeam(mTeam);
             return RedirectToAction("/TeamManagement/Index");
         }
 
