@@ -90,6 +90,16 @@ namespace dropShippingApp.Controllers
             return searchResults;
         }
 
+        public async Task<IActionResult> TeamSettings()
+        {
+            return View("Views/TeamManagement/TeamSettings.cshtml");
+        }
+
+        public async Task<IActionResult> TeamManager()
+        {
+            return View("Views/TeamManagement/TeamManager.cshtml");
+        }
+
         // TODO 
         // DO NOT WRITE CODE FOR THESE UNTIL BOTH THE PRODUCT AND TEAM REPOS ARE FINISHED...
 
@@ -127,6 +137,7 @@ namespace dropShippingApp.Controllers
             // otherwise they could change the team id and f*** up another person's team
             // TODO: will take in settings view model
             // redirect to home management page
+
             await teamRepo.UpdateTeam(updatedTeam);
             return View();
         }
