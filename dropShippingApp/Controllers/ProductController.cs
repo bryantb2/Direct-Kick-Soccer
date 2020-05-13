@@ -20,12 +20,15 @@ namespace dropShippingApp.Controllers
         private ICustomProductRepo customProductRepo;
         private ISortRepo sortRepo;
         private ICategoryRepo categoryRepo;
+        private ITeamRepo teamRepo;
 
         public ProductController(IRosterProductRepo rosterProductRepo,
             ICustomProductRepo customProductRepo,
             ISortRepo sortRepo,
-            ICategoryRepo categoryRepo)
+            ICategoryRepo categoryRepo,
+            ITeamRepo tRepo)
         {
+            teamRepo = tRepo;
             this.rosterProductRepo = rosterProductRepo;
             this.customProductRepo = customProductRepo;
             this.sortRepo = sortRepo;
@@ -114,7 +117,16 @@ namespace dropShippingApp.Controllers
             // return view
             return View("Search", browseVM);
         }
-
+        public async Task<IActionResult>ViewTeamProduct(int teamId)
+        {
+            Team t = await teamRepo.FindTeamById(teamId);
+            return View(t);
+        }
+        public async Task<IActionResult>TeamProdDetails(int id)
+        {
+            CustomProduct prod = await customProductRepo.GetCustomProductById(id);
+            return View(prod);
+        }
         public async Task<IActionResult> DisplayByCategory(int categoryId, int currentPage = -1)
         {
             // get products by category
@@ -326,5 +338,6 @@ namespace dropShippingApp.Controllers
                 return false;
             }
         }
+        
     }
 }
