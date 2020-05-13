@@ -9,7 +9,7 @@ namespace dropShippingApp.HelperUtilities
 {
     public static class SearchHelper
     {
-        public static List<ProductGroup> SortGroupsByPrice(ref List<ProductGroup> filterableList, int sortBy = 1)
+        public static void SortGroupsByPrice(ref List<ProductGroup> filterableList, int sortBy = 1)
         {
             // sortby parameter is 1 by default. Sort by highest price is 1 and lowest is -1
             if(sortBy != -1 || sortBy != 1)
@@ -28,10 +28,10 @@ namespace dropShippingApp.HelperUtilities
                         group2.GetHighestPrice.CompareTo(group1.GetHighestPrice));
                 }
             }
-            return filterableList;
+            //return filterableList;
         }
 
-        public static List<T> SortByMostPopular<T>(List<T> filterableList, List<Order> orderList)
+        public static void SortByMostPopular<T>(ref List<T> filterableList, List<Order> orderList)
         {
             // setup for type comparisons
             Type team = typeof(Team);
@@ -44,7 +44,7 @@ namespace dropShippingApp.HelperUtilities
                 listAsTeam.Sort((team1, team2) => 
                     GetPurchaseCount<Team>(team1.TeamID, orderList).CompareTo(GetPurchaseCount<Team>(team1.TeamID, orderList))
                 );
-                return listAsTeam.Cast<T>().ToList();
+                listAsTeam.Cast<T>().ToList();
             }
             else if (typeof(T) == customProduct)
             {
@@ -53,11 +53,7 @@ namespace dropShippingApp.HelperUtilities
                 listAsProducts.Sort((product1, product2) =>
                     GetPurchaseCount<CustomProduct>(product1.CustomProductID, orderList).CompareTo(GetPurchaseCount<CustomProduct>(product2.CustomProductID, orderList))
                 );
-                return listAsProducts.Cast<T>().ToList();
-            }
-            else
-            {
-                return new List<T>();
+                listAsProducts.Cast<T>().ToList();
             }
         }
 

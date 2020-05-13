@@ -15,14 +15,17 @@ namespace dropShippingApp.Controllers
         private ITeamRepo teamRepo;
         private ITeamSortRepo teamSortRepo;
         private ITeamCategoryRepo categoryRepo;
+        private IOrderRepo orderRepo;
         public TeamController(
             ITeamRepo teamRepo, 
             ITeamSortRepo sortRepo,
-            ITeamCategoryRepo categoryRepo)
+            ITeamCategoryRepo categoryRepo,
+            IOrderRepo orderRepo)
         {
             this.teamRepo = teamRepo;
             this.teamSortRepo = sortRepo;
             this.categoryRepo = categoryRepo;
+            this.orderRepo = orderRepo;
         }
 
         public async Task<IActionResult> Index()
@@ -32,11 +35,11 @@ namespace dropShippingApp.Controllers
 
         public async Task<IActionResult> ViewTeam(int teamId)
         {
-            var team = await teamRepo.FindTeamById(teamId);
-
+            // get 
+            /*var team = await teamRepo.FindTeamById(teamId);
             // TODO
-
-            return View(team);
+            return View(team);*/
+            throw new NotImplementedException();
         }
 
         public async Task<IActionResult> BackToFirstPage(int categoryId = -1, string searchTerm = null)
@@ -120,12 +123,12 @@ namespace dropShippingApp.Controllers
             return View("Search", browseVM);
         }
 
-        /*public async Task<IActionResult> SortTeams(int sortId, int categoryId = -1, string searchTerm = null, int currentPage = -1)
+        public async Task<IActionResult> SortTeams(int sortId, int categoryId = -1, string searchTerm = null, int currentPage = -1)
         {
             // IMPORTANT: at no point will the user be allowed to search AND browse by category AT THE SAME TIME
 
             // get products by appropriate query
-            var filteredProducts = categoryId != -1 ? 
+            var filteredTeams = categoryId != -1 ? 
                 SearchHelper.FilterByCategory<Team>(teamRepo.GetTeams, categoryId) 
                 : SearchHelper.SearchByString<Team>(teamRepo.GetTeams, searchTerm);
 
@@ -133,15 +136,15 @@ namespace dropShippingApp.Controllers
             var foundSort = teamSortRepo.GetSortById(sortId);
             if (foundSort.SortName.ToUpper() == "OLDEST")
             {
-                filteredProducts.Sort((team1, team2) => team1.DateJoined.CompareTo(team2.DateJoined));
+                filteredTeams.Sort((team1, team2) => team1.DateJoined.CompareTo(team2.DateJoined));
             }
             else if (foundSort.SortName.ToUpper() == "NEWEST")
             {
-                filteredProducts.Sort((team1, team2) => team2.DateJoined.CompareTo(team1.DateJoined));
+                filteredTeams.Sort((team1, team2) => team2.DateJoined.CompareTo(team1.DateJoined));
             }
             else if (foundSort.SortName.ToUpper() == "MOST POPULAR")
             {
-                filteredProducts.Sort((product1, product2) => product2.CurrentPrice.CompareTo(product1.CurrentPrice));
+                SearchHelper.SortByMostPopular<Team>(ref filteredTeams, orderRepo.GetOrders);
             }
 
             // create browse view model
@@ -149,24 +152,24 @@ namespace dropShippingApp.Controllers
             if (categoryId != -1)
             {
                 // means user is browsing by category
-                var foundCategory = await categoryRepo.GetCategoryById(categoryId);
-                browseVM = CreateBrowseObject(
-                    filteredProducts,
+                var foundCategory = categoryRepo.GetCategoryById(categoryId);
+                browseVM = SearchHelper.CreateBrowseObject(
                     currentPage == -1 ? 0 : currentPage,
-                    categoryObj: foundCategory);
+                    categoryObj: foundCategory,
+                    queriedTeams: filteredTeams);
             }
             else
             {
                 // user is browsing products THEY searched
-                browseVM = CreateBrowseObject(
-                    filteredProducts,
+                browseVM = SearchHelper.CreateBrowseObject(
                     currentPage == -1 ? 0 : currentPage,
-                    searchTerm: searchTerm);
+                    searchTerm: searchTerm,
+                    queriedTeams: filteredTeams);
             }
 
             // return list
             return View("Search", browseVM);
-        }*/
+        }
 
         public async Task<ViewResult> BuildTeam(Team team)
         {

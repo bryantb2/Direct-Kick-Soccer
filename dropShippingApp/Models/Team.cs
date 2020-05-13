@@ -9,8 +9,8 @@ namespace dropShippingApp.Models
     public class Team
     {
         // private fields
-        private List<CustomProduct> teamProducts = new List<CustomProduct>();
         private List<Tag> teamTags = new List<Tag>();
+        private List<ProductGroup> productGroups = new List<ProductGroup>();
 
         // public properties
         public int TeamID { get; set; }
@@ -32,7 +32,6 @@ namespace dropShippingApp.Models
         public String BusinessEmail { get; set; }
         [Required]
         public string PhoneNumber { get; set; }
-        public List<CustomProduct> TeamProducts { get { return teamProducts; } }
         public List<Tag> TeamTags { get { return teamTags; } }
         [Required]
         public bool IsTeamInactive { get; set; }
@@ -61,20 +60,9 @@ namespace dropShippingApp.Models
             return removedTag;
         }
 
-        public void AddProduct(CustomProduct product) => teamProducts.Add(product);
-        public CustomProduct RemoveProduct(CustomProduct product)
-        {
-            CustomProduct removedProduct = null;
-            foreach (CustomProduct p in teamProducts)
-            {
-                if (product.CustomProductID == p.CustomProductID)
-                {
-                    removedProduct = p;
-                    teamProducts.Remove(p);
-                    return removedProduct;
-                }
-            }
-            return removedProduct;
-        }
+        public void AddProductGroup(ProductGroup group) => productGroups.Add(group);
+        public void RemoveProductGroup(int groupId) => productGroups.Remove(productGroups.Find(group => group.ProductGroupID == groupId));
+        public void UpdateProductGroup(ProductGroup updatedGroup) => 
+            productGroups[productGroups.FindIndex(group => group.ProductGroupID == updatedGroup.ProductGroupID)] = updatedGroup;
     }
 }
