@@ -17,6 +17,16 @@ namespace dropShippingApp.Controllers
             teamRepo = t;
         }
 
+       public async Task<IActionResult> Index()
+       {
+            Team mTeam = await teamRepo.FindTeamById(1);
+            CustomProduct cProduct = mTeam.TeamProducts.Find(item => item.CustomProductID == 3);
+            cProduct.ProductTitle = "Fire Roasted Socks";
+            await UpdateTeamProduct(mTeam, cProduct);
+            //cProduct = mTeam.TeamProducts.Find(item => item.CustomProductID == 3);
+            mTeam = await teamRepo.FindTeamById(1);
+            return View(mTeam);
+        }
         public async Task<ViewResult> BuildTeam(Team team)
         {
             // TODO
@@ -92,6 +102,7 @@ namespace dropShippingApp.Controllers
         {
             // TODO
             // returns team product management page
+           
             return View();
         }
 
