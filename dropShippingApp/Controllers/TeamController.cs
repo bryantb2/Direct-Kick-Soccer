@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
 
 namespace dropShippingApp.Controllers
@@ -16,6 +17,16 @@ namespace dropShippingApp.Controllers
             teamRepo = t;
         }
 
+       public async Task<IActionResult> Index()
+       {
+            Team mTeam = await teamRepo.FindTeamById(1);
+            CustomProduct cProduct = mTeam.TeamProducts.Find(item => item.CustomProductID == 3);
+            cProduct.ProductTitle = "Fire Roasted Socks";
+            await UpdateTeamProduct(mTeam, cProduct);
+            //cProduct = mTeam.TeamProducts.Find(item => item.CustomProductID == 3);
+            mTeam = await teamRepo.FindTeamById(1);
+            return View(mTeam);
+        }
         public async Task<ViewResult> BuildTeam(Team team)
         {
             // TODO
@@ -91,28 +102,51 @@ namespace dropShippingApp.Controllers
         {
             // TODO
             // returns team product management page
+           
             return View();
         }
 
-        public async Task<IActionResult> AddTeamProduct()
+        public async Task<IActionResult> AddTeamProduct(Team team, CustomProduct customProduct)
         {
             // TODO
             // redirects to team product management page
-            return View();
+            Team mTeam = await teamRepo.FindTeamById(team.TeamID);
+            mTeam.AddProduct(customProduct);
+            await teamRepo.UpdateTeam(mTeam);
+            return RedirectToAction("/TeamManagement/Index");
         }
 
-        public async Task<IActionResult> UpdateTeamProduct()
+        public async Task<IActionResult> UpdateTeamProduct(Team team, CustomProduct updatedCustomProduct)
         {
             // TODO
             // redirects to team product management page
-            return View();
+            Team mTeam = await teamRepo.FindTeamById(team.TeamID);
+            CustomProduct cProduct = mTeam.TeamProducts.Find(item => item.CustomProductID == updatedCustomProduct.CustomProductID);
+            mTeam.RemoveProduct(cProduct);
+            mTeam.AddProduct(updatedCustomProduct);
+            await teamRepo.UpdateTeam(mTeam);
+            return RedirectToAction("/TeamManagement/Index");
         }
 
-        public async Task<IActionResult> RemoveTeamProduct()
+        public async Task<IActionResult> RemoveTeamProduct(Team team, CustomProduct customProduct)
         {
             // TODO
             // redirects to team product management page
-            return View();
+            Team mTeam = await teamRepo.FindTeamById(team.TeamID);
+            mTeam.RemoveProduct(customProduct);
+            await teamRepo.UpdateTeam(mTeam);
+            return RedirectToAction("/TeamManagement/Index");
+        }
+
+        public async Task<IActionResult> MarkProductInActive(Team team, CustomProduct customProduct)
+        {
+            Team mTeam = await teamRepo.FindTeamById(team.TeamID);
+            CustomProduct cProduct = mTeam.TeamProducts.Find(item => item.CustomProductID == customProduct.CustomProductID);
+            mTeam.RemoveProduct(cProduct);
+            cProduct.IsProductActive = false;
+            mTeam.AddProduct(cProduct);
+            await teamRepo.UpdateTeam(mTeam);
+            return RedirectToAction("/TeamManagement/Index");
         }
 
         public async Task<IActionResult> UpdateTeamSettings(Team updatedTeam)

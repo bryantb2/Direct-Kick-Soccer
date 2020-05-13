@@ -1,1 +1,10 @@
-﻿
+﻿@{
+    Layout = "_Layout";
+    ViewData["Title"] = "Team";
+}
+@model dropShippingApp.Models.Team
+<div class="text-center">
+    <h1 class="display-4">Team</h1>
+    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+</div>
+<p>@Model.TeamProducts.Find(item => item.CustomProductID == 3).ProductTitle</p>
