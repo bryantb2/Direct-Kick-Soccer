@@ -24,33 +24,7 @@ namespace dropShippingApp.Data.Repositories.RealRepos
                     .ThenInclude(request => request.Country)
                 .Include(user => user.CreationRequestHistory) // include request state
                     .ThenInclude(request => request.Providence)
-                    
-                .Include(user => user.UserOrderHistory)
 
-                .Include(user => user.ManagedTeam) // get team products and base roster product
-                    .ThenInclude(team => team.TeamProducts)
-                        .ThenInclude(product => product.BaseProduct)
-                .Include(user => user.ManagedTeam) // get base roster product color
-                    .ThenInclude(team => team.TeamProducts)
-                        .ThenInclude(product => product.BaseProduct)
-                            .ThenInclude(baseProduct => baseProduct.BaseColor)
-                .Include(user => user.ManagedTeam) // get base roster product size
-                    .ThenInclude(team => team.TeamProducts)
-                        .ThenInclude(product => product.BaseProduct)
-                            .ThenInclude(baseProduct => baseProduct.BaseSize)
-                .Include(user => user.ManagedTeam) // get base roster product tags
-                    .ThenInclude(team => team.TeamProducts)
-                        .ThenInclude(product => product.BaseProduct)
-                            .ThenInclude(baseProduct => baseProduct.ProductTags)
-                .Include(user => user.ManagedTeam) // get base product pricing history
-                    .ThenInclude(team => team.TeamProducts)
-                        .ThenInclude(product => product.BaseProduct)
-                            .ThenInclude(baseProduct => baseProduct.PricingHistory)
-                .Include(user => user.ManagedTeam) // get team product tags
-                    .ThenInclude(team => team.TeamProducts)
-                .Include(user => user.ManagedTeam) // get team product tags
-                    .ThenInclude(team => team.TeamProducts)
-                        .ThenInclude(product => product.PricingHistory)
                 .Include(user => user.ManagedTeam) // get team tags
                     .ThenInclude(team => team.TeamTags)
                 .Include(user => user.ManagedTeam) // get team country
@@ -58,20 +32,59 @@ namespace dropShippingApp.Data.Repositories.RealRepos
                 .Include(user => user.ManagedTeam) // get team provence
                     .ThenInclude(team => team.Providence)
 
+                .Include(user => user.UserOrderHistory)
+
+                .Include(user => user.ManagedTeam) // get team products and base roster product
+                    .ThenInclude(team => team.ProductGroups)
+                    .ThenInclude(product => product.ProductTags)
+                .Include(user => user.ManagedTeam) // get base roster product color
+                    .ThenInclude(team => team.ProductGroups)
+                    .ThenInclude(products => products.ChildProducts)
+                    .ThenInclude(product => product.PricingHistory)
+                .Include(user => user.ManagedTeam) // get base roster product color
+                    .ThenInclude(team => team.ProductGroups)
+                    .ThenInclude(products => products.ChildProducts)
+                    .ThenInclude(product => product.BaseProduct)
+                .Include(user => user.ManagedTeam) // get base roster product color
+                    .ThenInclude(team => team.ProductGroups)
+                    .ThenInclude(products => products.ChildProducts)
+                    .ThenInclude(product => product.BaseProduct)
+                    .ThenInclude(baseProduct => baseProduct.BaseColor)
+                .Include(user => user.ManagedTeam) // get base roster product color
+                    .ThenInclude(team => team.ProductGroups)
+                    .ThenInclude(products => products.ChildProducts)
+                    .ThenInclude(product => product.BaseProduct)
+                    .ThenInclude(baseProduct => baseProduct.BaseSize)
+                .Include(user => user.ManagedTeam) // get base roster product color
+                    .ThenInclude(team => team.ProductGroups)
+                    .ThenInclude(products => products.ChildProducts)
+                    .ThenInclude(product => product.BaseProduct)
+                    .ThenInclude(baseProduct => baseProduct.ProductTags)
+                .Include(user => user.ManagedTeam) // get base roster product color
+                    .ThenInclude(team => team.ProductGroups)
+                    .ThenInclude(products => products.ChildProducts)
+                    .ThenInclude(product => product.BaseProduct)
+                    .ThenInclude(baseProduct => baseProduct.Category)
+                .Include(user => user.ManagedTeam) // get base roster product color
+                    .ThenInclude(team => team.ProductGroups)
+                    .ThenInclude(products => products.ChildProducts)
+                    .ThenInclude(product => product.BaseProduct)
+                    .ThenInclude(baseProduct => baseProduct.PricingHistory)
+                
                 .Include(user => user.CreatedCustomProducts)
                     .ThenInclude(product => product.BaseProduct)
                 .Include(user => user.CreatedCustomProducts)
                     .ThenInclude(product => product.BaseProduct)
-                        .ThenInclude(baseProduct => baseProduct.BaseSize)
+                    .ThenInclude(baseProduct => baseProduct.BaseSize)
                 .Include(user => user.CreatedCustomProducts)
                     .ThenInclude(product => product.BaseProduct)
-                        .ThenInclude(baseProduct => baseProduct.BaseColor)
+                    .ThenInclude(baseProduct => baseProduct.BaseColor)
                 .Include(user => user.CreatedCustomProducts)
                     .ThenInclude(product => product.BaseProduct)
-                        .ThenInclude(baseProduct => baseProduct.ProductTags)
+                    .ThenInclude(baseProduct => baseProduct.ProductTags)
                 .Include(user => user.CreatedCustomProducts)
                     .ThenInclude(product => product.BaseProduct)
-                        .ThenInclude(baseProduct => baseProduct.PricingHistory)
+                    .ThenInclude(baseProduct => baseProduct.PricingHistory)
                 .Include(user => user.CreatedCustomProducts)
 
                 .Include(user => user.AskedQuestions)
@@ -142,29 +155,6 @@ namespace dropShippingApp.Data.Repositories.RealRepos
                 .Include(user => user.CreationRequestHistory) // include request state
                     .ThenInclude(request => request.Providence)
 
-                .Include(user => user.UserOrderHistory)
-
-                .Include(user => user.ManagedTeam) // get team products and base roster product
-                    .ThenInclude(team => team.TeamProducts)
-                        .ThenInclude(product => product.BaseProduct)
-                .Include(user => user.ManagedTeam) // get base roster product color
-                    .ThenInclude(team => team.TeamProducts)
-                        .ThenInclude(product => product.BaseProduct)
-                            .ThenInclude(baseProduct => baseProduct.BaseColor)
-                .Include(user => user.ManagedTeam) // get base roster product size
-                    .ThenInclude(team => team.TeamProducts)
-                        .ThenInclude(product => product.BaseProduct)
-                            .ThenInclude(baseProduct => baseProduct.BaseSize)
-                .Include(user => user.ManagedTeam) // get base roster product tags
-                    .ThenInclude(team => team.TeamProducts)
-                        .ThenInclude(product => product.BaseProduct)
-                            .ThenInclude(baseProduct => baseProduct.ProductTags)
-                .Include(user => user.ManagedTeam) // get base product pricing history
-                    .ThenInclude(team => team.TeamProducts)
-                        .ThenInclude(product => product.BaseProduct)
-                            .ThenInclude(baseProduct => baseProduct.PricingHistory)
-                .Include(user => user.ManagedTeam) // get team product tags
-                    .ThenInclude(team => team.TeamProducts)
                 .Include(user => user.ManagedTeam) // get team tags
                     .ThenInclude(team => team.TeamTags)
                 .Include(user => user.ManagedTeam) // get team country
@@ -172,20 +162,59 @@ namespace dropShippingApp.Data.Repositories.RealRepos
                 .Include(user => user.ManagedTeam) // get team provence
                     .ThenInclude(team => team.Providence)
 
+                .Include(user => user.UserOrderHistory)
+
+                .Include(user => user.ManagedTeam) // get team products and base roster product
+                    .ThenInclude(team => team.ProductGroups)
+                    .ThenInclude(product => product.ProductTags)
+                .Include(user => user.ManagedTeam) // get base roster product color
+                    .ThenInclude(team => team.ProductGroups)
+                    .ThenInclude(products => products.ChildProducts)
+                    .ThenInclude(product => product.PricingHistory)
+                .Include(user => user.ManagedTeam) // get base roster product color
+                    .ThenInclude(team => team.ProductGroups)
+                    .ThenInclude(products => products.ChildProducts)
+                    .ThenInclude(product => product.BaseProduct)
+                .Include(user => user.ManagedTeam) // get base roster product color
+                    .ThenInclude(team => team.ProductGroups)
+                    .ThenInclude(products => products.ChildProducts)
+                    .ThenInclude(product => product.BaseProduct)
+                    .ThenInclude(baseProduct => baseProduct.BaseColor)
+                .Include(user => user.ManagedTeam) // get base roster product color
+                    .ThenInclude(team => team.ProductGroups)
+                    .ThenInclude(products => products.ChildProducts)
+                    .ThenInclude(product => product.BaseProduct)
+                    .ThenInclude(baseProduct => baseProduct.BaseSize)
+                .Include(user => user.ManagedTeam) // get base roster product color
+                    .ThenInclude(team => team.ProductGroups)
+                    .ThenInclude(products => products.ChildProducts)
+                    .ThenInclude(product => product.BaseProduct)
+                    .ThenInclude(baseProduct => baseProduct.ProductTags)
+                .Include(user => user.ManagedTeam) // get base roster product color
+                    .ThenInclude(team => team.ProductGroups)
+                    .ThenInclude(products => products.ChildProducts)
+                    .ThenInclude(product => product.BaseProduct)
+                    .ThenInclude(baseProduct => baseProduct.Category)
+                .Include(user => user.ManagedTeam) // get base roster product color
+                    .ThenInclude(team => team.ProductGroups)
+                    .ThenInclude(products => products.ChildProducts)
+                    .ThenInclude(product => product.BaseProduct)
+                    .ThenInclude(baseProduct => baseProduct.PricingHistory)
+
                 .Include(user => user.CreatedCustomProducts)
                     .ThenInclude(product => product.BaseProduct)
                 .Include(user => user.CreatedCustomProducts)
                     .ThenInclude(product => product.BaseProduct)
-                        .ThenInclude(baseProduct => baseProduct.BaseSize)
+                    .ThenInclude(baseProduct => baseProduct.BaseSize)
                 .Include(user => user.CreatedCustomProducts)
                     .ThenInclude(product => product.BaseProduct)
-                        .ThenInclude(baseProduct => baseProduct.BaseColor)
+                    .ThenInclude(baseProduct => baseProduct.BaseColor)
                 .Include(user => user.CreatedCustomProducts)
                     .ThenInclude(product => product.BaseProduct)
-                        .ThenInclude(baseProduct => baseProduct.ProductTags)
+                    .ThenInclude(baseProduct => baseProduct.ProductTags)
                 .Include(user => user.CreatedCustomProducts)
                     .ThenInclude(product => product.BaseProduct)
-                        .ThenInclude(baseProduct => baseProduct.PricingHistory)
+                    .ThenInclude(baseProduct => baseProduct.PricingHistory)
                 .Include(user => user.CreatedCustomProducts)
 
                 .Include(user => user.AskedQuestions)
@@ -193,10 +222,10 @@ namespace dropShippingApp.Data.Repositories.RealRepos
                 .Include(user => user.Cart)
                     .ThenInclude(cart => cart.CartItems)
                         .ThenInclude(cartItem => cartItem.ProductSelection)
+                            .ThenInclude(selectedProduct => selectedProduct.BaseProduct)
                 .Include(user => user.Cart)
                     .ThenInclude(cart => cart.CartItems)
                         .ThenInclude(cartItem => cartItem.ProductSelection)
-                            .ThenInclude(selectedProduct => selectedProduct.BaseProduct)
                 .Include(user => user.Cart)
                     .ThenInclude(cart => cart.CartItems)
                         .ThenInclude(cartItem => cartItem.ProductSelection)
@@ -221,11 +250,6 @@ namespace dropShippingApp.Data.Repositories.RealRepos
                         .ThenInclude(cartItem => cartItem.ProductSelection)
                             .ThenInclude(selectedProduct => selectedProduct.BaseProduct)
                                 .ThenInclude(baseProduct => baseProduct.PricingHistory)
-                .Include(user => user.Cart)
-                    .ThenInclude(cart => cart.CartItems)
-                        .ThenInclude(cartItem => cartItem.ProductSelection)
-                            .ThenInclude(selectedProduct => selectedProduct.BaseProduct)
-                                .ThenInclude(baseProduct => baseProduct.Category)
 
                 .Include(user => user.AnsweredQuestions)
                     .ThenInclude(answer => answer.ParentMessage)
@@ -247,8 +271,8 @@ namespace dropShippingApp.Data.Repositories.RealRepos
                 .Include(user => user.ApprovedOrders)
 
                 .Include(user => user.ActivityLog)
-
-                .ToList().Find(user => user.Id == foundUser.Id);
+                .ToList()
+                .Find(user => user.Id == foundUser.Id);
         }
     }
 }
