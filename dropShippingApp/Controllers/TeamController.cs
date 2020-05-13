@@ -16,10 +16,12 @@ namespace dropShippingApp.Controllers
     {
         ITeamRepo teamRepo;
         ILocationRepo locRepo;
-        ITeamCreationReqRepo reqRepo;
-        public TeamController(ITeamRepo t, ILocationRepo l,ITeamCreationReqRepo r)
+        ITeamCreationReqRepo requestRepo;
+        IUserRepo userRepo;
+        public TeamController(ITeamRepo t, ILocationRepo l,ITeamCreationReqRepo r,IUserRepo u)
         {
-            reqRepo = r;
+            userRepo = u;
+            requestRepo = r;
             locRepo = l;
             teamRepo = t;
         }
@@ -150,7 +152,7 @@ namespace dropShippingApp.Controllers
         public async Task<IActionResult> TeamReq(string name, string description, string email, string corporatePageURL,string streetAddress,
                                       string country, string providence, string zipCode)
         {
-            MyWordFilter filter = new MyWordFilter();// documentation https://github.com/smurfpandey/WordFilter
+            MyWordFilter filter = new MyWordFilter();
             if (ModelState.GetValidationState(nameof(name))==ModelValidationState.Valid &&
                 ModelState.GetValidationState(nameof(description)) == ModelValidationState.Valid &&
                 ModelState.GetValidationState(nameof(email)) == ModelValidationState.Valid &&
@@ -169,7 +171,7 @@ namespace dropShippingApp.Controllers
 
                     List<Province> provinces = locRepo.GetAllProvinces;
                     Province myProv = provinces.First(p => p.ProvienceAbbreviation.ToLower() == providence.ToLower());
-                    TeamCreationRequest req = new TeamCreationRequest
+                    TeamCreationRequest request = new TeamCreationRequest
                     {
                         TeamName = name,
                         TeamDescription = description,
@@ -181,8 +183,9 @@ namespace dropShippingApp.Controllers
                         ZipCode = zipCode
 
                     };
-                    await reqRepo.AddReq(req);
-
+                    await requestRepo.AddReq(request);
+                    AppUser user = await userRepo.GetUserDataAsync(HttpContext.User);
+                    user.AddCreationRequest(request);
                     return View("ReqConfirm");
                     
                 }
