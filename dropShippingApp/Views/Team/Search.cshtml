@@ -45,7 +45,7 @@
         <div class="text-center p-2">
             @if (Model == null)
             {
-                <h5>Search for Products to Get Started</h5>
+                <h5>Search for Teams to Get Started</h5>
             }
             else if (Model.SearchString != null)
             {
@@ -53,11 +53,11 @@
             }
             else if (Model.CurrentCategory != null)
             {
-                <h5>Browsing @Model.CurrentCategory.Name Products</h5>
+                <h5>Browsing @Model.CurrentCategory.Name Teams</h5>
             }
             else
             {
-                <h5>Search for Products or Browse our Sections</h5>
+                <h5>Search for Teams or Browse our Team Categories</h5>
             }
         </div>
 
@@ -69,24 +69,24 @@
                     <thead>
                         <tr>
                             <th></th>
-                            <th>Product</th>
-                            <th>Price</th>
+                            <th>Team</th>
+                            <th>Category</th>
                             <th>Description</th>
                             <th>Actions</th>
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach (var group in Model.ProductGroups)
+                        @foreach (var team in Model.Teams)
                         {
                             <tr>
                                 <td>
-                                    <img width="100" src=@group.GeneralThumbnail />
+                                    <img width="100" src=@team.TeamBannerPNG />
                                 </td>
-                                <td>@group.Title</td>
-                                <td>@group.GetLowestPrice.ToString("c")</td>
-                                <td>@group.Description</td>
+                                <td>@team.Name</td>
+                                <td>@team.Category.Name</td>
+                                <td>@team.Description</td>
                                 <td>
-                                    <a class="btn btn-link" style="display:inline-block" asp-controller="Product" asp-action="ViewProduct" asp-route-productGroupId="@group.ProductGroupID">View Product</a>
+                                    <a class="btn btn-link" style="display:inline-block" asp-controller="Team" asp-action="ViewTeam" asp-route-teamId="@team.TeamID">View Team</a>
                                 </td>
                             </tr>
                         }
@@ -99,13 +99,13 @@
                         @if (Model.SearchString != null)
                         {
                             <div class="col-4 text-left">
-                                <a class="btn btn-link text-primary" asp-controller="Product" asp-action="BackToFirstPage" asp-route-searchTerm=@Model.SearchString>First Page</a>
+                                <a class="btn btn-link text-primary" asp-controller="Team" asp-action="BackToFirstPage" asp-route-searchTerm=@Model.SearchString>First Page</a>
                             </div>
                         }
                         else
                         {
                             <div class="col-4 text-left">
-                                <a class="btn btn-link text-primary" asp-controller="Product" asp-action="BackToFirstPage" asp-route-categoryId=@Model.CurrentCategory.CategoryID>First Page</a>
+                                <a class="btn btn-link text-primary" asp-controller="Team" asp-action="BackToFirstPage" asp-route-categoryId=@Model.CurrentCategory.CategoryID>First Page</a>
                             </div>
                         }
 
@@ -115,13 +115,13 @@
                         @if (Model.SearchString != null)
                         {
                             <div class="col-4 text-center">
-                                <a class="btn btn-link text-primary" asp-controller="Product" asp-action="PreviousPage" asp-route-currentPage=@Model.CurrentCategory asp-route-searchTerm=@Model.SearchString>Previous Page</a>
+                                <a class="btn btn-link text-primary" asp-controller="Team" asp-action="PreviousPage" asp-route-currentPage=@Model.CurrentCategory asp-route-searchTerm=@Model.SearchString>Previous Page</a>
                             </div>
                         }
                         else
                         {
                             <div class="col-4 text-center">
-                                <a class="btn btn-link text-primary" asp-controller="Product" asp-action="PreviousPage" asp-route-currentPage=@Model.CurrentCategory asp-route-categoryId=@Model.CurrentCategory.CategoryID>Previous Page</a>
+                                <a class="btn btn-link text-primary" asp-controller="Team" asp-action="PreviousPage" asp-route-currentPage=@Model.CurrentCategory asp-route-categoryId=@Model.CurrentCategory.CategoryID>Previous Page</a>
                             </div>
                         }
                     }
@@ -130,13 +130,13 @@
                         @if (Model.SearchString != null)
                         {
                             <div class="col-4 text-right">
-                                <a class="btn btn-link text-primary" asp-controller="Product" asp-action="NextPage" asp-route-currentPage=@Model.CurrentPage asp-route-categoryId=@Model.CurrentCategory.CategoryID>Next Page</a>
+                                <a class="btn btn-link text-primary" asp-controller="Team" asp-action="NextPage" asp-route-currentPage=@Model.CurrentPage asp-route-categoryId=@Model.CurrentCategory.CategoryID>Next Page</a>
                             </div>
                         }
                         else
                         {
                             <div class="col-4 text-right">
-                                <a class="btn btn-link text-primary" asp-controller="Product" asp-action="NextPage" asp-route-currentPage=@Model.CurrentPage asp-route-categoryId=@Model.CurrentCategory.CategoryID>Next Page</a>
+                                <a class="btn btn-link text-primary" asp-controller="Team" asp-action="NextPage" asp-route-currentPage=@Model.CurrentPage asp-route-categoryId=@Model.CurrentCategory.CategoryID>Next Page</a>
                             </div>
                         }
                     }

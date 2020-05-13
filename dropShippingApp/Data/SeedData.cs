@@ -347,7 +347,7 @@ namespace dropShippingApp.Data
                 groupList[1].ChildProducts = new List<CustomProduct>() { customProduct4, customProduct5, customProduct6 };
                 groupList[2].ChildProducts = new List<CustomProduct>() { customProduct7 };
 
-                // ------------------------------------------- ADDING AND ASSIGNMENT CARTS TO USERS ------------------------------------------- //
+                // ------------------------------------------- ADDING AND BUILDING OUT TEAMS ------------------------------------------- //
                 Country america = new Country()
                 {
                     CountryName = "America"
@@ -358,10 +358,23 @@ namespace dropShippingApp.Data
                     ProvinceName = "Oregon"
                 };
 
+                Province california = new Province()
+                {
+                    ProvinceName = "California"
+                };
+
+                Province florida = new Province()
+                {
+                    ProvinceName = "Florida"
+                };
+
                 context.Provinces.Add(oregon);
+                context.Provinces.Add(california);
                 context.Countries.Add(america);
                 await context.SaveChangesAsync();
                 america.AddProvidence(oregon);
+                america.AddProvidence(california);
+                america.AddProvidence(florida);
                 context.Countries.Update(america);
                 await context.SaveChangesAsync();
 
@@ -381,14 +394,46 @@ namespace dropShippingApp.Data
                     Category = teamCategories[0]
                 };
 
-                team.AddProduct(customProduct);
-                team.AddProduct(customProduct2);
-                team.AddProduct(customProduct3);
-                team.AddProduct(customProduct4);
-                team.AddProduct(customProduct5);
-                team.AddProduct(customProduct6);
-                team.AddProduct(customProduct7);
+                Team team1 = new Team()
+                {
+                    Name = "Non-owner test team",
+                    Description = "Soccer Team",
+                    Country = america,
+                    Providence = california,
+                    DateJoined = DateTime.Now,
+                    StreetAddress = "apple avenue",
+                    ZipCode = "37401",
+                    CorporatePageURL = "bing.com",
+                    BusinessEmail = "abc@yahoo.com",
+                    PhoneNumber = "541-554-4157",
+                    IsTeamInactive = false,
+                    IsHostTeam = false,
+                    Category = teamCategories[1]
+                };
+
+                Team team2 = new Team()
+                {
+                    Name = "Beach Test Team",
+                    Description = "Hunting alligators",
+                    Country = america,
+                    Providence = florida,
+                    DateJoined = DateTime.Now,
+                    StreetAddress = "Florida Beach 123 Street",
+                    ZipCode = "55555",
+                    CorporatePageURL = "youtube.com",
+                    BusinessEmail = "assgaurd2020@gmail.com",
+                    PhoneNumber = "377-849-9071",
+                    IsTeamInactive = false,
+                    IsHostTeam = false,
+                    Category = teamCategories[2]
+                };
+
+                team.AddProductGroup(groupList[0]);
+                team1.AddProductGroup(groupList[1]);
+                team2.AddProductGroup(groupList[2]);
                 context.Teams.Add(team);
+                context.Teams.Add(team1);
+                context.Teams.Add(team2);
                 await context.SaveChangesAsync();
 
                 // ------------------------------------------- ADDING AND ASSIGNMENT CARTS TO USERS ------------------------------------------- //

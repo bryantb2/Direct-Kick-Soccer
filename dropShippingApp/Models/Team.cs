@@ -31,6 +31,8 @@ namespace dropShippingApp.Models
         [Required]
         public String BusinessEmail { get; set; }
         [Required]
+        public String TeamBannerPNG { get; set; }
+        [Required]
         public string PhoneNumber { get; set; }
         public List<Tag> TeamTags { get { return teamTags; } }
         [Required]
