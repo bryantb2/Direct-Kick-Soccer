@@ -19,7 +19,7 @@ namespace ProductTests
         public TeamRepoTests()
         {
             teamRepo = new FakeTeamRepo();
-            teamController = new TeamController(teamRepo);
+            //teamController = new TeamController(teamRepo);
         }
 
         // cleanup and dispose
