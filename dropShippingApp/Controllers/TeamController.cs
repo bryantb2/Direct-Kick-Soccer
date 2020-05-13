@@ -1,6 +1,8 @@
 ﻿using dropShippingApp.Data.Repositories;
 using dropShippingApp.HelperUtilities;
 using dropShippingApp.Models;
+
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using PayPal.Api;
@@ -14,10 +16,12 @@ namespace dropShippingApp.Controllers
 {
     public class TeamController : Controller
     {
-        ITeamRepo teamRepo;
-        ILocationRepo locRepo;
-        ITeamCreationReqRepo requestRepo;
-        IUserRepo userRepo;
+        private ITeamRepo teamRepo;
+        private ILocationRepo locRepo;
+        private ITeamCreationReqRepo requestRepo;
+        private IUserRepo userRepo;
+        
+        private UserManager<AppUser> userManager;
         public TeamController(ITeamRepo t, ILocationRepo l,ITeamCreationReqRepo r,IUserRepo u)
         {
             userRepo = u;
@@ -186,6 +190,7 @@ namespace dropShippingApp.Controllers
                     await requestRepo.AddReq(request);
                     AppUser user = await userRepo.GetUserDataAsync(HttpContext.User);
                     user.AddCreationRequest(request);
+                    await userManager.UpdateAsync(user);
                     return View("ReqConfirm");
                     
                 }
