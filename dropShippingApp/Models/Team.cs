@@ -66,5 +66,6 @@ namespace dropShippingApp.Models
         public void RemoveProductGroup(int groupId) => productGroups.Remove(productGroups.Find(group => group.ProductGroupID == groupId));
         public void UpdateProductGroup(ProductGroup updatedGroup) => 
             productGroups[productGroups.FindIndex(group => group.ProductGroupID == updatedGroup.ProductGroupID)] = updatedGroup;
+
     }
 }
