@@ -25,8 +25,9 @@ namespace dropShippingApp.Models
         public string CustomImageSVG { get; set; }
         [Required]
         public bool IsProductActive { get; set; }
+        [Required]
         public List<PricingHistory> PricingHistory { get { return this.pricingHistory; } } // <---- Users set this
-        // Does the pricing history INCLUDE the basePrice from the "parent"?
+                                                                                           // Does the pricing history INCLUDE the basePrice from the "parent"?
 
         public decimal CurrentPrice
         {

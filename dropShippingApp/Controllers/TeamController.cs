@@ -1,5 +1,6 @@
 ﻿using dropShippingApp.Data.Repositories;
 using dropShippingApp.Models;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -11,9 +12,11 @@ namespace dropShippingApp.Controllers
     public class TeamController : Controller
     {
         ITeamRepo teamRepo;
-        public TeamController(ITeamRepo t)
+        IUserRepo userRepo;
+        public TeamController(ITeamRepo t, IUserRepo u)
         {
             teamRepo = t;
+            userRepo = u;
         }
 
         public async Task<IActionResult> Index()
@@ -92,12 +95,50 @@ namespace dropShippingApp.Controllers
 
         public async Task<IActionResult> TeamSettings()
         {
-            return View("Views/TeamManagement/TeamSettings.cshtml");
+            AppUser user = await userRepo.GetUserDataAsync(HttpContext.User);
+            if (user != null)
+            {
+                // verify users role, after roles are set up
+                // get the users team
+                Team team = user.ManagedTeam;
+                return View("TeamSettings", team);
+            }
+            
+            // If user is null, redirect to a Team/Index
+            return View("Index");
         }
 
         public async Task<IActionResult> TeamManager()
         {
-            return View("Views/TeamManagement/TeamManager.cshtml");
+            AppUser user = await userRepo.GetUserDataAsync(HttpContext.User);
+            if (user != null)
+            {
+                // verify users role, after roles are set up
+                // get the users team
+                Team team = user.ManagedTeam;
+                foreach (var product in team.TeamProducts)
+                {
+                    if (product.ProductTitle == null)
+                    {
+                        product.ProductTitle = "This product Title is invalid";
+                    }
+                    else if (product.PricingHistory.Count == 0)
+                    {
+                        PricingHistory pricingHistoryUpdate = new PricingHistory
+                        {
+                            DateChanged = new DateTime(2020, 4, 1),
+                            NewPrice = 666
+                        };
+                        product.AddPricingHistory(pricingHistoryUpdate);
+                    }
+                    else if (product.BaseProduct.SKU == null)
+                    {
+                        product.BaseProduct.SKU = 0000;
+                    }
+                }
+                return View("TeamManager", team);
+            }
+            return View("Index");
         }
 
         // TODO 

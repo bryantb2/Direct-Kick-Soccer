@@ -14,56 +14,56 @@
             <form class="p-a-1" asp-controller="Team" asp-action="" method="post">
                 <div asp-validation-summary="All">
                     <div class="form-group">
-                        <label asp-for="Name">
+                        <label>
                             Team Name:
                         </label>
                         <input asp-for="Name" />
                     </div>
                     <div class="form-group">
-                        <label asp-for="Country">
-                            Team Country:
+                        <label>
+                            Team Country: 
                         </label>
-                        <input asp-for="Country" />
+                        <input asp-for="Country.CountryName" />
                     </div>
                     <div class="form-group">
-                        <label asp-for="Providence">
-                            Team Providence:
+                        <label>
+                            Team Providence: 
                         </label>
-                        <input asp-for="Providence" />
+                        <input asp-for="Providence.ProvinceName" />
                     </div>
                     <div class="form-group">
-                        <label asp-for="StreetAddress">
-                            Team Street Address:
+                        <label>
+                            Team Street Address: 
                         </label>
                         <input asp-for="StreetAddress" />
                     </div>
                     <div class="form-group">
-                        <label asp-for="ZipCode">
-                            Team Zip Code:
+                        <label>
+                            Team Zip Code: 
                         </label>
                         <input asp-for="ZipCode" />
                     </div>
                     <div class="form-group">
-                        <label asp-for="CorporatePageURL">
-                            Team's Business Page(URL):
+                        <label>
+                            Team's Business Page(URL): 
                         </label>
                         <input asp-for="CorporatePageURL" />
                     </div>
                     <div class="form-group">
-                        <label asp-for="BusinessEmail">
-                            Team Email:
+                        <label>
+                            Team Email: 
                         </label>
                         <input asp-for="BusinessEmail" />
                     </div>
                     <div class="form-group">
-                        <label asp-for="PhoneNumber">
-                            Team Phone Number:
+                        <label>
+                            Team Phone Number: 
                         </label>
                         <input asp-for="PhoneNumber" />
                     </div>
                     <div class="form-group">
-                        <label asp-for="Description">
-                            Team Description:
+                        <label>
+                            Team Description: 
                         </label>
                         <textarea asp-for="Description"></textarea>
                     </div>
