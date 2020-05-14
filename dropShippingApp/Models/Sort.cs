@@ -1,14 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 
 namespace dropShippingApp.Models
 {
-    public class ProductSort : Sort
+    public class Sort
     {
-        [Key]
-        public int SortID { get; set; }
+        public string SortName { get; set; }
     }
 }

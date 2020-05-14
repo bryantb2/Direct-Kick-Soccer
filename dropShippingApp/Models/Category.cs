@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace dropShippingApp.Models
 {
-    public class ProductSort : Sort
+    public class Category
     {
-        [Key]
-        public int SortID { get; set; }
+        [Required] 
+        public string Name { get; set; }
     }
 }

@@ -28,12 +28,14 @@ namespace dropShippingApp.Data
                 // ------------------------------------------- ADDING PRODUCT PROPERTIES ------------------------------------------- //
                 var colorArr = new string[] { "Blue", "Green", "Red" };
                 var sizeArr = new string[] { "Small", "Medium", "Large" };
-                var categoryArr = new string[] { "Pants", "Shirt", "Jersey" };
+                var productCategoryArr = new string[] { "Pants", "Shirt", "Jersey" };
+                var teamCategoryArr = new string[] { "Sports", "Business", "Casual" };
                 //var categoryDesc = new string[] { "For your legs", "For your torso", "For your team" };
 
                 var colors = new List<ProductColor>();
                 var sizes = new List<ProductSize>();
-                var categories = new List<ProductCategory>();
+                var productCategories = new List<ProductCategory>();
+                var teamCategories = new List<TeamCategory>();
 
                 for (var i = 0; i < 3; i++)
                 {
@@ -47,22 +49,28 @@ namespace dropShippingApp.Data
                         IsSizeActive = true,
                         SizeName = sizeArr[i]
                     };
-                    var category = new ProductCategory()
+                    var productCategory = new ProductCategory()
                     {
-                        Name = categoryArr[i],
+                        Name = productCategoryArr[i],
                         //BriefDescription = categoryDesc[i]
+                    };
+                    var teamCategory = new TeamCategory()
+                    {
+                        Name = teamCategoryArr[i],
                     };
 
                     context.ProductColors.Add(color);
                     context.ProductSizes.Add(size);
-                    context.Categories.Add(category);
+                    context.ProductCategories.Add(productCategory);
+                    context.TeamCategories.Add(teamCategory);
 
                     await context.SaveChangesAsync();
 
                     // add to local lists
                     colors.Add(color);
                     sizes.Add(size);
-                    categories.Add(category);
+                    productCategories.Add(productCategory);
+                    teamCategories.Add(teamCategory);
                 }
 
 
@@ -75,7 +83,7 @@ namespace dropShippingApp.Data
                     SKU = 1,
                     BaseColor = colors[0],
                     BaseSize = sizes[0],
-                    Category = categories[0]
+                    Category = productCategories[0]
                 };
                 PricingHistory pricingHistory = new PricingHistory
                 {
@@ -99,7 +107,7 @@ namespace dropShippingApp.Data
                     SKU = 1,
                     BaseColor = colors[1],
                     BaseSize = sizes[1],
-                    Category = categories[1]
+                    Category = productCategories[1]
                 };
                 PricingHistory pricingHistory3 = new PricingHistory
                 {
@@ -123,7 +131,7 @@ namespace dropShippingApp.Data
                     SKU = 1,
                     BaseColor = colors[2],
                     BaseSize = sizes[2],
-                    Category = categories[2]
+                    Category = productCategories[2]
                 };
                 PricingHistory pricingHistory5 = new PricingHistory
                 {
@@ -147,7 +155,7 @@ namespace dropShippingApp.Data
                     SKU = 1,
                     BaseColor = colors[0],
                     BaseSize = sizes[1],
-                    Category = categories[2]
+                    Category = productCategories[2]
                 };
                 PricingHistory pricingHistory7 = new PricingHistory
                 {
@@ -168,14 +176,32 @@ namespace dropShippingApp.Data
                 context.RosterProducts.Add(product3);
                 context.RosterProducts.Add(product4);
 
+
+                // ------------------------------------------- ADDING PRODUCT FAMILIES ------------------------------------------- //
+                var groupNames = new string[] { "Best Socks", "Lazy Pants", "Bedazzled Shirts" };
+                var groupDesc = new string[] { "Mhmmmm tasty", "For the morbidly obese", "Extremely gay" };
+                var groupList = new List<ProductGroup>();
+
+                for(var i = 0; i < 3; i++)
+                {
+                    ProductGroup group = new ProductGroup()
+                    {
+                        Title = groupNames[i],
+                        Description = groupDesc[i],
+                        GeneralThumbnail = "https://i.picsum.photos/id/174/200/200.jpg"
+                    };
+                    context.ProductGroups.Add(group);
+                    await context.SaveChangesAsync();
+                    groupList.Add(group);
+                }
+
+
                 // ------------------------------------------- ADDING CUSTOM PRODUCTS ------------------------------------------- //
                 CustomProduct customProduct = new CustomProduct
                 {
                     BaseProduct = product1,
-                    ProductTitle = "Socks",
-                    ProductDescription = "These socks make you run so fast!",
-                    CustomImagePNG = "http://placekitten.com/200/300",
-                    IsProductActive = true,
+                    ProductPNG = "http://placekitten.com/200/300",
+                    IsProductActive = true
                 };
                 PricingHistory pricingHistory9 = new PricingHistory
                 {
@@ -194,10 +220,8 @@ namespace dropShippingApp.Data
                 CustomProduct customProduct2 = new CustomProduct
                 {
                     BaseProduct = product1,
-                    ProductTitle = "Team Goats Socks",
-                    ProductDescription = "Official Unofficial socks for the Eugene Goats!",
-                    CustomImagePNG = "http://placekitten.com/200/300",
-                    IsProductActive = true,
+                    ProductPNG = "http://placekitten.com/200/300",
+                    IsProductActive = true
                 };
                 PricingHistory pricingHistory11 = new PricingHistory
                 {
@@ -216,10 +240,8 @@ namespace dropShippingApp.Data
                 CustomProduct customProduct3 = new CustomProduct
                 {
                     BaseProduct = product1,
-                    ProductTitle = "Ice Squid Socks",
-                    ProductDescription = "Unofficial Official socks for the Eugene NHL team the Ice Squids!",
-                    CustomImagePNG = "http://placekitten.com/200/300",
-                    IsProductActive = true,
+                    ProductPNG = "http://placekitten.com/200/300",
+                    IsProductActive = true
                 };
                 PricingHistory pricingHistory13 = new PricingHistory
                 {
@@ -238,10 +260,8 @@ namespace dropShippingApp.Data
                 CustomProduct customProduct4 = new CustomProduct
                 {
                     BaseProduct = product2,
-                    ProductTitle = "Hat",
-                    ProductDescription = "Great for keeping the sun out of your eyes, can also be used to hold stuff!",
-                    CustomImagePNG = "http://placekitten.com/200/300",
-                    IsProductActive = true,
+                    ProductPNG = "http://placekitten.com/200/300",
+                    IsProductActive = true
                 };
                 PricingHistory pricingHistory15 = new PricingHistory
                 {
@@ -260,10 +280,8 @@ namespace dropShippingApp.Data
                 CustomProduct customProduct5 = new CustomProduct
                 {
                     BaseProduct = product2,
-                    ProductTitle = "Fighting Honey Badgers Hat",
-                    ProductDescription = "Hat supporting the local junior baseball team, the Fighting Honey Badgers",
-                    CustomImagePNG = "http://placekitten.com/200/300",
-                    IsProductActive = true,
+                    ProductPNG = "http://placekitten.com/200/300",
+                    IsProductActive = true
                 };
                 PricingHistory pricingHistory17 = new PricingHistory
                 {
@@ -282,10 +300,8 @@ namespace dropShippingApp.Data
                 CustomProduct customProduct6 = new CustomProduct
                 {
                     BaseProduct = product2,
-                    ProductTitle = "Jumping Jellybeans Hat",
-                    ProductDescription = "Hat for parents of the local stickball team the Jumping Jellybeans!",
-                    CustomImagePNG = "http://placekitten.com/200/300",
-                    IsProductActive = true,
+                    ProductPNG = "http://placekitten.com/200/300",
+                    IsProductActive = true
                 };
                 PricingHistory pricingHistory19 = new PricingHistory
                 {
@@ -304,10 +320,8 @@ namespace dropShippingApp.Data
                 CustomProduct customProduct7 = new CustomProduct
                 {
                     BaseProduct = product2,
-                    ProductTitle = "Jets Hat",
-                    ProductDescription = "Hat for team members of the Jets Power Walking Team",
-                    CustomImagePNG = "http://placekitten.com/200/300",
-                    IsProductActive = true,
+                    ProductPNG = "http://placekitten.com/200/300",
+                    IsProductActive = true
                 };
                 PricingHistory pricingHistory21 = new PricingHistory
                 {
@@ -333,6 +347,15 @@ namespace dropShippingApp.Data
                 await context.SaveChangesAsync();
 
 
+                // adding products to group
+                groupList[0].ChildProducts = new List<CustomProduct>() { customProduct, customProduct2, customProduct3 };
+                groupList[1].ChildProducts = new List<CustomProduct>() { customProduct4, customProduct5, customProduct6 };
+                groupList[2].ChildProducts = new List<CustomProduct>() { customProduct7 };
+
+                // ------------------------------------------- ADDING AND BUILDING OUT TEAMS ------------------------------------------- //
+                Country america = new Country()
+
+
 
                 // ------------------------------------------- ADDING COUNTRY/STATE ------------------------------------------- //
 
@@ -341,6 +364,7 @@ namespace dropShippingApp.Data
                 Country aCountry;
 
                 foreach (Country myCountry in countries)
+
                 {
                     aCountry = new Country
                     {
@@ -365,12 +389,15 @@ namespace dropShippingApp.Data
                         ProvienceAbbreviation = myProvience.ProvienceAbbreviation
 
 
-                    };
-                    context.Add(aProvience);
-                    us.AddProvidence(aProvience);
+                Province california = new Province()
+                {
+                    ProvinceName = "California"
+                };
 
-                }
-                await context.SaveChangesAsync();
+                Province florida = new Province()
+                {
+                    ProvinceName = "Florida"
+                };
 
                 // ------------------------------------------- ADDING AND ASSIGNMENT CARTS TO USERS ------------------------------------------- //
 
@@ -381,6 +408,7 @@ namespace dropShippingApp.Data
                 Province oregon = (from state in context.Provinces
                                    where state.ProvinceName.ToLower() == "oregon"
                                    select state).First();
+
                 await context.SaveChangesAsync();
 
                 Team team = new Team()
@@ -395,17 +423,53 @@ namespace dropShippingApp.Data
                     BusinessEmail = "abc@gmail.com",
                     PhoneNumber = "541-234-4040",
                     IsTeamInactive = false,
-                    IsHostTeam = true
+                    IsHostTeam = true,
+                    Category = teamCategories[0],
+                    TeamBannerPNG = "https://picsum.photos/id/237/200/300"
                 };
 
-                team.AddProduct(customProduct);
-                team.AddProduct(customProduct2);
-                team.AddProduct(customProduct3);
-                team.AddProduct(customProduct4);
-                team.AddProduct(customProduct5);
-                team.AddProduct(customProduct6);
-                team.AddProduct(customProduct7);
+                Team team1 = new Team()
+                {
+                    Name = "Non-owner test team",
+                    Description = "Soccer Team",
+                    Country = america,
+                    Providence = california,
+                    DateJoined = DateTime.Now,
+                    StreetAddress = "apple avenue",
+                    ZipCode = "37401",
+                    CorporatePageURL = "bing.com",
+                    BusinessEmail = "abc@yahoo.com",
+                    PhoneNumber = "541-554-4157",
+                    IsTeamInactive = false,
+                    IsHostTeam = false,
+                    Category = teamCategories[1],
+                    TeamBannerPNG = "https://picsum.photos/id/237/200/300"
+                };
+
+                Team team2 = new Team()
+                {
+                    Name = "Beach Test Team",
+                    Description = "Hunting alligators",
+                    Country = america,
+                    Providence = florida,
+                    DateJoined = DateTime.Now,
+                    StreetAddress = "Florida Beach 123 Street",
+                    ZipCode = "55555",
+                    CorporatePageURL = "youtube.com",
+                    BusinessEmail = "assgaurd2020@gmail.com",
+                    PhoneNumber = "377-849-9071",
+                    IsTeamInactive = false,
+                    IsHostTeam = false,
+                    Category = teamCategories[2],
+                    TeamBannerPNG = "https://picsum.photos/id/237/200/300"
+                };
+
+                team.AddProductGroup(groupList[0]);
+                team1.AddProductGroup(groupList[1]);
+                team2.AddProductGroup(groupList[2]);
                 context.Teams.Add(team);
+                context.Teams.Add(team1);
+                context.Teams.Add(team2);
                 await context.SaveChangesAsync();
 
                 // ------------------------------------------- ADDING AND ASSIGNMENT CARTS TO USERS ------------------------------------------- //
@@ -532,128 +596,6 @@ namespace dropShippingApp.Data
                 await userManager.AddToRoleAsync(user2, roles[1]);
                 await userManager.AddToRoleAsync(user3, roles[2]);
 
-
-                /*customProduct = new CustomProduct
-                {
-                    
-                    BaseProduct = product3,
-                    ProductTitle = "Shirt",
-                    ProductDescription = "A shirt, looking good!",
-                    CustomImagePNG = "http://placekitten.com/200/300",
-                    IsProductActive = true,
-                };
-                pricingHistory = new PricingHistory
-                {
-                    
-                    DateChanged = new DateTime(2020, 3, 14),
-                    NewPrice = 25
-                };
-                customProduct.AddPricingHistory(pricingHistory);
-                pricingHistory = new PricingHistory
-                {
-                    
-                    DateChanged = new DateTime(2020, 4, 5),
-                    NewPrice = 30
-                };
-                customProduct.AddPricingHistory(pricingHistory);
-                context.Add(customProduct);
-
-                customProduct = new CustomProduct
-                {
-                    
-                    BaseProduct = product3,
-                    ProductTitle = "'Chainmail' shirt",
-                    ProductDescription = "For the local LARPing group, complete with insiginia",
-                    CustomImagePNG = "http://placekitten.com/200/300",
-                    IsProductActive = true,
-                };
-                pricingHistory = new PricingHistory
-                {
-                    
-                    DateChanged = new DateTime(2020, 3, 15),
-                    NewPrice = 26
-                };
-                customProduct.AddPricingHistory(pricingHistory);
-                pricingHistory = new PricingHistory
-                {
-                    
-                    DateChanged = new DateTime(2020, 4, 6),
-                    NewPrice = 31
-                };
-                customProduct.AddPricingHistory(pricingHistory);
-                context.Add(customProduct);
-
-
-                customProduct = new CustomProduct
-                {
-                   
-                    BaseProduct = product3,
-                    ProductTitle = "The Garden Snails",
-                    ProductDescription = "Official shirt for the Competative Gardening Team, The Garden Slugs",
-                    CustomImagePNG = "http://placekitten.com/200/300",
-                    IsProductActive = true,
-                };
-                pricingHistory = new PricingHistory
-                {
-                    
-                    DateChanged = new DateTime(2020, 3, 14),
-                    NewPrice = 28
-                };
-                customProduct.AddPricingHistory(pricingHistory);
-                pricingHistory = new PricingHistory
-                {
-                   
-                    DateChanged = new DateTime(2020, 4, 5),
-                    NewPrice = 31
-                };
-                customProduct.AddPricingHistory(pricingHistory);
-                context.Add(customProduct);
-
-                customProduct = new CustomProduct
-                {
-                   
-                    BaseProduct = product3,
-                    ProductTitle = "The Sloths",
-                    ProductDescription = "Unofficial Shirt of the Eugene HighSchool Sloths tracks and field team",
-                    CustomImagePNG = "http://placekitten.com/200/300",
-                    IsProductActive = true,
-                };
-                pricingHistory = new PricingHistory
-                {
-                    
-                    DateChanged = new DateTime(2020, 3, 13),
-                    NewPrice = 29
-                };
-                customProduct.AddPricingHistory(pricingHistory);
-                pricingHistory = new PricingHistory
-                {
-                    
-                    DateChanged = new DateTime(2020, 4, 3),
-                    NewPrice = 31
-                };
-                customProduct.AddPricingHistory(pricingHistory);
-                context.Add(customProduct);
-
-                customProduct = new CustomProduct
-                {
-                    
-                    BaseProduct = product4,
-                    ProductTitle = "Backyard Brawlers",
-                    ProductDescription = "Unofficial Shirt of the backyard wrestling troop. ",
-                    CustomImagePNG = "http://placekitten.com/200/300",
-                    IsProductActive = false,
-                };
-                pricingHistory = new PricingHistory
-                {
-                    
-                    DateChanged = new DateTime(2020, 3, 13),
-                    NewPrice = 29
-                };
-
-                customProduct.AddPricingHistory(pricingHistory);
-                context.Add(customProduct);*/
-
-
                 // ------------------------------------------- ADDING PRODUCT CATAGORIES ------------------------------------------- //
                 var c = new string[] { "T-Shirts", "Polos/Knits", "Sweatshirts/Fleece", "Caps", "Activewear", "Outerwear", 
                     "Woven/Dress Shirts", "Workwear/Medical/Scrubs", "Bags", "Acessories", "Ladies/Women", "Youth" };
@@ -665,38 +607,49 @@ namespace dropShippingApp.Data
                         Name = c[i]
                     };
                     // Add to the DB
-                    context.Categories.Add(newCategory);
+                    context.ProductCategories.Add(newCategory);
 
                     // Add to the local list 
-                    categories.Add(newCategory);
+                    productCategories.Add(newCategory);
                 }
                 await context.SaveChangesAsync();
 
 
                 // ------------------------------------------- ADDING PRODUCT SORTS ------------------------------------------- //
                 var sortNames = new string[] { "Lowest Price", "Highest Price" };
-                //Comparison<CustomProduct> highestSort = delegate (CustomProduct product1, CustomProduct product2) { return (product1.CurrentPrice.CompareTo(product2.CurrentPrice)); };
-                //Comparison<CustomProduct> lowestSort = delegate (CustomProduct product1, CustomProduct product2) { return (product2.CurrentPrice.CompareTo(product1.CurrentPrice)); };
-
+                
                 ProductSort highestPriceSort = new ProductSort()
                 {
-                    SortName = sortNames[0],
-                    //SortOperation = highestSort
+                    SortName = sortNames[0]
                 };
                 ProductSort lowestPriceSort = new ProductSort()
                 {
-                    SortName = sortNames[1],
-                    //SortOperation = lowestSort
+                    SortName = sortNames[1]
                 };
 
                 context.ProductSorts.Add(highestPriceSort);
                 context.ProductSorts.Add(lowestPriceSort);
                 await context.SaveChangesAsync();
 
+                // ------------------------------------------- ADDING TEAM SORTS ------------------------------------------- //
+                var teamSortNames = new string[] { "Oldest", "Newest", "Most Popular" };
+                TeamSort oldestSort = new TeamSort()
+                {
+                    SortName = teamSortNames[0]
+                };
+                TeamSort newestSort = new TeamSort()
+                {
+                    SortName = teamSortNames[1]
+                };
+                TeamSort mostPopular = new TeamSort()
+                {
+                    SortName = teamSortNames[2]
+                };
 
-    
-
-
+                context.TeamSorts.Add(oldestSort);
+                context.TeamSorts.Add(newestSort);
+                context.TeamSorts.Add(mostPopular);
+                await context.SaveChangesAsync();
 
             }
         }

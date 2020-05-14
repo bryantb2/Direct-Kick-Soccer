@@ -6,7 +6,7 @@ using dropShippingApp.Models;
 
 namespace dropShippingApp.Data.Repositories
 {
-    public class FakeTeamRepo : ITeamRepo
+    /*public class FakeTeamRepo : ITeamRepo
     {
         // private fields
         private List<Team> teams = new List<Team>();
@@ -59,7 +59,7 @@ namespace dropShippingApp.Data.Repositories
             }
         }
 
-        public async Task<Team> FindTeamByProductId(int productId)
+        /*public async Task<Team> FindTeamByProductId(int productId)
         {
             // will find custom product in team
             Team foundTeam = null;
@@ -87,5 +87,5 @@ namespace dropShippingApp.Data.Repositories
                 foundTeam.IsTeamInactive = true;
             }
         }
-    }
+    }*/
 }

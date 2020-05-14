@@ -9,10 +9,10 @@ using System.Threading.Tasks;
 
 namespace ProductTests
 {
-    public class TeamRepoTests : IDisposable
+    public class TeamRepoTests //: IDisposable
     {
         // private fields
-        private ITeamRepo teamRepo;
+        /*private ITeamRepo teamRepo;
         private TeamController teamController;
 
         // setup
@@ -86,14 +86,14 @@ namespace ProductTests
 
             // assert
             Assert.DoesNotContain(testTeam, teamRepo.GetTeams);
-            Assert.Contains(updatedTeam, teamRepo.GetTeams);*/
+            Assert.Contains(updatedTeam, teamRepo.GetTeams);
         }
 
         [Fact]
         public async Task TestFindTeamById()
         {
             // arrange 
-            var testTeam = new Team()
+            /*var testTeam = new Team()
             {
                 TeamID = 32,
                 Name = "test"
@@ -140,6 +140,6 @@ namespace ProductTests
             // TODO
 
             Assert.Equal(true, false);
-        }
+        }*/
     }
 }

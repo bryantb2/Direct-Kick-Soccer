@@ -6,10 +6,10 @@ using System.Threading.Tasks;
 
 namespace dropShippingApp.Data.Repositories
 {
-    public interface ICategoryRepo
+    public interface IProductCategoryRepo
     {
         List<ProductCategory> GetCategories { get; }
-        Task<ProductCategory> GetCategoryById(int categoryId);
+        ProductCategory GetCategoryById(int categoryId);
         Task AddCategory(ProductCategory category);
         Task<ProductCategory> RemoveCategory(int categoryId);
         Task UpdateCategory(ProductCategory category);

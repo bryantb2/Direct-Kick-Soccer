@@ -21,25 +21,41 @@ namespace dropShippingApp.Data.Repositories.RealRepos
             get
             {
                 return this.context.Teams
+                    // basic team property objects
+                    .Include(team => team.Providence)
+                    .Include(team => team.Category)
                     .Include(team => team.TeamTags)
-                    .Include(team => team.TeamProducts)
-                        .ThenInclude(product => product.ProductTags)
-                    .Include(team => team.TeamProducts)
+                    .Include(team => team.ProductGroups)
+                    // get product group data
+                    .Include(team => team.ProductGroups)
+                        .ThenInclude(group => group.ProductTags)
+                    .Include(team => team.ProductGroups)
+                        .ThenInclude(products => products.ChildProducts)
                         .ThenInclude(product => product.PricingHistory)
-                    .Include(team => team.TeamProducts)
+                    .Include(team => team.ProductGroups)
+                        .ThenInclude(products => products.ChildProducts)
                         .ThenInclude(product => product.BaseProduct)
-                    .Include(team => team.TeamProducts)
+                    // get base product data
+                    .Include(team => team.ProductGroups)
+                        .ThenInclude(products => products.ChildProducts)
                         .ThenInclude(product => product.BaseProduct)
-                            .ThenInclude(baseProduct => baseProduct.BaseColor)
-                    .Include(team => team.TeamProducts)
+                        .ThenInclude(baseProduct => baseProduct.Category)
+                    .Include(team => team.ProductGroups)
+                        .ThenInclude(products => products.ChildProducts)
                         .ThenInclude(product => product.BaseProduct)
-                            .ThenInclude(baseProduct => baseProduct.BaseSize)
-                    .Include(team => team.TeamProducts)
+                        .ThenInclude(baseProduct => baseProduct.BaseColor)
+                    .Include(team => team.ProductGroups)
+                        .ThenInclude(products => products.ChildProducts)
                         .ThenInclude(product => product.BaseProduct)
-                            .ThenInclude(baseProduct => baseProduct.PricingHistory)
-                    .Include(team => team.TeamProducts)
+                        .ThenInclude(baseProduct => baseProduct.BaseSize)
+                    .Include(team => team.ProductGroups)
+                        .ThenInclude(products => products.ChildProducts)
                         .ThenInclude(product => product.BaseProduct)
-                            .ThenInclude(baseProduct => baseProduct.ProductTags)
+                        .ThenInclude(baseProduct => baseProduct.PricingHistory)
+                    .Include(team => team.ProductGroups)
+                        .ThenInclude(products => products.ChildProducts)
+                        .ThenInclude(product => product.BaseProduct)
+                        .ThenInclude(baseProduct => baseProduct.ProductTags)
                     .ToList();
             }
         }
@@ -59,7 +75,7 @@ namespace dropShippingApp.Data.Repositories.RealRepos
             return foundTeam;
         }
 
-        public async Task UpdateTeam(Team team)
+        public async Task UpdateTeam(Team team) 
         {
             this.context.Teams.Update(team);
             await this.context.SaveChangesAsync();
@@ -70,54 +86,87 @@ namespace dropShippingApp.Data.Repositories.RealRepos
         public async Task<Team> FindTeamById(int teamId)
         {
             return this.context.Teams
+                // basic team property objects
+                .Include(team => team.Providence)
+                .Include(team => team.Category)
                 .Include(team => team.TeamTags)
-                .Include(team => team.TeamProducts)
-                    .ThenInclude(product => product.ProductTags)
-                .Include(team => team.TeamProducts)
+                .Include(team => team.ProductGroups)
+                // get product group data
+                .Include(team => team.ProductGroups)
+                    .ThenInclude(group => group.ProductTags)
+                .Include(team => team.ProductGroups)
+                    .ThenInclude(products => products.ChildProducts)
                     .ThenInclude(product => product.PricingHistory)
-                .Include(team => team.TeamProducts)
+                .Include(team => team.ProductGroups)
+                    .ThenInclude(products => products.ChildProducts)
                     .ThenInclude(product => product.BaseProduct)
-                .Include(team => team.TeamProducts)
+                // get base product data
+                .Include(team => team.ProductGroups)
+                    .ThenInclude(products => products.ChildProducts)
                     .ThenInclude(product => product.BaseProduct)
-                        .ThenInclude(baseProduct => baseProduct.BaseColor)
-                .Include(team => team.TeamProducts)
+                    .ThenInclude(baseProduct => baseProduct.Category)
+                .Include(team => team.ProductGroups)
+                    .ThenInclude(products => products.ChildProducts)
                     .ThenInclude(product => product.BaseProduct)
-                        .ThenInclude(baseProduct => baseProduct.BaseSize)
-                .Include(team => team.TeamProducts)
+                    .ThenInclude(baseProduct => baseProduct.BaseColor)
+                .Include(team => team.ProductGroups)
+                    .ThenInclude(products => products.ChildProducts)
                     .ThenInclude(product => product.BaseProduct)
-                        .ThenInclude(baseProduct => baseProduct.PricingHistory)
-                .Include(team => team.TeamProducts)
+                    .ThenInclude(baseProduct => baseProduct.BaseSize)
+                .Include(team => team.ProductGroups)
+                    .ThenInclude(products => products.ChildProducts)
                     .ThenInclude(product => product.BaseProduct)
-                        .ThenInclude(baseProduct => baseProduct.ProductTags)
-                .ToList().Find(team => team.TeamID == teamId);
+                    .ThenInclude(baseProduct => baseProduct.PricingHistory)
+                .Include(team => team.ProductGroups)
+                    .ThenInclude(products => products.ChildProducts)
+                    .ThenInclude(product => product.BaseProduct)
+                    .ThenInclude(baseProduct => baseProduct.ProductTags)
+                .ToList()
+                .Find(team => team.TeamID == teamId);
         }
 
         public async Task<Team> FindTeamByProductId(int productId)
         {
             return this.context.Teams
+                // basic team property objects
+                .Include(team => team.Providence)
+                .Include(team => team.Category)
                 .Include(team => team.TeamTags)
-                .Include(team => team.TeamProducts)
-                    .ThenInclude(product => product.ProductTags)
-                .Include(team => team.TeamProducts)
+                .Include(team => team.ProductGroups)
+                // get product group data
+                .Include(team => team.ProductGroups)
+                    .ThenInclude(group => group.ProductTags)
+                .Include(team => team.ProductGroups)
+                    .ThenInclude(products => products.ChildProducts)
                     .ThenInclude(product => product.PricingHistory)
-                .Include(team => team.TeamProducts)
+                .Include(team => team.ProductGroups)
+                    .ThenInclude(products => products.ChildProducts)
                     .ThenInclude(product => product.BaseProduct)
-                .Include(team => team.TeamProducts)
+                // get base product data
+                .Include(team => team.ProductGroups)
+                    .ThenInclude(products => products.ChildProducts)
                     .ThenInclude(product => product.BaseProduct)
-                        .ThenInclude(baseProduct => baseProduct.BaseColor)
-                .Include(team => team.TeamProducts)
+                    .ThenInclude(baseProduct => baseProduct.Category)
+                .Include(team => team.ProductGroups)
+                    .ThenInclude(products => products.ChildProducts)
                     .ThenInclude(product => product.BaseProduct)
-                        .ThenInclude(baseProduct => baseProduct.BaseSize)
-                .Include(team => team.TeamProducts)
+                    .ThenInclude(baseProduct => baseProduct.BaseColor)
+                .Include(team => team.ProductGroups)
+                    .ThenInclude(products => products.ChildProducts)
                     .ThenInclude(product => product.BaseProduct)
-                        .ThenInclude(baseProduct => baseProduct.PricingHistory)
-                .Include(team => team.TeamProducts)
+                    .ThenInclude(baseProduct => baseProduct.BaseSize)
+                .Include(team => team.ProductGroups)
+                    .ThenInclude(products => products.ChildProducts)
                     .ThenInclude(product => product.BaseProduct)
-                        .ThenInclude(baseProduct => baseProduct.ProductTags)
+                    .ThenInclude(baseProduct => baseProduct.PricingHistory)
+                .Include(team => team.ProductGroups)
+                    .ThenInclude(products => products.ChildProducts)
+                    .ThenInclude(product => product.BaseProduct)
+                    .ThenInclude(baseProduct => baseProduct.ProductTags)
                 .ToList()
-                    .Find(team => team.TeamProducts
-                        .Find(product => product.CustomProductID == productId) 
-                    != null);
+                .Find(team => team.ProductGroups
+                    .Find(group => group.ChildProducts.Exists(product => product.CustomProductID == productId))
+                != null);
         }
 
         public async Task MarkInactiveById(int teamId)

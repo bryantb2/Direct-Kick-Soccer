@@ -11,25 +11,25 @@
         </script>
         <script src="https://www.paypal.com/sdk/js?client-id=AZpm9gTt8pFrq0PZoGf_ptllalZ5UtmqOf6vTpcwtIC0lTD09EA5fTyyhwTHoUJNsmKYh4E6IxK7Ky0P"></script>
 
-        <h1>@(Model.CartItems.Count == 0 ? "Your Cart Appears to be Empty :(" : "Your Cart")</h1>
-        @foreach (var item in Model.CartItems)
+        <h1>@(Model.CartItemVMs.Count == 0 ? "Your Cart Appears to be Empty :(" : "Your Cart")</h1>
+        @foreach (var item in Model.CartItemVMs)
         {
             <article class="row">
                 <div class="col-2">
-                    <img width="50" height="50" src=@item.ProductSelection.CustomImagePNG />
+                    <img width="50" height="50" src=@item.GeneralThumbnail />
                 </div>
                 <div class="col-3">
-                    <h3>@item.ProductSelection.ProductTitle</h3>
-                    <p>Selected in @item.ProductSelection.BaseProduct.BaseColor.ColorName size @item.ProductSelection.BaseProduct.BaseSize.SizeName</p>
+                    <h3>@item.ProductTitle</h3>
+                    <p>Selected in @item.CartItem.ProductSelection.BaseProduct.BaseColor.ColorName size @item.CartItem.ProductSelection.BaseProduct.BaseSize.SizeName</p>
                 </div>
                 <div class="col-3">
-                    Quantity - <input class="qnty_input" type="number" data-cartItemId=@item.CartItemID min="1" value=@item.Quantity />
+                    Quantity - <input class="qnty_input" type="number" data-cartItemId=@item.CartItem.CartItemID min="1" value=@item.CartItem.Quantity />
                 </div>
                 <div class="col-2">
-                    Subtotal - @((item.Quantity * item.ProductSelection.CurrentPrice).ToString("c"))
+                    Subtotal - @((item.CartItem.Quantity * item.CartItem.ProductSelection.CurrentPrice).ToString("c"))
                 </div>
                 <div class="col-2">
-                    <a asp-controller="Cart" asp-action="RemoveFromCart" asp-route-cartItemId=@item.CartItemID>Remove Item</a>
+                    <a asp-controller="Cart" asp-action="RemoveFromCart" asp-route-cartItemId=@item.CartItem.CartItemID>Remove Item</a>
                 </div>
             </article>
         }

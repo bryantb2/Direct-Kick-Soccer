@@ -2,36 +2,37 @@
     Layout = "_Layout";
     ViewData["Title"] = "View Product";
 }
-@model ProductViewModel;
+@model ProductSelectionViewModel;
 
     <section>
-        <h1>@Model.Product.ProductTitle</h1>
-        <form asp-controller="Cart" asp-action="AddToCart" method="post" asp-route-productId="@Model.Product.CustomProductID">
+        <h1>@Model.ProductGroup.Title</h1>
+        <form asp-controller="Cart" asp-action="AddToCart" method="post" asp-route-productGroupId=@Model.ProductGroup.ProductGroupID>
             <div class="d-flex flex-column">
                 <div class="p-2">
-                    <img src=@Model.Product.CustomImagePNG width="300" />
+                    <img src=@Model.ProductGroup.GeneralThumbnail width="300" />
                 </div>
+                <select id="variantSelection" asp-for=@Model.ProductId>
+                    <option selected value="">Choose a Variant</option>
+                    @foreach (var product in Model.ProductGroup.ChildProducts)
+                    {
+                        <option value=@product.CustomProductID>Size - @product.BaseProduct.BaseSize.SizeName && Color - @product.BaseProduct.BaseColor.ColorName</option>
+                    }
+                </select>
                 <div class="p-2">
-                    Size - @Model.Product.BaseProduct.BaseSize.SizeName
-                </div>
-                <div class="p-2">
-                    Color - @Model.Product.BaseProduct.BaseColor.ColorName
-                </div>
-                <div class="p-2">
-                    Price - @Model.Product.CurrentPrice.ToString("c")
+                    Price - @Model.ProductGroup.GetHighestPrice.ToString("c")
                 </div>
                 <div class="p-2">
                     Quantity - <input class="qnty_input" type="number" asp-for="Quantity" min="1" value=@Model.Quantity />
                 </div>
                 <div class="p-2">
-                    @foreach (var tag in Model.Product.ProductTags)
+                    @foreach (var tag in Model.ProductGroup.ProductTags)
                     {
                         <span>@tag</span>
                     }
                 </div>
             </div>
             <br />
-            <p>@Model.Product.ProductDescription</p>
+            <p>@Model.ProductGroup.Description</p>
             <br />
             <button type="submit">Add to Cart</button>
         </form>
