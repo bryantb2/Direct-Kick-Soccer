@@ -116,7 +116,7 @@ namespace dropShippingApp.Controllers
             // create browse view model
             var browseVM = SearchHelper.CreateBrowseObject<Team>(
                 currentPage == -1 ? 0 : currentPage,
-                categoryObj: category,
+                teamCategory: category,
                 queriedTeams: categoryTeams);
 
             // return view
@@ -155,7 +155,7 @@ namespace dropShippingApp.Controllers
                 var foundCategory = categoryRepo.GetCategoryById(categoryId);
                 browseVM = SearchHelper.CreateBrowseObject<Team>(
                     currentPage == -1 ? 0 : currentPage,
-                    categoryObj: foundCategory,
+                    teamCategory: foundCategory,
                     queriedTeams: filteredTeams);
             }
             else

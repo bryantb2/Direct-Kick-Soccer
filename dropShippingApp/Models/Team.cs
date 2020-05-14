@@ -42,7 +42,7 @@ namespace dropShippingApp.Models
         [Required]
         public DateTime DateJoined { get; set; }
         [Required]
-        public Category Category { get; set; }
+        public TeamCategory Category { get; set; }
         public List<ProductGroup> ProductGroups { get; set; }
 
         // methods

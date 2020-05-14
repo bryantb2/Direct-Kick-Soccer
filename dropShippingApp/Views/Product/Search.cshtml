@@ -31,7 +31,7 @@
                         {
                             @foreach (var sort in sortRepo.Sorts)
                             {
-                                <a class="dropdown-item" asp-controller="Product" asp-action="SortProductGroups" asp-route-sortId=@sort.SortID asp-route-categoryId=@Model.CurrentCategory.CategoryID>@sort.SortName</a>
+                                <a class="dropdown-item" asp-controller="Product" asp-action="SortProductGroups" asp-route-sortId=@sort.SortID asp-route-categoryId=@Model.CurrentProductCategory.ProductCategoryID>@sort.SortName</a>
                             }
                         }
                     </div>
@@ -52,9 +52,9 @@
             {
                 <h5>Results for '@Model.SearchString'</h5>
             }
-            else if (Model.CurrentCategory != null)
+            else if (Model.CurrentProductCategory != null)
             {
-                <h5>Browsing @Model.CurrentCategory.Name Products</h5>
+                <h5>Browsing @Model.CurrentProductCategory.Name Products</h5>
             }
             else
             {
@@ -106,7 +106,7 @@
                         else
                         {
                             <div class="col-4 text-left">
-                                <a class="btn btn-link text-primary" asp-controller="Product" asp-action="BackToFirstPage" asp-route-categoryId=@Model.CurrentCategory.CategoryID>First Page</a>
+                                <a class="btn btn-link text-primary" asp-controller="Product" asp-action="BackToFirstPage" asp-route-categoryId=@Model.CurrentProductCategory.ProductCategoryID>First Page</a>
                             </div>
                         }
 
@@ -116,13 +116,13 @@
                         @if (Model.SearchString != null)
                         {
                             <div class="col-4 text-center">
-                                <a class="btn btn-link text-primary" asp-controller="Product" asp-action="PreviousPage" asp-route-currentPage=@Model.CurrentCategory asp-route-searchTerm=@Model.SearchString>Previous Page</a>
+                                <a class="btn btn-link text-primary" asp-controller="Product" asp-action="PreviousPage" asp-route-currentPage=@Model.CurrentPage asp-route-searchTerm=@Model.SearchString>Previous Page</a>
                             </div>
                         }
                         else
                         {
                             <div class="col-4 text-center">
-                                <a class="btn btn-link text-primary" asp-controller="Product" asp-action="PreviousPage" asp-route-currentPage=@Model.CurrentCategory asp-route-categoryId=@Model.CurrentCategory.CategoryID>Previous Page</a>
+                                <a class="btn btn-link text-primary" asp-controller="Product" asp-action="PreviousPage" asp-route-currentPage=@Model.CurrentPage asp-route-categoryId=@Model.CurrentProductCategory.ProductCategoryID>Previous Page</a>
                             </div>
                         }
                     }
@@ -131,13 +131,13 @@
                         @if (Model.SearchString != null)
                         {
                             <div class="col-4 text-right">
-                                <a class="btn btn-link text-primary" asp-controller="Product" asp-action="NextPage" asp-route-currentPage=@Model.CurrentPage asp-route-categoryId=@Model.CurrentCategory.CategoryID>Next Page</a>
+                                <a class="btn btn-link text-primary" asp-controller="Product" asp-action="NextPage" asp-route-currentPage=@Model.CurrentPage asp-route-categoryId=@Model.CurrentProductCategory.ProductCategoryID>Next Page</a>
                             </div>
                         }
                         else
                         {
                             <div class="col-4 text-right">
-                                <a class="btn btn-link text-primary" asp-controller="Product" asp-action="NextPage" asp-route-currentPage=@Model.CurrentPage asp-route-categoryId=@Model.CurrentCategory.CategoryID>Next Page</a>
+                                <a class="btn btn-link text-primary" asp-controller="Product" asp-action="NextPage" asp-route-currentPage=@Model.CurrentPage asp-route-categoryId=@Model.CurrentProductCategory.ProductCategoryID>Next Page</a>
                             </div>
                         }
                     }

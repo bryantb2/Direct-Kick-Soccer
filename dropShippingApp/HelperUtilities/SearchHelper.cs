@@ -63,7 +63,8 @@ namespace dropShippingApp.HelperUtilities
             int currentPageNumber, 
             List<ProductGroup> queriedGroups = null, 
             List<Team> queriedTeams = null, 
-            Category categoryObj = null, 
+            TeamCategory teamCategory = null, 
+            ProductCategory productCategory = null,
             string searchTerm = null)
         {
             // setup for type comparisons
@@ -80,7 +81,6 @@ namespace dropShippingApp.HelperUtilities
             {
                 CurrentPage = currentPageNumber,
                 SearchString = searchTerm == null ? null : searchTerm,
-                CurrentCategory = categoryObj == null ? null : categoryObj,
                 // next page exists if the number of products left in the query is greater than the total number of dispalyed products
                 PreviousPageExists = startProduct - itemsPerPage > 0 ? true : false
             };
@@ -88,11 +88,13 @@ namespace dropShippingApp.HelperUtilities
             {
                 pagingInfo.Teams = SplitList(queriedTeams, startProduct, endProduct);
                 pagingInfo.NextPageExists = queriedTeams.Count > endProduct ? true : false;
+                pagingInfo.CurrentTeamCategory = teamCategory;
             }
             else if(productGroup == typeof(T))
             {
                 pagingInfo.ProductGroups = SplitList(queriedGroups, startProduct, endProduct);
                 pagingInfo.NextPageExists = queriedGroups.Count > endProduct ? true : false;
+                pagingInfo.CurrentProductCategory = productCategory;
             }
             return pagingInfo;
         }
@@ -106,7 +108,7 @@ namespace dropShippingApp.HelperUtilities
             if (typeof(T) == team)
             {
                 var listAsTeams = filterableList.Cast<Team>().ToList();
-                return listAsTeams.Where(team => team.Category.CategoryID == categoryId).Cast<T>().ToList();
+                return listAsTeams.Where(team => team.Category.TeamCategoryID == categoryId).Cast<T>().ToList();
             }
             else if(typeof(T) == productGroup)
             {
@@ -115,7 +117,7 @@ namespace dropShippingApp.HelperUtilities
                 foreach (var group in listAsGroups)
                 {
                     // remove current item if it's product does not contain the current category
-                    var filteredGroupProducts = group.ChildProducts.Where(product => product.BaseProduct.Category.CategoryID == categoryId);
+                    var filteredGroupProducts = group.ChildProducts.Where(product => product.BaseProduct.Category.ProductCategoryID == categoryId);
                     if (filteredGroupProducts.Count() == 0)
                         filteredGroups.Remove(group);
                 }

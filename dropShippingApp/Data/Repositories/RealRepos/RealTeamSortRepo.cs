@@ -15,7 +15,7 @@ namespace dropShippingApp.Data.Repositories.RealRepos
             this.context = c;
         }
 
-        public List<Sort> Sorts
+        public List<TeamSort> Sorts
         {
             get
             {
@@ -23,25 +23,25 @@ namespace dropShippingApp.Data.Repositories.RealRepos
             }
         }
 
-        public Sort GetSortById(int sortId)
+        public TeamSort GetSortById(int sortId)
         {
             var Sort = this.context.TeamSorts.ToList().Find(team => team.SortID == sortId);
             return Sort;
         }
 
-        public async Task AddSort(Sort sort)
+        public async Task AddSort(TeamSort sort)
         {
             this.context.TeamSorts.Add(sort);
             await this.context.SaveChangesAsync();
         }
 
-        public async Task UpdateSort(Sort team)
+        public async Task UpdateSort(TeamSort team)
         {
             this.context.TeamSorts.Update(team);
             await this.context.SaveChangesAsync();
         }
 
-        public async Task<Sort> RemoveSort(int sortId)
+        public async Task<TeamSort> RemoveSort(int sortId)
         {
             var Sort = this.context.TeamSorts.ToList().Find(team => team.SortID == sortId);
             this.context.TeamSorts.Remove(Sort);

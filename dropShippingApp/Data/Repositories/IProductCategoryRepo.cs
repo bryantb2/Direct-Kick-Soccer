@@ -8,10 +8,10 @@ namespace dropShippingApp.Data.Repositories
 {
     public interface IProductCategoryRepo
     {
-        List<Category> GetCategories { get; }
-        Category GetCategoryById(int categoryId);
-        Task AddCategory(Category category);
-        Task<Category> RemoveCategory(int categoryId);
-        Task UpdateCategory(Category category);
+        List<ProductCategory> GetCategories { get; }
+        ProductCategory GetCategoryById(int categoryId);
+        Task AddCategory(ProductCategory category);
+        Task<ProductCategory> RemoveCategory(int categoryId);
+        Task UpdateCategory(ProductCategory category);
     }
 }

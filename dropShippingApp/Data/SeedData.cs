@@ -31,8 +31,8 @@ namespace dropShippingApp.Data
 
                 var colors = new List<ProductColor>();
                 var sizes = new List<ProductSize>();
-                var productCategories = new List<Category>();
-                var teamCategories = new List<Category>();
+                var productCategories = new List<ProductCategory>();
+                var teamCategories = new List<TeamCategory>();
 
                 for (var i = 0; i < 3; i++)
                 {
@@ -46,12 +46,12 @@ namespace dropShippingApp.Data
                         IsSizeActive = true,
                         SizeName = sizeArr[i]
                     };
-                    var productCategory = new Category()
+                    var productCategory = new ProductCategory()
                     {
                         Name = productCategoryArr[i],
                         //BriefDescription = categoryDesc[i]
                     };
-                    var teamCategory = new Category()
+                    var teamCategory = new TeamCategory()
                     {
                         Name = teamCategoryArr[i],
                     };
@@ -566,7 +566,7 @@ namespace dropShippingApp.Data
 
                 for (int i = 0; i < c.Length; i++)
                 {
-                    Category newCategory = new Category()
+                    ProductCategory newCategory = new ProductCategory()
                     {
                         Name = c[i]
                     };

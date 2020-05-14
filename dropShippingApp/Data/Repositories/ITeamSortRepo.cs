@@ -8,10 +8,10 @@ namespace dropShippingApp.Data.Repositories
 {
     public interface ITeamSortRepo
     {
-        List<Sort> Sorts { get; }
-        Sort GetSortById(int teamId);
-        Task UpdateSort(Sort sort);
-        Task AddSort(Sort sort);
-        Task<Sort> RemoveSort(int sortId);
+        List<TeamSort> Sorts { get; }
+        TeamSort GetSortById(int teamId);
+        Task UpdateSort(TeamSort sort);
+        Task AddSort(TeamSort sort);
+        Task<TeamSort> RemoveSort(int sortId);
     }
 }

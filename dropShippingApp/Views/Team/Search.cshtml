@@ -30,7 +30,7 @@
                         {
                             @foreach (var sort in sortRepo.Sorts)
                             {
-                                <a class="dropdown-item" asp-controller="Team" asp-action="SortTeams" asp-route-sortId=@sort.SortID asp-route-categoryId=@Model.CurrentCategory.CategoryID>@sort.SortName</a>
+                                <a class="dropdown-item" asp-controller="Team" asp-action="SortTeams" asp-route-sortId=@sort.SortID asp-route-categoryId=@Model.CurrentTeamCategory.TeamCategoryID>@sort.SortName</a>
                             }
                         }
                     </div>
@@ -51,9 +51,9 @@
             {
                 <h5>Results for '@Model.SearchString'</h5>
             }
-            else if (Model.CurrentCategory != null)
+            else if (Model.CurrentTeamCategory != null)
             {
-                <h5>Browsing @Model.CurrentCategory.Name Teams</h5>
+                <h5>Browsing @Model.CurrentTeamCategory.Name Teams</h5>
             }
             else
             {
@@ -105,7 +105,7 @@
                         else
                         {
                             <div class="col-4 text-left">
-                                <a class="btn btn-link text-primary" asp-controller="Team" asp-action="BackToFirstPage" asp-route-categoryId=@Model.CurrentCategory.CategoryID>First Page</a>
+                                <a class="btn btn-link text-primary" asp-controller="Team" asp-action="BackToFirstPage" asp-route-categoryId=@Model.CurrentTeamCategory.TeamCategoryID>First Page</a>
                             </div>
                         }
 
@@ -115,13 +115,13 @@
                         @if (Model.SearchString != null)
                         {
                             <div class="col-4 text-center">
-                                <a class="btn btn-link text-primary" asp-controller="Team" asp-action="PreviousPage" asp-route-currentPage=@Model.CurrentCategory asp-route-searchTerm=@Model.SearchString>Previous Page</a>
+                                <a class="btn btn-link text-primary" asp-controller="Team" asp-action="PreviousPage" asp-route-currentPage=@Model.CurrentPage asp-route-searchTerm=@Model.SearchString>Previous Page</a>
                             </div>
                         }
                         else
                         {
                             <div class="col-4 text-center">
-                                <a class="btn btn-link text-primary" asp-controller="Team" asp-action="PreviousPage" asp-route-currentPage=@Model.CurrentCategory asp-route-categoryId=@Model.CurrentCategory.CategoryID>Previous Page</a>
+                                <a class="btn btn-link text-primary" asp-controller="Team" asp-action="PreviousPage" asp-route-currentPage=@Model.CurrentPage asp-route-categoryId=@Model.CurrentTeamCategory.TeamCategoryID>Previous Page</a>
                             </div>
                         }
                     }
@@ -130,13 +130,13 @@
                         @if (Model.SearchString != null)
                         {
                             <div class="col-4 text-right">
-                                <a class="btn btn-link text-primary" asp-controller="Team" asp-action="NextPage" asp-route-currentPage=@Model.CurrentPage asp-route-categoryId=@Model.CurrentCategory.CategoryID>Next Page</a>
+                                <a class="btn btn-link text-primary" asp-controller="Team" asp-action="NextPage" asp-route-currentPage=@Model.CurrentPage asp-route-categoryId=@Model.CurrentTeamCategory.TeamCategoryID>Next Page</a>
                             </div>
                         }
                         else
                         {
                             <div class="col-4 text-right">
-                                <a class="btn btn-link text-primary" asp-controller="Team" asp-action="NextPage" asp-route-currentPage=@Model.CurrentPage asp-route-categoryId=@Model.CurrentCategory.CategoryID>Next Page</a>
+                                <a class="btn btn-link text-primary" asp-controller="Team" asp-action="NextPage" asp-route-currentPage=@Model.CurrentPage asp-route-categoryId=@Model.CurrentTeamCategory.TeamCategoryID>Next Page</a>
                             </div>
                         }
                     }

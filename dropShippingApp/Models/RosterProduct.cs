@@ -26,7 +26,7 @@ namespace dropShippingApp.Models
         public ProductSize BaseSize { get; set; }
         public List<Tag> ProductTags { get; set; }
         [Required]
-        public Category Category { get; set; }
+        public ProductCategory Category { get; set; }
         public List<PricingHistory> PricingHistory { get { return this.pricingHistory; } }
 
         // methods

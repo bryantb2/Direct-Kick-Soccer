@@ -14,7 +14,7 @@ namespace dropShippingApp.Data.Repositories.RealRepos
             this.context = c;
         }
 
-        public List<Category> GetCategories
+        public List<TeamCategory> GetCategories
         {
             get
             {
@@ -22,28 +22,28 @@ namespace dropShippingApp.Data.Repositories.RealRepos
             }
         }
 
-        public Category GetCategoryById(int categoryId)
+        public TeamCategory GetCategoryById(int categoryId)
         {
             return this.context.TeamCategories.ToList()
-                .Find(category => category.CategoryID == categoryId);
+                .Find(category => category.TeamCategoryID == categoryId);
         }
 
-        public async Task AddCategory(Category category)
+        public async Task AddCategory(TeamCategory category)
         {
             this.context.Add(category);
             await this.context.SaveChangesAsync();
         }
 
-        public async Task<Category> RemoveCategory(int categoryId)
+        public async Task<TeamCategory> RemoveCategory(int categoryId)
         {
             var foundCategory = this.context.TeamCategories.ToList()
-                .Find(category => category.CategoryID == categoryId);
+                .Find(category => category.TeamCategoryID == categoryId);
             this.context.TeamCategories.Remove(foundCategory);
             await this.context.SaveChangesAsync();
             return foundCategory;
         }
 
-        public async Task UpdateCategory(Category category)
+        public async Task UpdateCategory(TeamCategory category)
         {
             this.context.TeamCategories.Update(category);
             await this.context.SaveChangesAsync();

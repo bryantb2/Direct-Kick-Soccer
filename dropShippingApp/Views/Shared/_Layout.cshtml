@@ -34,7 +34,7 @@
                             <ul class="dropdown-menu">
                                 @foreach (var category in categoryRepo.GetCategories)
                                 {
-                                    <li><a class="nav-link text-dark" asp-controller="Product" asp-action="DisplayByCategory" asp-route-categoryID="@category.CategoryID">@category.Name</a></li>
+                                    <li><a class="nav-link text-dark" asp-controller="Product" asp-action="DisplayByCategory" asp-route-categoryID="@category.ProductCategoryID">@category.Name</a></li>
                                 }
                             </ul>
                         </li>
@@ -47,7 +47,7 @@
                             <a class="nav-link text-dark"><span class="glyphicon glyphicon-user" style="padding-right: 5px"></span>Welcome @UserManager.GetUserName(User)</a>
                         </li>
                         <li>
-                            <a class="nav-link text-dark" asp-controller="Account" asp-action="Logout"><span class="glyphicon glyphicon-log-out" style="padding-right: 5px"></span>Logout</a>
+                            <a class="nav-link text-dark" asp-controller="Login" asp-action="SignoutUser"><span class="glyphicon glyphicon-log-out" style="padding-right: 5px"></span>Logout</a>
                         </li>
                     }
                     else
