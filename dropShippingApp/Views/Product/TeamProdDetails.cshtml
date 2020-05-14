@@ -1,0 +1,42 @@
+﻿@model ProductViewModel
+@{
+    ViewData["Title"] = "TeamProdDetails";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>Product Details</h1>
+
+<section>
+    <h1>@Model.Product.ProductTitle</h1>
+    <form asp-controller="Cart" asp-action="AddToCart" method="post" asp-route-producID="@Model.Product.CustomProductID">
+        <div class="d-flex flex-column">
+            <div class="p-2">
+                <img src=@Model.Product.CustomImagePNG width="300" />
+            </div>
+            <div class="p-2">
+                Size - @Model.Product.BaseProduct.BaseSize.SizeName
+            </div>
+            <div class="p-2">
+                Color - @Model.Product.BaseProduct.BaseColor.ColorName
+            </div>
+            <div class="p-2">
+                Price - @Model.Product.CurrentPrice.ToString("c")
+            </div>
+            <div class="p-2">
+                Quantity - <input class="qnty_input" type="number" asp-for="Quantity" min="1" value=@Model. />
+            </div>
+            <div class="p-2">
+                @foreach (var tag in Model.Product.ProductTags)
+                {
+                    <span>@tag</span>
+                }
+            </div>
+        </div>
+        <br />
+        <p>@Model.Product.ProductDescription</p>
+        <br />
+        <button type="submit">Add to Cart</button>
+    </form>
+
+
+</section>

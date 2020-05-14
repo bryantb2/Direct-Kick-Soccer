@@ -11,6 +11,7 @@ using dropShippingApp.Models;
 using dropShippingApp.Data.Repositories;
 using dropShippingApp.ViewModels;
 using Microsoft.Xrm.Sdk.Query;
+using System.ComponentModel;
 
 namespace dropShippingApp.Controllers
 {
@@ -20,12 +21,15 @@ namespace dropShippingApp.Controllers
         private ICustomProductRepo customProductRepo;
         private ISortRepo sortRepo;
         private ICategoryRepo categoryRepo;
+        private ITeamRepo teamRepo;
 
         public ProductController(IRosterProductRepo rosterProductRepo,
             ICustomProductRepo customProductRepo,
             ISortRepo sortRepo,
-            ICategoryRepo categoryRepo)
+            ICategoryRepo categoryRepo,
+            ITeamRepo tRepo)
         {
+            teamRepo = tRepo;
             this.rosterProductRepo = rosterProductRepo;
             this.customProductRepo = customProductRepo;
             this.sortRepo = sortRepo;
@@ -114,7 +118,16 @@ namespace dropShippingApp.Controllers
             // return view
             return View("Search", browseVM);
         }
-
+        public async Task<IActionResult>ViewTeamProduct(int teamId)
+        {
+            Team t = await teamRepo.FindTeamById(teamId);
+            return View(t);
+        }
+        public async Task<IActionResult>TeamProdDetails(int id)
+        {
+            CustomProduct prod = await customProductRepo.GetCustomProductById(id);
+            return View(prod);
+        }
         public async Task<IActionResult> DisplayByCategory(int categoryId, int currentPage = -1)
         {
             // get products by category
@@ -326,5 +339,37 @@ namespace dropShippingApp.Controllers
                 return false;
             }
         }
+
+        
+
+        public async Task<IActionResult> CreateCustomProd(RosterProduct prod, List<Tag> tags, string title, string description,
+                                                    string imageUrl, bool isActive, decimal price)
+        {
+            PricingHistory myPrice = new PricingHistory
+            {
+                DateChanged = DateTime.Now,
+                NewPrice = price
+            };
+            CustomProduct myProd = new CustomProduct
+            {
+                BaseProduct=prod,
+                ProductTitle=title,
+                ProductDescription=description,
+                CustomImagePNG=imageUrl,
+                IsProductActive=isActive,
+                
+                
+            };
+            myProd.AddPricingHistory(myPrice);
+            foreach(Tag t in tags)
+            {
+                myProd.AddTag(t);
+            }
+            customProductRepo.AddCustomProduct(myProd);
+
+            return View();
+        }
+
+
     }
 }

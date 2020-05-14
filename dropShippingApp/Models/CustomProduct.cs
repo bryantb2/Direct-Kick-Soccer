@@ -10,7 +10,7 @@ namespace dropShippingApp.Models
     {
         // private fields
         private List<PricingHistory> pricingHistory = new List<PricingHistory>();
-
+        private List<Tag> tags = new List<Tag>();
         // public properties
         public int CustomProductID { get; set; }
         [Required]
@@ -25,8 +25,9 @@ namespace dropShippingApp.Models
         public string CustomImageSVG { get; set; }
         [Required]
         public bool IsProductActive { get; set; }
+        [Required]
         public List<PricingHistory> PricingHistory { get { return this.pricingHistory; } } // <---- Users set this
-        // Does the pricing history INCLUDE the basePrice from the "parent"?
+                                                                                           // Does the pricing history INCLUDE the basePrice from the "parent"?
 
         public decimal CurrentPrice
         {
@@ -55,5 +56,6 @@ namespace dropShippingApp.Models
             this.pricingHistory.Remove(removedHistory);
             return removedHistory;
         }
+        public void AddTag(Tag t) => tags.Add(t);
     }
 }

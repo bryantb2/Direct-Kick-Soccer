@@ -1,10 +1,13 @@
 ﻿using dropShippingApp.Models;
+using dropShippingApp.Data;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Web.Helpers;
+using Microsoft.EntityFrameworkCore;
 
 namespace dropShippingApp.Data
 {
@@ -327,23 +330,57 @@ namespace dropShippingApp.Data
                 context.CustomProducts.Add(customProduct5);
                 context.CustomProducts.Add(customProduct6);
                 context.CustomProducts.Add(customProduct7);
+                await context.SaveChangesAsync();
+
+
+
+                // ------------------------------------------- ADDING COUNTRY/STATE ------------------------------------------- //
+
+
+                List<Country> countries = JsonUtil.DeserializeCountry();
+                Country aCountry;
+
+                foreach (Country myCountry in countries)
+                {
+                    aCountry = new Country
+                    {
+                        CountryName = myCountry.CountryName,
+
+
+                    };
+                    context.Add(aCountry);
+                }
+                await context.SaveChangesAsync();
+
+                Province aProvience;
+                List<Province> provinces = JsonUtil.DeserializeProvinces();
+                Country us = (from theCountry in countries
+                              where theCountry.CountryName == "United States of America"
+                              select theCountry).First();
+                foreach (Province myProvience in provinces)
+                {
+                    aProvience = new Province
+                    {
+                        ProvinceName = myProvience.ProvinceName,
+                        ProvienceAbbreviation = myProvience.ProvienceAbbreviation
+
+
+                    };
+                    context.Add(aProvience);
+                    us.AddProvidence(aProvience);
+
+                }
+                await context.SaveChangesAsync();
 
                 // ------------------------------------------- ADDING AND ASSIGNMENT CARTS TO USERS ------------------------------------------- //
-                Country america = new Country()
-                {
-                    CountryName = "America"
-                };
 
-                Province oregon = new Province()
-                {
-                    ProvinceName = "Oregon"
-                };
+                Country america = (from country in context.Countries
+                                   where country.CountryName.ToLower() == "united states of america"
+                                   select country).First();
 
-                context.Provinces.Add(oregon);
-                context.Countries.Add(america);
-                await context.SaveChangesAsync();
-                america.AddProvidence(oregon);
-                context.Countries.Update(america);
+                Province oregon = (from state in context.Provinces
+                                   where state.ProvinceName.ToLower() == "oregon"
+                                   select state).First();
                 await context.SaveChangesAsync();
 
                 Team team = new Team()
@@ -461,8 +498,11 @@ namespace dropShippingApp.Data
                     Email = "cowboy@gmail.com",
                     NormalizedEmail = "COWBOY@GMAIL.COM",
                     DateJoined = DateTimeOffset.UtcNow.ToUnixTimeSeconds(),
-                    Cart = carts[2]
+                    Cart = carts[2],
+                    ManagedTeam = team
                 };
+
+                
 
                 var userArr = new AppUser[3] { user1, user2, user3 };
                 var userPasswordArr = new String[3] { "WhoaDude123!", "MotherRussia123!", "MeatBallRevolver123!" };
@@ -652,6 +692,10 @@ namespace dropShippingApp.Data
                 context.ProductSorts.Add(highestPriceSort);
                 context.ProductSorts.Add(lowestPriceSort);
                 await context.SaveChangesAsync();
+
+
+    
+
 
 
             }

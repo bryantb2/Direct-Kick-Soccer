@@ -1,0 +1,46 @@
+﻿@model CustomProduct
+@{
+    ViewData["Title"] = "CreateCustomProd";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>Submit a new Custom Product</h1>
+
+<form method="post">
+    <div asp-validation-summary="All" class="required">
+        <div><span asp-validation-for="ProductTitle" class="required"></span></div>
+        <div>
+            Product Title:<input asp-for="ProductTitle" type="text" name="title"/>
+        </div>
+
+        <div><span asp-validation-for="ProductDescription"class="required"></span></div>
+        <div>
+
+            Product Description:<input asp-for="ProductDescription" type="text" name="descrition"/>
+        </div>
+
+        <div><span asp-validation-for="ProductTags" class="required"></span></div>
+        <div>
+            Add Tags: <input asp-for="ProductTags" type="text" name="tags"/>
+        </div>
+
+        <div><span asp-validation-for="IsProductActive" class="required" name="isActive"></span></div>
+        <div>
+            The product is 
+            <select>
+                <option value="true">Active</option>
+                <option value="false">Inactive</option>
+            </select>
+        </div>
+        <div>
+
+            Product Price $<input type="number" name="price" />
+        </div>
+        
+        <div><span asp-validation-for="BaseProduct" class="required"></span></div>
+        <div>
+            Base Product:
+        </div>
+    </div>
+    <button typ="submit">Submit</button>
+</form>
