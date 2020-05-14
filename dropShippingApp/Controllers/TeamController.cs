@@ -1,20 +1,28 @@
 ﻿using dropShippingApp.Data.Repositories;
+using dropShippingApp.HelperUtilities;
 using dropShippingApp.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
+using PayPal.Api;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+
 
 namespace dropShippingApp.Controllers
 {
     public class TeamController : Controller
     {
         ITeamRepo teamRepo;
+        ILocationRepo locRepo;
+        ITeamCreationReqRepo reqRepo;
         IUserRepo userRepo;
-        public TeamController(ITeamRepo t, IUserRepo u)
+        public TeamController(ITeamRepo t, ILocationRepo l,ITeamCreationReqRepo r)
         {
+            reqRepo = r;
+            locRepo = l;
             teamRepo = t;
             userRepo = u;
         }
@@ -191,5 +199,58 @@ namespace dropShippingApp.Controllers
             // return home management page
             return View();
         }
+
+        [HttpGet]
+        public IActionResult TeamReq()
+        {
+            return View();
+        }
+        [HttpPost]
+        public async Task<IActionResult> TeamReq(string name, string description, string email, string corporatePageURL,string streetAddress,
+                                      string country, string providence, string zipCode)
+        {
+            MyWordFilter filter = new MyWordFilter();// documentation https://github.com/smurfpandey/WordFilter
+            if (ModelState.GetValidationState(nameof(name))==ModelValidationState.Valid &&
+                ModelState.GetValidationState(nameof(description)) == ModelValidationState.Valid &&
+                ModelState.GetValidationState(nameof(email)) == ModelValidationState.Valid &&
+                ModelState.GetValidationState(nameof(corporatePageURL)) == ModelValidationState.Valid &&
+                ModelState.GetValidationState(nameof(streetAddress)) == ModelValidationState.Valid &&
+                ModelState.GetValidationState(nameof(country)) == ModelValidationState.Valid &&
+                ModelState.GetValidationState(nameof(providence)) == ModelValidationState.Valid &&
+                ModelState.GetValidationState(nameof(zipCode)) == ModelValidationState.Valid)
+            {
+                if (filter.BadWords(name) == false && filter.BadWords(description)==false
+                   && filter.BadWords(email)==false && filter.BadWords(corporatePageURL)==false
+                    && filter.BadWords(streetAddress)==false) 
+                {
+                    List<Country> countries = locRepo.GetAllCountries;
+                    Country myCountry = countries.First(c => c.CountryName.ToLower() == country.ToLower());
+
+                    List<Province> provinces = locRepo.GetAllProvinces;
+                    Province myProv = provinces.First(p => p.ProvienceAbbreviation.ToLower() == providence.ToLower());
+                    TeamCreationRequest req = new TeamCreationRequest
+                    {
+                        TeamName = name,
+                        TeamDescription = description,
+                        BusinessEmail = email,
+                        CorporatePageURL = corporatePageURL,
+                        StreetAddress = streetAddress,
+                        Country = myCountry,
+                        Providence = myProv,
+                        ZipCode = zipCode
+
+                    };
+                    await reqRepo.AddReq(req);
+
+                    return View("ReqConfirm");
+                    
+                }
+            }
+                
+                
+
+            return View("TeamReq");
+        }
+
     }
 }
