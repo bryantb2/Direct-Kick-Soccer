@@ -330,6 +330,7 @@ namespace dropShippingApp.Data
                 context.CustomProducts.Add(customProduct5);
                 context.CustomProducts.Add(customProduct6);
                 context.CustomProducts.Add(customProduct7);
+                await context.SaveChangesAsync();
 
 
 
@@ -497,8 +498,11 @@ namespace dropShippingApp.Data
                     Email = "cowboy@gmail.com",
                     NormalizedEmail = "COWBOY@GMAIL.COM",
                     DateJoined = DateTimeOffset.UtcNow.ToUnixTimeSeconds(),
-                    Cart = carts[2]
+                    Cart = carts[2],
+                    ManagedTeam = team
                 };
+
+                
 
                 var userArr = new AppUser[3] { user1, user2, user3 };
                 var userPasswordArr = new String[3] { "WhoaDude123!", "MotherRussia123!", "MeatBallRevolver123!" };

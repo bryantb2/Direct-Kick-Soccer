@@ -1,0 +1,77 @@
+﻿@model Team
+@{
+    Layout = "_Layout";
+    ViewData["Title"] = "Team Settings";
+}
+
+
+<div class="panel-heading text-center">
+    <h1>Team Settings</h1><br />
+</div>
+<div id="wrapper">
+    <div class="panel panel-success">
+        <div class="panel-body">
+            <form class="p-a-1" asp-controller="Team" asp-action="" method="post">
+                <div asp-validation-summary="All">
+                    <div class="form-group">
+                        <label>
+                            Team Name:
+                        </label>
+                        <input asp-for="Name" />
+                    </div>
+                    <div class="form-group">
+                        <label>
+                            Team Country: 
+                        </label>
+                        <input asp-for="Country.CountryName" />
+                    </div>
+                    <div class="form-group">
+                        <label>
+                            Team Providence: 
+                        </label>
+                        <input asp-for="Providence.ProvinceName" />
+                    </div>
+                    <div class="form-group">
+                        <label>
+                            Team Street Address: 
+                        </label>
+                        <input asp-for="StreetAddress" />
+                    </div>
+                    <div class="form-group">
+                        <label>
+                            Team Zip Code: 
+                        </label>
+                        <input asp-for="ZipCode" />
+                    </div>
+                    <div class="form-group">
+                        <label>
+                            Team's Business Page(URL): 
+                        </label>
+                        <input asp-for="CorporatePageURL" />
+                    </div>
+                    <div class="form-group">
+                        <label>
+                            Team Email: 
+                        </label>
+                        <input asp-for="BusinessEmail" />
+                    </div>
+                    <div class="form-group">
+                        <label>
+                            Team Phone Number: 
+                        </label>
+                        <input asp-for="PhoneNumber" />
+                    </div>
+                    <div class="form-group">
+                        <label>
+                            Team Description: 
+                        </label>
+                        <textarea asp-for="Description"></textarea>
+                    </div>
+                    <button class="btn btn-primary" type="submit">
+                        Update
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

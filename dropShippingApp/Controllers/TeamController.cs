@@ -1,6 +1,7 @@
 ﻿using dropShippingApp.Data.Repositories;
 using dropShippingApp.HelperUtilities;
 using dropShippingApp.Models;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using PayPal.Api;
@@ -17,11 +18,19 @@ namespace dropShippingApp.Controllers
         ITeamRepo teamRepo;
         ILocationRepo locRepo;
         ITeamCreationReqRepo reqRepo;
+        IUserRepo userRepo;
         public TeamController(ITeamRepo t, ILocationRepo l,ITeamCreationReqRepo r)
         {
             reqRepo = r;
             locRepo = l;
             teamRepo = t;
+            userRepo = u;
+        }
+
+        public async Task<IActionResult> Index()
+        {
+            var teamList = teamRepo.GetTeams;
+            return View(teamList);
         }
 
         public async Task<ViewResult> BuildTeam(Team team)
@@ -92,6 +101,55 @@ namespace dropShippingApp.Controllers
             return searchResults;
         }
 
+        public async Task<IActionResult> TeamSettings()
+        {
+            AppUser user = await userRepo.GetUserDataAsync(HttpContext.User);
+            if (user != null)
+            {
+                // verify users role, after roles are set up
+                // get the users team
+                Team team = user.ManagedTeam;
+                return View("TeamSettings", team);
+            }
+            
+            // If user is null, redirect to a Team/Index
+            return View("Index");
+        }
+
+        public async Task<IActionResult> TeamManager()
+        {
+            AppUser user = await userRepo.GetUserDataAsync(HttpContext.User);
+            if (user != null)
+            {
+                // verify users role, after roles are set up
+                // get the users team
+                var teamID = user.ManagedTeam.TeamID;
+                Team team = await teamRepo.FindTeamById(teamID);
+                foreach (var product in team.TeamProducts)
+                {
+                    if (product.ProductTitle == null)
+                    {
+                        product.ProductTitle = "This product Title is invalid";
+                    }
+                    else if (product.PricingHistory.Count == 0)
+                    {
+                        PricingHistory pricingHistoryUpdate = new PricingHistory
+                        {
+                            DateChanged = new DateTime(2020, 4, 1),
+                            NewPrice = 666
+                        };
+                        product.AddPricingHistory(pricingHistoryUpdate);
+                    }
+                    else if (product.BaseProduct.SKU == null)
+                    {
+                        product.BaseProduct.SKU = 666;
+                    }
+                }
+                return View("TeamManager", team);
+            }
+            return View("Index");
+        }
+
         // TODO 
         // DO NOT WRITE CODE FOR THESE UNTIL BOTH THE PRODUCT AND TEAM REPOS ARE FINISHED...
 
@@ -129,6 +187,7 @@ namespace dropShippingApp.Controllers
             // otherwise they could change the team id and f*** up another person's team
             // TODO: will take in settings view model
             // redirect to home management page
+
             await teamRepo.UpdateTeam(updatedTeam);
             return View();
         }
