@@ -115,7 +115,8 @@ namespace dropShippingApp.Controllers
             {
                 // verify users role, after roles are set up
                 // get the users team
-                Team team = user.ManagedTeam;
+                var teamID = user.ManagedTeam.TeamID;
+                Team team = await teamRepo.FindTeamById(teamID);
                 foreach (var product in team.TeamProducts)
                 {
                     if (product.ProductTitle == null)
@@ -133,7 +134,7 @@ namespace dropShippingApp.Controllers
                     }
                     else if (product.BaseProduct.SKU == null)
                     {
-                        product.BaseProduct.SKU = 0000;
+                        product.BaseProduct.SKU = 666;
                     }
                 }
                 return View("TeamManager", team);

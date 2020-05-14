@@ -327,6 +327,7 @@ namespace dropShippingApp.Data
                 context.CustomProducts.Add(customProduct5);
                 context.CustomProducts.Add(customProduct6);
                 context.CustomProducts.Add(customProduct7);
+                await context.SaveChangesAsync();
 
                 // ------------------------------------------- ADDING AND ASSIGNMENT CARTS TO USERS ------------------------------------------- //
                 Country america = new Country()
