@@ -11,6 +11,7 @@ using dropShippingApp.Models;
 using dropShippingApp.Data.Repositories;
 using dropShippingApp.ViewModels;
 using Microsoft.Xrm.Sdk.Query;
+using System.ComponentModel;
 
 namespace dropShippingApp.Controllers
 {
@@ -338,6 +339,37 @@ namespace dropShippingApp.Controllers
                 return false;
             }
         }
+
         
+
+        public async Task<IActionResult> CreateCustomProd(RosterProduct prod, List<Tag> tags, string title, string description,
+                                                    string imageUrl, bool isActive, decimal price)
+        {
+            PricingHistory myPrice = new PricingHistory
+            {
+                DateChanged = DateTime.Now,
+                NewPrice = price
+            };
+            CustomProduct myProd = new CustomProduct
+            {
+                BaseProduct=prod,
+                ProductTitle=title,
+                ProductDescription=description,
+                CustomImagePNG=imageUrl,
+                IsProductActive=isActive,
+                
+                
+            };
+            myProd.AddPricingHistory(myPrice);
+            foreach(Tag t in tags)
+            {
+                myProd.AddTag(t);
+            }
+            customProductRepo.AddCustomProduct(myProd);
+
+            return View();
+        }
+
+
     }
 }
