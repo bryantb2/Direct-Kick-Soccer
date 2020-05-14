@@ -48,6 +48,8 @@ namespace dropShippingApp.HelperUtilities
             }
             else if (typeof(T) == customProduct)
             {
+                // TODO: FIX THIS TO USE PRODUCT GROUP INSTEAD
+
                 // sort by most popular product
                 var listAsProducts = filterableList.Cast<CustomProduct>().ToList();
                 listAsProducts.Sort((product1, product2) =>
@@ -57,13 +59,17 @@ namespace dropShippingApp.HelperUtilities
             }
         }
 
-        public static BrowseViewModel CreateBrowseObject(
+        public static BrowseViewModel CreateBrowseObject<T>(
             int currentPageNumber, 
             List<ProductGroup> queriedGroups = null, 
             List<Team> queriedTeams = null, 
             Category categoryObj = null, 
             string searchTerm = null)
         {
+            // setup for type comparisons
+            Type team = typeof(Team);
+            Type productGroup = typeof(ProductGroup);
+
             // setup starting and ending product indexes
             var itemsPerPage = 30;
             var startProduct = currentPageNumber * itemsPerPage;
@@ -72,15 +78,22 @@ namespace dropShippingApp.HelperUtilities
             // setup paging view model
             var pagingInfo = new BrowseViewModel()
             {
-                ProductGroups = SplitList(queriedGroups, startProduct, endProduct),
                 CurrentPage = currentPageNumber,
                 SearchString = searchTerm == null ? null : searchTerm,
                 CurrentCategory = categoryObj == null ? null : categoryObj,
                 // next page exists if the number of products left in the query is greater than the total number of dispalyed products
-                NextPageExists = queriedGroups.Count > endProduct ? true : false,
                 PreviousPageExists = startProduct - itemsPerPage > 0 ? true : false
             };
-
+            if (team == typeof(T))
+            {
+                pagingInfo.Teams = SplitList(queriedTeams, startProduct, endProduct);
+                pagingInfo.NextPageExists = queriedTeams.Count > endProduct ? true : false;
+            }
+            else if(productGroup == typeof(T))
+            {
+                pagingInfo.ProductGroups = SplitList(queriedGroups, startProduct, endProduct);
+                pagingInfo.NextPageExists = queriedGroups.Count > endProduct ? true : false;
+            }
             return pagingInfo;
         }
 

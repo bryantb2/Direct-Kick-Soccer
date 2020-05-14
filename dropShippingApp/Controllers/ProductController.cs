@@ -110,7 +110,7 @@ namespace dropShippingApp.Controllers
             var foundGroups = SearchHelper.SearchByString<ProductGroup>(productGroupRepo.Groups, searchString);
 
             // create browse view model
-            var browseVM = SearchHelper.CreateBrowseObject(
+            var browseVM = SearchHelper.CreateBrowseObject<ProductGroup>(
                     currentPage == -1 ? 0 : currentPage,
                     searchTerm: searchString,
                     queriedGroups: foundGroups);
@@ -128,7 +128,7 @@ namespace dropShippingApp.Controllers
             var category = categoryRepo.GetCategoryById(categoryId);
 
             // create browse view model
-            var browseVM = SearchHelper.CreateBrowseObject(
+            var browseVM = SearchHelper.CreateBrowseObject<ProductGroup>(
                 currentPage == -1 ? 0 : currentPage,
                 categoryObj: category,
                 queriedGroups: categoryGroups);
@@ -166,7 +166,7 @@ namespace dropShippingApp.Controllers
             {
                 // means user is browsing by category
                 var foundCategory = categoryRepo.GetCategoryById(categoryId);
-                browseVM = SearchHelper.CreateBrowseObject(
+                browseVM = SearchHelper.CreateBrowseObject<ProductGroup>(
                     currentPage == -1 ? 0 : currentPage,
                     categoryObj: foundCategory,
                     queriedGroups: filteredGroups);
@@ -174,7 +174,7 @@ namespace dropShippingApp.Controllers
             else
             {
                 // user is browsing products THEY searched
-                browseVM = SearchHelper.CreateBrowseObject(
+                browseVM = SearchHelper.CreateBrowseObject<ProductGroup>(
                     currentPage == -1 ? 0 : currentPage,
                     searchTerm: searchTerm,
                     queriedGroups: filteredGroups);

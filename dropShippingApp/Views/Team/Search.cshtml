@@ -4,7 +4,7 @@
 
     <section class="pt-5">
         <div>
-            <form asp-controller="Product" asp-action="Search" method="get">
+            <form asp-controller="Team" asp-action="Search" method="get">
                 <div class="d-flex flex-row justify-content-center">
                     <h1 class="p-2">Search for Teams:</h1>
                     <input class="p-2" type="text" placeholder="Enter a Search Term" asp-for=@Model.SearchString />
@@ -63,7 +63,7 @@
 
         @if (Model != null)
         {
-            @if (Model.ProductGroups.Count != 0)
+            @if (Model.Teams.Count != 0)
             {
                 <table class="table">
                     <thead>

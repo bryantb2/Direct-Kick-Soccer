@@ -391,7 +391,8 @@ namespace dropShippingApp.Data
                     PhoneNumber = "541-234-4040",
                     IsTeamInactive = false,
                     IsHostTeam = true,
-                    Category = teamCategories[0]
+                    Category = teamCategories[0],
+                    TeamBannerPNG = "https://picsum.photos/id/237/200/300"
                 };
 
                 Team team1 = new Team()
@@ -408,7 +409,8 @@ namespace dropShippingApp.Data
                     PhoneNumber = "541-554-4157",
                     IsTeamInactive = false,
                     IsHostTeam = false,
-                    Category = teamCategories[1]
+                    Category = teamCategories[1],
+                    TeamBannerPNG = "https://picsum.photos/id/237/200/300"
                 };
 
                 Team team2 = new Team()
@@ -425,7 +427,8 @@ namespace dropShippingApp.Data
                     PhoneNumber = "377-849-9071",
                     IsTeamInactive = false,
                     IsHostTeam = false,
-                    Category = teamCategories[2]
+                    Category = teamCategories[2],
+                    TeamBannerPNG = "https://picsum.photos/id/237/200/300"
                 };
 
                 team.AddProductGroup(groupList[0]);
@@ -579,11 +582,11 @@ namespace dropShippingApp.Data
                 // ------------------------------------------- ADDING PRODUCT SORTS ------------------------------------------- //
                 var sortNames = new string[] { "Lowest Price", "Highest Price" };
                 
-                Sort highestPriceSort = new Sort()
+                ProductSort highestPriceSort = new ProductSort()
                 {
                     SortName = sortNames[0]
                 };
-                Sort lowestPriceSort = new Sort()
+                ProductSort lowestPriceSort = new ProductSort()
                 {
                     SortName = sortNames[1]
                 };
@@ -594,15 +597,15 @@ namespace dropShippingApp.Data
 
                 // ------------------------------------------- ADDING TEAM SORTS ------------------------------------------- //
                 var teamSortNames = new string[] { "Oldest", "Newest", "Most Popular" };
-                Sort oldestSort = new Sort()
+                TeamSort oldestSort = new TeamSort()
                 {
                     SortName = teamSortNames[0]
                 };
-                Sort newestSort = new Sort()
+                TeamSort newestSort = new TeamSort()
                 {
                     SortName = teamSortNames[1]
                 };
-                Sort mostPopular = new Sort()
+                TeamSort mostPopular = new TeamSort()
                 {
                     SortName = teamSortNames[2]
                 };

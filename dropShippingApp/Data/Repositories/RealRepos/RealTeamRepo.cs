@@ -75,7 +75,7 @@ namespace dropShippingApp.Data.Repositories.RealRepos
             return foundTeam;
         }
 
-        public async Task UpdateTeam(Team team)
+        public async Task UpdateTeam(Team team) 
         {
             this.context.Teams.Update(team);
             await this.context.SaveChangesAsync();

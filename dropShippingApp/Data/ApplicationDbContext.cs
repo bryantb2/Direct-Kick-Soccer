@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Text;
 using dropShippingApp.Models;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
@@ -28,8 +29,8 @@ namespace dropShippingApp.Data
         public DbSet<CartItem> CartItems { get; set; }
         public DbSet<Category> ProductCategories { get; set; }
         public DbSet<Category> TeamCategories { get; set; }
-        public DbSet<Sort> ProductSorts { get; set; }
-        public DbSet<Sort> TeamSorts { get; set; }
+        public DbSet<ProductSort> ProductSorts { get; set; }
+        public DbSet<TeamSort> TeamSorts { get; set; }
         public DbSet<ProductGroup> ProductGroups { get; set; }
     }   
 }
