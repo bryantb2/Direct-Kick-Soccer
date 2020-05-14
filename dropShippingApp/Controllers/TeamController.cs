@@ -19,7 +19,7 @@ namespace dropShippingApp.Controllers
         ILocationRepo locRepo;
         ITeamCreationReqRepo reqRepo;
         IUserRepo userRepo;
-        public TeamController(ITeamRepo t, ILocationRepo l,ITeamCreationReqRepo r)
+        public TeamController(ITeamRepo t, ILocationRepo l, ITeamCreationReqRepo r, IUserRepo u)
         {
             reqRepo = r;
             locRepo = l;
@@ -123,29 +123,33 @@ namespace dropShippingApp.Controllers
             {
                 // verify users role, after roles are set up
                 // get the users team
-                var teamID = user.ManagedTeam.TeamID;
-                Team team = await teamRepo.FindTeamById(teamID);
-                foreach (var product in team.TeamProducts)
+                if (user.ManagedTeam.TeamID != null)
                 {
-                    if (product.ProductTitle == null)
+                    var teamID = user.ManagedTeam.TeamID;
+
+                    Team team = await teamRepo.FindTeamById(teamID);
+                    foreach (var product in team.TeamProducts)
                     {
-                        product.ProductTitle = "This product Title is invalid";
-                    }
-                    else if (product.PricingHistory.Count == 0)
-                    {
-                        PricingHistory pricingHistoryUpdate = new PricingHistory
+                        if (product.ProductTitle == null)
                         {
-                            DateChanged = new DateTime(2020, 4, 1),
-                            NewPrice = 666
-                        };
-                        product.AddPricingHistory(pricingHistoryUpdate);
+                            product.ProductTitle = "This product Title is invalid";
+                        }
+                        else if (product.PricingHistory.Count == 0)
+                        {
+                            PricingHistory pricingHistoryUpdate = new PricingHistory
+                            {
+                                DateChanged = new DateTime(2020, 4, 1),
+                                NewPrice = 666
+                            };
+                            product.AddPricingHistory(pricingHistoryUpdate);
+                        }
+                        else if (product.BaseProduct.SKU == null)
+                        {
+                            product.BaseProduct.SKU = 666;
+                        }
                     }
-                    else if (product.BaseProduct.SKU == null)
-                    {
-                        product.BaseProduct.SKU = 666;
-                    }
+                    return View("TeamManager", team);
                 }
-                return View("TeamManager", team);
             }
             return View("Index");
         }
