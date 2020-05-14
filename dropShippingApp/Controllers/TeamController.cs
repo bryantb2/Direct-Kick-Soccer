@@ -34,6 +34,7 @@ namespace dropShippingApp.Controllers
             return View(teamList);
         }
 
+        /*
        public async Task<IActionResult> Index()
        {
             Team mTeam = await teamRepo.FindTeamById(1);
@@ -44,6 +45,8 @@ namespace dropShippingApp.Controllers
             mTeam = await teamRepo.FindTeamById(1);
             return View(mTeam);
         }
+
+    */
         public async Task<ViewResult> BuildTeam(Team team)
         {
             // TODO
