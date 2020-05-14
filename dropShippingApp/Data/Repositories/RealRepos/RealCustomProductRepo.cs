@@ -68,12 +68,16 @@ namespace dropShippingApp.Data.Repositories.RealRepos
             await context.SaveChangesAsync();
         }
 
-        public async Task RemoveCustomProduct(CustomProduct product)
+        public async Task<CustomProduct> RemoveCustomProduct(int productId)
         {
             // Make sure the product that is passed in is not null
-            if (product != null)
-                context.CustomProducts.Remove(product);
-            await context.SaveChangesAsync();
+            var foundProduct = this.context.CustomProducts.ToList().Find(product => product.CustomProductID == productId);
+            if (foundProduct != null)
+            {
+                this.context.CustomProducts.Remove(foundProduct);
+                await context.SaveChangesAsync();
+            }
+            return foundProduct;
         }
     }
 }

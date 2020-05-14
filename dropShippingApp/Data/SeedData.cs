@@ -352,19 +352,12 @@ namespace dropShippingApp.Data
                 groupList[1].ChildProducts = new List<CustomProduct>() { customProduct4, customProduct5, customProduct6 };
                 groupList[2].ChildProducts = new List<CustomProduct>() { customProduct7 };
 
-                // ------------------------------------------- ADDING AND BUILDING OUT TEAMS ------------------------------------------- //
-                Country america = new Country()
-
-
 
                 // ------------------------------------------- ADDING COUNTRY/STATE ------------------------------------------- //
-
-
                 List<Country> countries = JsonUtil.DeserializeCountry();
                 Country aCountry;
 
                 foreach (Country myCountry in countries)
-
                 {
                     aCountry = new Country
                     {
@@ -388,6 +381,13 @@ namespace dropShippingApp.Data
                         ProvinceName = myProvience.ProvinceName,
                         ProvienceAbbreviation = myProvience.ProvienceAbbreviation
 
+
+                    };
+                    context.Add(aProvience);
+                    us.AddProvidence(aProvience);
+
+                }
+                await context.SaveChangesAsync();
 
                 Province california = new Province()
                 {

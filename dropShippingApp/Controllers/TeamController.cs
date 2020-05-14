@@ -11,39 +11,46 @@ using System.Linq;
 using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
 using dropShippingApp.HelperUtilities;
+using Microsoft.AspNetCore.Identity;
 
 
 namespace dropShippingApp.Controllers
 {
     public class TeamController : Controller
     {
+        private UserManager<AppUser> userManager;
+        private ICustomProductRepo customProductRepo;
+        private IProductGroupRepo productGroupRepo;
         private ITeamRepo teamRepo;
         private ITeamSortRepo teamSortRepo;
         private ITeamCategoryRepo categoryRepo;
         private IOrderRepo orderRepo;
+        private IUserRepo userRepo;
+        private ILocationRepo locationRepo;
+        private ITeamCreationReqRepo teamRequestRepo;
+
         public TeamController(
             ITeamRepo teamRepo, 
             ITeamSortRepo sortRepo,
             ITeamCategoryRepo categoryRepo,
-            IOrderRepo orderRepo)
+            IOrderRepo orderRepo,
+            IUserRepo userRepo,
+            ILocationRepo locationRepo,
+            ICustomProductRepo customProductRepo,
+            IProductGroupRepo productGroupRepo,
+            UserManager<AppUser> userManager,
+            ITeamCreationReqRepo teamRequestRepo)
         {
             this.teamRepo = teamRepo;
             this.teamSortRepo = sortRepo;
             this.categoryRepo = categoryRepo;
             this.orderRepo = orderRepo;
-        }
-
-        public async Task<IActionResult> Index()
-        ITeamRepo teamRepo;
-        ILocationRepo locRepo;
-        ITeamCreationReqRepo reqRepo;
-        IUserRepo userRepo;
-        public TeamController(ITeamRepo t, ILocationRepo l, ITeamCreationReqRepo r, IUserRepo u)
-        {
-            reqRepo = r;
-            locRepo = l;
-            teamRepo = t;
-            userRepo = u;
+            this.userRepo = userRepo;
+            this.locationRepo = locationRepo;
+            this.customProductRepo = customProductRepo;
+            this.productGroupRepo = productGroupRepo;
+            this.userManager = userManager;
+            this.teamRequestRepo = teamRequestRepo;
         }
 
         public async Task<IActionResult> Index()
@@ -52,31 +59,9 @@ namespace dropShippingApp.Controllers
             return View(teamList);
         }
 
-        /*
-       public async Task<IActionResult> Index()
-       {
-            Team mTeam = await teamRepo.FindTeamById(1);
-            CustomProduct cProduct = mTeam.TeamProducts.Find(item => item.CustomProductID == 3);
-            cProduct.ProductTitle = "Fire Roasted Socks";
-            await UpdateTeamProduct(mTeam, cProduct);
-            //cProduct = mTeam.TeamProducts.Find(item => item.CustomProductID == 3);
-            mTeam = await teamRepo.FindTeamById(1);
-            return View(mTeam);
-        }
-
-    */
-        public async Task<ViewResult> BuildTeam(Team team)
+        public async Task<IActionResult> Browse()
         {
             return View("Search", null);
-        }
-
-        public async Task<IActionResult> ViewTeam(int teamId)
-        {
-            // get 
-            /*var team = await teamRepo.FindTeamById(teamId);
-            // TODO
-            return View(team);*/
-            throw new NotImplementedException();
         }
 
         public async Task<IActionResult> BackToFirstPage(int categoryId = -1, string searchTerm = null)
@@ -227,13 +212,12 @@ namespace dropShippingApp.Controllers
 
         public async Task<IActionResult> TeamSettings()
         {
-            AppUser user = await userRepo.GetUserDataAsync(HttpContext.User);
-            if (user != null)
+            var user = await userRepo.GetUserDataAsync(HttpContext.User);
+            if (user != null && user.ManagedTeam != null)
             {
                 // verify users role, after roles are set up
                 // get the users team
-                Team team = user.ManagedTeam;
-                return View("TeamSettings", team);
+                return View("TeamSettings", user.ManagedTeam);
             }
             
             // If user is null, redirect to a Team/Index
@@ -242,44 +226,16 @@ namespace dropShippingApp.Controllers
 
         public async Task<IActionResult> TeamManager()
         {
-            AppUser user = await userRepo.GetUserDataAsync(HttpContext.User);
-            if (user != null)
+            // display the main management page for teams
+            var user = await userRepo.GetUserDataAsync(HttpContext.User);
+            if (user != null && user.ManagedTeam != null)
             {
                 // verify users role, after roles are set up
                 // get the users team
-                if (user.ManagedTeam.TeamID != null)
-                {
-                    var teamID = user.ManagedTeam.TeamID;
-
-                    Team team = await teamRepo.FindTeamById(teamID);
-                    foreach (var product in team.TeamProducts)
-                    {
-                        if (product.ProductTitle == null)
-                        {
-                            product.ProductTitle = "This product Title is invalid";
-                        }
-                        else if (product.PricingHistory.Count == 0)
-                        {
-                            PricingHistory pricingHistoryUpdate = new PricingHistory
-                            {
-                                DateChanged = new DateTime(2020, 4, 1),
-                                NewPrice = 666
-                            };
-                            product.AddPricingHistory(pricingHistoryUpdate);
-                        }
-                        else if (product.BaseProduct.SKU == null)
-                        {
-                            product.BaseProduct.SKU = 666;
-                        }
-                    }
-                    return View("TeamManager", team);
-                }
+                return View("TeamManager", user.ManagedTeam);
             }
             return View("Index");
         }
-
-        // TODO 
-        // DO NOT WRITE CODE FOR THESE UNTIL BOTH THE PRODUCT AND TEAM REPOS ARE FINISHED...
 
         public async Task<IActionResult> ManageTeamProducts()
         {
@@ -289,58 +245,89 @@ namespace dropShippingApp.Controllers
             return View();
         }
 
-        public async Task<IActionResult> AddTeamProduct(Team team, CustomProduct customProduct)
+        public async Task<IActionResult> AddTeamProduct(int groupId, CustomProduct customProduct)
         {
-            // TODO
-            // redirects to team product management page
-            Team mTeam = await teamRepo.FindTeamById(team.TeamID);
-            mTeam.AddProduct(customProduct);
-            await teamRepo.UpdateTeam(mTeam);
-            return RedirectToAction("/TeamManagement/Index");
+            if(ModelState.IsValid)
+            {
+                // redirects to team product management page
+                var user = await userRepo.GetUserDataAsync(HttpContext.User);
+                // get the group
+                var group = user.ManagedTeam.ProductGroups.Find(group => group.ProductGroupID == groupId);
+                // add product to DB
+                // add product to group
+                // update group in DB
+                // update user in DB
+                await customProductRepo.AddCustomProduct(customProduct);
+                group.ChildProducts.Add(customProduct);
+                await productGroupRepo.UpdateProductGroup(group);
+                await userManager.UpdateAsync(user);
+
+                // return view
+                throw new NotImplementedException();
+            }
+            // add return statement here too
+            throw new NotImplementedException();
         }
 
-        public async Task<IActionResult> UpdateTeamProduct(Team team, CustomProduct updatedCustomProduct)
+        public async Task<IActionResult> UpdateTeamProduct(int groupId, CustomProduct customProduct)
         {
-            // TODO
-            // redirects to team product management page
-            Team mTeam = await teamRepo.FindTeamById(team.TeamID);
-            CustomProduct cProduct = mTeam.TeamProducts.Find(item => item.CustomProductID == updatedCustomProduct.CustomProductID);
-            mTeam.RemoveProduct(cProduct);
-            mTeam.AddProduct(updatedCustomProduct);
-            await teamRepo.UpdateTeam(mTeam);
-            return RedirectToAction("/TeamManagement/Index");
+            if (ModelState.IsValid)
+            {
+                // redirects to team product management page
+                var user = await userRepo.GetUserDataAsync(HttpContext.User);
+                // update in database
+                await customProductRepo.UpdateCustomProduct(customProduct);
+
+                // return view
+                throw new NotImplementedException();
+            }
+            // add return statement here too
+            throw new NotImplementedException();
         }
 
-        public async Task<IActionResult> RemoveTeamProduct(Team team, CustomProduct customProduct)
+        public async Task<IActionResult> RemoveTeamProduct(int groupId, int productId)
         {
-            // TODO
-            // redirects to team product management page
-            Team mTeam = await teamRepo.FindTeamById(team.TeamID);
-            mTeam.RemoveProduct(customProduct);
-            await teamRepo.UpdateTeam(mTeam);
-            return RedirectToAction("/TeamManagement/Index");
+            if (ModelState.IsValid)
+            {
+                // redirects to team product management page
+                var user = await userRepo.GetUserDataAsync(HttpContext.User);
+                // find product
+                var product = user.ManagedTeam.ProductGroups.Find(group => group.ProductGroupID == groupId).ChildProducts
+                    .Find(product => product.CustomProductID == productId);
+
+                if (product != null)
+                    await customProductRepo.RemoveCustomProduct(productId);
+
+                // return view
+                throw new NotImplementedException();
+            }
+            // add return statement here too
+            throw new NotImplementedException();
         }
 
-        public async Task<IActionResult> MarkProductInActive(Team team, CustomProduct customProduct)
+        public async Task<IActionResult> MarkProductInActive(int groupId, int productId)
         {
-            Team mTeam = await teamRepo.FindTeamById(team.TeamID);
-            CustomProduct cProduct = mTeam.TeamProducts.Find(item => item.CustomProductID == customProduct.CustomProductID);
-            mTeam.RemoveProduct(cProduct);
-            cProduct.IsProductActive = false;
-            mTeam.AddProduct(cProduct);
-            await teamRepo.UpdateTeam(mTeam);
-            return RedirectToAction("/TeamManagement/Index");
-        }
+            if (ModelState.IsValid)
+            {
+                // redirects to team product management page
+                var user = await userRepo.GetUserDataAsync(HttpContext.User);
+                // find product
+                var product = user.ManagedTeam.ProductGroups.Find(group => group.ProductGroupID == groupId).ChildProducts
+                    .Find(product => product.CustomProductID == productId);
 
-        public async Task<IActionResult> UpdateTeamSettings(Team updatedTeam)
-        {
-            // CHECK TO MAKE SURE SENDER HAS THE TEAM IN THEIR APPROVED HISTORY 
-            // otherwise they could change the team id and f*** up another person's team
-            // TODO: will take in settings view model
-            // redirect to home management page
+                if (product != null)
+                {
+                    // mark inactive
+                    // change in DB
+                    product.IsProductActive = false;
+                    await customProductRepo.UpdateCustomProduct(product);
+                }
 
-            await teamRepo.UpdateTeam(updatedTeam);
-            return View();
+                // return view
+                throw new NotImplementedException();
+            }
+            // add return statement here too
+            throw new NotImplementedException();
         }
 
         public async Task<IActionResult> UploadNewBanner()
@@ -351,55 +338,43 @@ namespace dropShippingApp.Controllers
             return View();
         }
 
-        [HttpGet]
-        public IActionResult TeamReq()
+
+        public async Task<IActionResult> TeamReq()
         {
             return View();
         }
+
         [HttpPost]
-        public async Task<IActionResult> TeamReq(string name, string description, string email, string corporatePageURL,string streetAddress,
-                                      string country, string providence, string zipCode)
+        public async Task<IActionResult> TeamReq(TeamCreationRequest request)
         {
             MyWordFilter filter = new MyWordFilter();// documentation https://github.com/smurfpandey/WordFilter
-            if (ModelState.GetValidationState(nameof(name))==ModelValidationState.Valid &&
-                ModelState.GetValidationState(nameof(description)) == ModelValidationState.Valid &&
-                ModelState.GetValidationState(nameof(email)) == ModelValidationState.Valid &&
-                ModelState.GetValidationState(nameof(corporatePageURL)) == ModelValidationState.Valid &&
-                ModelState.GetValidationState(nameof(streetAddress)) == ModelValidationState.Valid &&
-                ModelState.GetValidationState(nameof(country)) == ModelValidationState.Valid &&
-                ModelState.GetValidationState(nameof(providence)) == ModelValidationState.Valid &&
-                ModelState.GetValidationState(nameof(zipCode)) == ModelValidationState.Valid)
+            if (ModelState.IsValid)
             {
-                if (filter.BadWords(name) == false && filter.BadWords(description)==false
-                   && filter.BadWords(email)==false && filter.BadWords(corporatePageURL)==false
-                    && filter.BadWords(streetAddress)==false) 
+                if (filter.BadWords(request.TeamDescription) == false && filter.BadWords(request.TeamName)==false
+                   && filter.BadWords(request.BusinessEmail) ==false && filter.BadWords(request.CorporatePageURL) ==false
+                    && filter.BadWords(request.StreetAddress) ==false) 
                 {
-                    List<Country> countries = locRepo.GetAllCountries;
-                    Country myCountry = countries.First(c => c.CountryName.ToLower() == country.ToLower());
+                    List<Country> countries = locationRepo.GetAllCountries;
+                    Country myCountry = countries.First(c => c.CountryName.ToLower() == request.Country.CountryName.ToLower());
 
-                    List<Province> provinces = locRepo.GetAllProvinces;
-                    Province myProv = provinces.First(p => p.ProvienceAbbreviation.ToLower() == providence.ToLower());
+                    List<Province> provinces = locationRepo.GetAllProvinces;
+                    Province myProv = provinces.First(p => p.ProvienceAbbreviation.ToLower() == request.Providence.ProvinceName.ToLower());
                     TeamCreationRequest req = new TeamCreationRequest
                     {
-                        TeamName = name,
-                        TeamDescription = description,
-                        BusinessEmail = email,
-                        CorporatePageURL = corporatePageURL,
-                        StreetAddress = streetAddress,
+                        TeamName = request.TeamName,
+                        TeamDescription = request.TeamDescription,
+                        BusinessEmail = request.BusinessEmail,
+                        CorporatePageURL = request.CorporatePageURL,
+                        StreetAddress = request.StreetAddress,
                         Country = myCountry,
                         Providence = myProv,
-                        ZipCode = zipCode
-
+                        ZipCode = request.ZipCode
                     };
-                    await reqRepo.AddReq(req);
+                    await teamRequestRepo.AddReq(req);
 
                     return View("ReqConfirm");
-                    
                 }
             }
-                
-                
-
             return View("TeamReq");
         }
 
