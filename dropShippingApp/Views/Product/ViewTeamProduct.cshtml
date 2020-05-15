@@ -1,6 +1,6 @@
 ﻿@model Team
 @*@model BrowseViewModel*@
-@{
+@*@{
     ViewData["Title"] = "TeamProduct";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
@@ -23,13 +23,13 @@
         </tr>
     </thead>
     <tbody>
-        @foreach(var item in Model.TeamProducts)
+        @foreach(var item in Model.ProductGroups)
         {
         <tr>
-            <td><a asp-action="ViewProduct" asp-route-id="@item.CustomProductID">@item.ProductTitle</a></td>
+            <td><a asp-action="ViewProduct" asp-route-id="@Model.ProductGroups.">@item.ProductTitle</a></td>
             <td>@item.CustomImagePNG</td>
             <td>@item.CurrentPrice</td>
         </tr>
         }
     </tbody>
-</table>
+</table>*@
