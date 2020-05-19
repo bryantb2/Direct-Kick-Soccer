@@ -64,6 +64,12 @@ namespace dropShippingApp.Controllers
             return View("Search", null);
         }
 
+        public async Task<IActionResult> ViewTeam(int teamId)
+        {
+            Team foundTeam = await teamRepo.FindTeamById(teamId);
+            return View(foundTeam);
+        }
+
         public async Task<IActionResult> BackToFirstPage(int categoryId = -1, string searchTerm = null)
         {
             if (searchTerm != null)
@@ -354,10 +360,10 @@ namespace dropShippingApp.Controllers
                    && filter.BadWords(request.BusinessEmail) ==false && filter.BadWords(request.CorporatePageURL) ==false
                     && filter.BadWords(request.StreetAddress) ==false) 
                 {
-                    List<Country> countries = locationRepo.GetAllCountries;
+                    List<Country> countries = locationRepo.Countries;
                     Country myCountry = countries.First(c => c.CountryName.ToLower() == request.Country.CountryName.ToLower());
 
-                    List<Province> provinces = locationRepo.GetAllProvinces;
+                    List<Province> provinces = locationRepo.Provinces;
                     Province myProv = provinces.First(p => p.ProvienceAbbreviation.ToLower() == request.Providence.ProvinceName.ToLower());
                     TeamCreationRequest req = new TeamCreationRequest
                     {

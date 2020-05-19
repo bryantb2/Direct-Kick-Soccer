@@ -122,21 +122,6 @@ namespace dropShippingApp.Controllers
             return View("Search", browseVM);
         }
 
-        // TODO: redirect to view product and pass in group id
-        // TODO: display banner at top and show team info AND other team info
-        public async Task<IActionResult> ViewTeamProduct(int teamId)
-        {
-            Team t = await teamRepo.FindTeamById(teamId);
-            return View(t);
-        }
-        
-        // TODO: change this method to use product view
-        /*public async Task<IActionResult> TeamProdDetails(int id)
-        {
-            CustomProduct prod = await customProductRepo.GetCustomProductById(id);
-            return View(prod);
-        }*/
-
         public async Task<IActionResult> DisplayByCategory(int categoryId, int currentPage = -1)
         {
             // get products by category

@@ -1,0 +1,18 @@
+﻿.view-team-banner-container {
+    position: relative;
+    overflow: hidden;
+}
+
+.view-team-banner-text {
+    position: absolute;
+    right: 30%;
+    top: 0px;
+    color: white;
+}
+
+.view-team-banner-img {
+    width: 100%;
+    object-fit: cover;
+    height: 350px;
+    object-position: 50% 45%;
+}

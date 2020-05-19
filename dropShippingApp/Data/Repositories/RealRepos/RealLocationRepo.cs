@@ -9,17 +9,14 @@ namespace dropShippingApp.Data.Repositories.RealRepos
 	public class RealLocationRepo : ILocationRepo
 	{
 		private ApplicationDbContext context;
-		public List<Country> Countries { get { return context.Countries.ToList(); } }
-		public List<Province> Provinces { get { return context.Provinces.ToList(); } }
 
 		public RealLocationRepo(ApplicationDbContext appDbContext)
 		{
-			context = appDbContext;
+			this.context = appDbContext;
 		}
 
-		public List<Country> GetAllCountries => Countries;
-
-		public List<Province> GetAllProvinces => Provinces;
+		public List<Country> Countries { get { return this.context.Countries.ToList(); } }
+		public List<Province> Provinces { get { return this.context.Provinces.ToList(); } }
 
 		public async Task AddCountry(Country newCountry)
 		{

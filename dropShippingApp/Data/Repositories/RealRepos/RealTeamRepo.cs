@@ -21,42 +21,43 @@ namespace dropShippingApp.Data.Repositories.RealRepos
             get
             {
                 return this.context.Teams
-                    // basic team property objects
-                    .Include(team => team.Providence)
-                    .Include(team => team.Category)
-                    .Include(team => team.TeamTags)
-                    .Include(team => team.ProductGroups)
-                    // get product group data
-                    .Include(team => team.ProductGroups)
-                        .ThenInclude(group => group.ProductTags)
-                    .Include(team => team.ProductGroups)
-                        .ThenInclude(products => products.ChildProducts)
-                        .ThenInclude(product => product.PricingHistory)
-                    .Include(team => team.ProductGroups)
-                        .ThenInclude(products => products.ChildProducts)
-                        .ThenInclude(product => product.BaseProduct)
-                    // get base product data
-                    .Include(team => team.ProductGroups)
-                        .ThenInclude(products => products.ChildProducts)
-                        .ThenInclude(product => product.BaseProduct)
-                        .ThenInclude(baseProduct => baseProduct.Category)
-                    .Include(team => team.ProductGroups)
-                        .ThenInclude(products => products.ChildProducts)
-                        .ThenInclude(product => product.BaseProduct)
-                        .ThenInclude(baseProduct => baseProduct.BaseColor)
-                    .Include(team => team.ProductGroups)
-                        .ThenInclude(products => products.ChildProducts)
-                        .ThenInclude(product => product.BaseProduct)
-                        .ThenInclude(baseProduct => baseProduct.BaseSize)
-                    .Include(team => team.ProductGroups)
-                        .ThenInclude(products => products.ChildProducts)
-                        .ThenInclude(product => product.BaseProduct)
-                        .ThenInclude(baseProduct => baseProduct.PricingHistory)
-                    .Include(team => team.ProductGroups)
-                        .ThenInclude(products => products.ChildProducts)
-                        .ThenInclude(product => product.BaseProduct)
-                        .ThenInclude(baseProduct => baseProduct.ProductTags)
-                    .ToList();
+                // basic team property objects
+                .Include(team => team.Providence)
+                .Include(team => team.Category)
+                .Include(team => team.TeamTags)
+                .Include(team => team.ProductGroups)
+                .Include(team => team.Country)
+                // get product group data
+                .Include(team => team.ProductGroups)
+                    .ThenInclude(group => group.ProductTags)
+                .Include(team => team.ProductGroups)
+                    .ThenInclude(products => products.ChildProducts)
+                    .ThenInclude(product => product.PricingHistory)
+                .Include(team => team.ProductGroups)
+                    .ThenInclude(products => products.ChildProducts)
+                    .ThenInclude(product => product.BaseProduct)
+                // get base product data
+                .Include(team => team.ProductGroups)
+                    .ThenInclude(products => products.ChildProducts)
+                    .ThenInclude(product => product.BaseProduct)
+                    .ThenInclude(baseProduct => baseProduct.Category)
+                .Include(team => team.ProductGroups)
+                    .ThenInclude(products => products.ChildProducts)
+                    .ThenInclude(product => product.BaseProduct)
+                    .ThenInclude(baseProduct => baseProduct.BaseColor)
+                .Include(team => team.ProductGroups)
+                    .ThenInclude(products => products.ChildProducts)
+                    .ThenInclude(product => product.BaseProduct)
+                    .ThenInclude(baseProduct => baseProduct.BaseSize)
+                .Include(team => team.ProductGroups)
+                    .ThenInclude(products => products.ChildProducts)
+                    .ThenInclude(product => product.BaseProduct)
+                    .ThenInclude(baseProduct => baseProduct.PricingHistory)
+                .Include(team => team.ProductGroups)
+                    .ThenInclude(products => products.ChildProducts)
+                    .ThenInclude(product => product.BaseProduct)
+                    .ThenInclude(baseProduct => baseProduct.ProductTags)
+                .ToList();
             }
         }
 
@@ -91,6 +92,7 @@ namespace dropShippingApp.Data.Repositories.RealRepos
                 .Include(team => team.Category)
                 .Include(team => team.TeamTags)
                 .Include(team => team.ProductGroups)
+                .Include(team => team.Country)
                 // get product group data
                 .Include(team => team.ProductGroups)
                     .ThenInclude(group => group.ProductTags)
