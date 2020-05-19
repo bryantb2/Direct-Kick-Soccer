@@ -236,6 +236,28 @@ namespace dropShippingApp.Controllers
             return View("Index");
         }
 
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> TeamSettings(int id, TeamSettingsViewModel teamSettings)
+        {
+            if (ModelState.IsValid)
+            {
+                Team foundTeam = await teamRepo.FindTeamById(id);
+                foundTeam.Name = teamSettings.Name;
+                foundTeam.Country = teamSettings.Country;
+                foundTeam.Providence = teamSettings.Providence;
+                foundTeam.StreetAddress = teamSettings.StreetAddress;
+                foundTeam.ZipCode = teamSettings.ZipCode;
+                foundTeam.CorporatePageURL = teamSettings.CorporatePageURL;
+                foundTeam.BusinessEmail = teamSettings.BusinessEmail;
+                foundTeam.PhoneNumber = teamSettings.PhoneNumber;
+                foundTeam.Description = teamSettings.Description;
+                
+                await teamRepo.UpdateTeam(foundTeam);
+            }
+            return View(teamSettings);
+        }
+
         public async Task<IActionResult> TeamManager()
         {
             // display the main management page for teams

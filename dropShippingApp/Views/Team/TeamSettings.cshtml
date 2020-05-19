@@ -11,7 +11,7 @@
 <div id="wrapper">
     <div class="panel panel-success">
         <div class="panel-body">
-            <form class="p-a-1" asp-controller="APITeam" asp-action="ReplaceSettings" asp-route-id="@Model.TeamID" method="put">
+            <form class="p-a-1" asp-controller="Team" asp-action="TeamSettings" asp-route-id="@Model.TeamID" method="post">
                 <div asp-validation-summary="All" >
                     <div class="form-group">
                         <label>
