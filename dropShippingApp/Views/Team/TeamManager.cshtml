@@ -1,4 +1,4 @@
-﻿@*@model Team
+﻿@model List<ProductGroup>
 @{
     Layout = "_Layout";
     ViewData["Title"] = "Team Manager";
@@ -8,37 +8,31 @@
     <div class="text-center">
         <h1>Welcome to your Team Manager!</h1><br />
 
-        @if (Model.TeamProducts != null)
+        @if (Model.Count > 0)
         {
             <table class="table">
                 <thead>
                     <tr>
                         <th></th>
-                        <th>Product Title</th>
-                        <th>Pricing History</th>
+                        <th>Product Group</th>
                         <th>Actions</th>
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach (var product in Model.TeamProducts)
+                    @foreach (var group in Model)
                     {
-                    <tr>
-                        <td>
-                            <img width="100" src=@product.CustomImagePNG />
-                        </td>
-                        <td>@product.ProductTitle</td>
- 
-                        <td>@product.CurrentPrice.ToString("c")
-                        @if (product.CurrentPrice == 666)
-                        {
-                            <br /><b>Product has bad seed data (check Pricing History)</b>
-                        }
-                        </td>
-                        <td>
-                            <a class="btn btn-link" style="display:inline-block" asp-controller="Product" asp-action="ViewProduct" asp-route-productId="@product.CustomProductID">View Product</a><br />
-                            <a class="btn btn-link" style="display:inline-block" asp-controller="Product" asp-action="" asp-route-productId="@product.CustomProductID">Update Product (Not Working Yet)</a>
-                        </td>
-                    </tr>
+                        <tr>
+                            <td>@group.ChildProducts</td>
+                            @*@if (product.CurrentPrice == 666)
+                            {
+                                <br /><b>Product has bad seed data (check Pricing History)</b>
+                            }
+                            </td>
+                            <td>
+                                <a class="btn btn-link" style="display:inline-block" asp-controller="Product" asp-action="ViewProduct" asp-route-productId="@product.CustomProductID">View Product</a><br />
+                                <a class="btn btn-link" style="display:inline-block" asp-controller="Product" asp-action="" asp-route-productId="@product.CustomProductID">Update Product (Not Working Yet)</a>
+                            </td>*@
+                        </tr>
                     }
                 </tbody>
             </table>
@@ -47,5 +41,5 @@
         {
             <h3>Your Team has not listed any products yet</h3>
         }
-    </div>*@
+    </div>
 
