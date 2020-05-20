@@ -17,24 +17,15 @@ namespace dropShippingApp.Controllers
         
         private UserManager<AppUser> userManager;
         private SignInManager<AppUser> signInManager;
-        //private IUserValidator<AppUser> userValidator;
-        //private IPasswordValidator<AppUser> passwordValidator;
         private ICartRepo cartRepo;
-        //private IPasswordHasher<AppUser> passwordHasher;
         public LoginController(
                 UserManager<AppUser> usrMgr,
                 SignInManager<AppUser> signinMgr,
-                //IUserValidator<AppUser> userValid,
-                //IPasswordValidator<AppUser> passValid,
-                //IPasswordHasher<AppUser> passwordHash,
                 ICartRepo cartRepo)
         {
             userManager = usrMgr;
             signInManager = signinMgr;
-            //userValidator = userValid;
-            //passwordValidator = passValid;
             this.cartRepo = cartRepo;
-            //passwordHasher = passwordHash;
         }
         public async Task<ViewResult> Index()
         {

@@ -1,0 +1,12 @@
+
+
+Team Business Rules:
+
+1. Cannot make product without it being part of a product group
+
+2. Product groups can contain only products from one model number family (only different SKUs of the same product)
+
+3. Product groups cannot have repeats of the same custom product (compare data not IDs)
+
+4. Users need to select a roster product that their custom product is based on
+

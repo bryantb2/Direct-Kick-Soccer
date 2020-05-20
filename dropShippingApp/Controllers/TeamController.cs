@@ -199,16 +199,7 @@ namespace dropShippingApp.Controllers
             return View("Search", browseVM);
         }
 
-
-        public async Task<ViewResult> BuildTeam(Team team)
-        {
-            // TODO
-            // returns redirect to view team
-            await teamRepo.AddTeam(team);
-            return View(team);
-        }
-
-        public async Task<ViewResult> MarkTeamInactive(int teamId)
+        public async Task<IActionResult> MarkTeamInactive(int teamId)
         {
             // TODO
             // returns redirect to browse teams
@@ -238,7 +229,7 @@ namespace dropShippingApp.Controllers
             {
                 // verify users role, after roles are set up
                 // get the users team
-                return View("TeamManager", user.ManagedTeam);
+                return View("TeamManagement", user.ManagedTeam);
             }
             return View("Index");
         }
