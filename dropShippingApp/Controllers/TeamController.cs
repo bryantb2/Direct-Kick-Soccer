@@ -221,7 +221,7 @@ namespace dropShippingApp.Controllers
             return View("Index");
         }
 
-        public async Task<IActionResult> TeamManager()
+        public async Task<IActionResult> TeamManagement()
         {
             // display the main management page for teams
             var user = await userRepo.GetUserDataAsync(HttpContext.User);
@@ -229,7 +229,16 @@ namespace dropShippingApp.Controllers
             {
                 // verify users role, after roles are set up
                 // get the users team
-                return View("TeamManagement", user.ManagedTeam);
+                var teamMangementVM = new TeamManagementVM()
+                {
+                    LifeTimeSales = 0,
+                    MonthlySales = 0,
+                    WeeklySales = 0,
+                    Team = user.ManagedTeam,
+                    OfferedProductGroups = null
+                };
+                ViewBag.DefaultFooter = false;
+                return View("TeamManagement", teamMangementVM);
             }
             return View("Index");
         }

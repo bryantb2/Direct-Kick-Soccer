@@ -15,8 +15,12 @@ namespace dropShippingApp.Models
         public string Title { get; set; }
         [Required]
         public string GeneralThumbnail { get; set; }
+        [Required]
+        public string PrintDesignPNG { get; set; }
         public List<CustomProduct> ChildProducts { get; set; }
         public List<Tag> ProductTags { get; set; }
+        [Required]
+        public int BaseGroupModelNumber { get; set; }
 
         public decimal GetHighestPrice
         {
