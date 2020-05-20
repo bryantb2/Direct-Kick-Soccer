@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace dropShippingApp.Data.Repositories.RealRepos
 {
-    public class FakeTagRepo //: ITagRepo
+    public class ITeamRepo //: ITagRepo
     {
         private List<Tag> tags = new List<Tag>();
 
