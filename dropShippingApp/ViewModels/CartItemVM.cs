@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace dropShippingApp.ViewModels
 {
-    public class CartItemViewModel
+    public class CartItemVM
     {
         public CartItem CartItem { get; set; }
         public string ProductTitle { get; set; }
