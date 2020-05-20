@@ -74,16 +74,39 @@ namespace dropShippingApp.Data
                 }
 
 
-                // ------------------------------------------- ADDING ROSTER PRODUCTS ------------------------------------------- //
+                // ------------------------------------------- ADDING ROSTER PRODUCTS AND ROSTER GROUPS ------------------------------------------- //
+                RosterGroup group1 = new RosterGroup()
+                {
+                    Description = "The shirt group from sandmar",
+                    Title = "Shirts",
+                    ModelNumber = 1,
+                    GeneralThumbnail = "https://picsum.photos/200",
+                    Category = productCategories[0]
+                };
+                RosterGroup group2 = new RosterGroup()
+                {
+                    Description = "Sandmar Jeans",
+                    Title = "Jeans",
+                    ModelNumber = 2,
+                    GeneralThumbnail = "https://picsum.photos/200",
+                    Category = productCategories[1]
+                };
+                RosterGroup group3 = new RosterGroup()
+                {
+                    Description = "Athletic Shoes",
+                    Title = "Shoes",
+                    ModelNumber = 3,
+                    GeneralThumbnail = "https://picsum.photos/200",
+                    Category = productCategories[2]
+                };
+
                 RosterProduct product1 = new RosterProduct
                 {
-                    ModelNumber = 1,
-                    BasePrice = 10,
                     IsProductActive = true,
                     SKU = 1,
                     BaseColor = colors[0],
                     BaseSize = sizes[0],
-                    Category = productCategories[0]
+                    RosterGroup = group1
                 };
                 PricingHistory pricingHistory = new PricingHistory
                 {
@@ -101,13 +124,11 @@ namespace dropShippingApp.Data
 
                 RosterProduct product2 = new RosterProduct
                 {
-                    ModelNumber = 2,
-                    BasePrice = 30,
                     IsProductActive = true,
-                    SKU = 1,
+                    SKU = 2,
                     BaseColor = colors[1],
                     BaseSize = sizes[1],
-                    Category = productCategories[1]
+                    RosterGroup = group1
                 };
                 PricingHistory pricingHistory3 = new PricingHistory
                 {
@@ -125,13 +146,11 @@ namespace dropShippingApp.Data
 
                 RosterProduct product3 = new RosterProduct
                 {
-                    ModelNumber = 3,
-                    BasePrice = 80,
                     IsProductActive = true,
                     SKU = 1,
                     BaseColor = colors[2],
                     BaseSize = sizes[2],
-                    Category = productCategories[2]
+                    RosterGroup = group2
                 };
                 PricingHistory pricingHistory5 = new PricingHistory
                 {
@@ -149,13 +168,11 @@ namespace dropShippingApp.Data
 
                 RosterProduct product4 = new RosterProduct
                 {
-                    ModelNumber = 4,
-                    BasePrice = 80,
                     IsProductActive = false,
-                    SKU = 1,
+                    SKU = 2,
                     BaseColor = colors[0],
                     BaseSize = sizes[1],
-                    Category = productCategories[2]
+                    RosterGroup = group2
                 };
                 PricingHistory pricingHistory7 = new PricingHistory
                 {
@@ -171,6 +188,9 @@ namespace dropShippingApp.Data
                 product4.AddPricingHistory(pricingHistory8);
 
                 // SAVING ROSTER PRODUCTS TO CONTEXT
+                context.RosterGroups.Add(group1);
+                context.RosterGroups.Add(group2);
+                context.RosterGroups.Add(group3);
                 context.RosterProducts.Add(product1);
                 context.RosterProducts.Add(product2);
                 context.RosterProducts.Add(product3);

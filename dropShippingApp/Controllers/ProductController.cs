@@ -199,7 +199,7 @@ namespace dropShippingApp.Controllers
         public async Task<IActionResult> GetProductsByModelNumber(int modelNumber)
         {
             var foundProducts = customProductRepo.CustomProducts
-                .Where(product => product.BaseProduct.ModelNumber == modelNumber);
+                .Where(product => product.BaseProduct.RosterGroup.ModelNumber == modelNumber);
 
             // add admin view at some point to browse products
             throw new NotImplementedException();

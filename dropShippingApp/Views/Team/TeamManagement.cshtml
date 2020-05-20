@@ -6,49 +6,36 @@
 
 
     <section>
-        <div class="text-center">
-            <h1>The @Model.Name Team</h1>
-            <p>Here you can add, remove, or edit your products</p>
-
-            @if (Model.TeamProducts != null)
-            {
-                <table class="table">
-                    <thead>
-                        <tr>
-                            <th></th>
-                            <th>Product Title</th>
-                            <th>Pricing History</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach (var product in Model.TeamProducts)
-                        {
-                            <tr>
-                                <td>
-                                    <img width="100" src=@product.CustomImagePNG />
-                                </td>
-                                <td>@product.ProductTitle</td>
-
-                                <td>
-                                    @product.CurrentPrice.ToString("c")
-                                @if (product.CurrentPrice == 666)
-                                {
-                                    <br /><b>Product has bad seed data (check Pricing History)</b>
-                                }
-                            </td>
-                            <td>
-                                <a class="btn btn-link" style="display:inline-block" asp-controller="Product" asp-action="ViewProduct" asp-route-productId="@product.CustomProductID">View Product</a><br />
-                                <a class="btn btn-link" style="display:inline-block" asp-controller="Product" asp-action="" asp-route-productId="@product.CustomProductID">Update Product (Not Working Yet)</a>
-                            </td>
-                        </tr>
-                    }
-                    </tbody>
-                </table>
-            }
-            else
-            {
-                <h3>Your Team has not listed any products yet</h3>
-            }
+        <div class="row">
+            <div class="col-12">
+                Dashboard Welcome Info
+            </div>
+            <div class="col-4">
+                Card 1
+            </div>
+            <div class="col-4">
+                Card 2
+            </div>
+            <div class="col-4">
+                Card 3
+            </div>
+            <div class="col-6">
+                Update Banner Image
+            </div>
+            <div class="col-6">
+                Update Basic Team Info
+            </div>
+            <div class="col-12">
+                Management Actions Info
+            </div>
+            <div class="col-6">
+                Card 1
+            </div>
+            <div class="col-6">
+                Card 2
+            </div>
+            <div class="col-12">
+                Card 3
+            </div>
         </div>
     </section>
