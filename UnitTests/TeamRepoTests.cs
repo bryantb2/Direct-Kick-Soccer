@@ -145,6 +145,29 @@ namespace ProductTests
                     Assert.Contains(testTeam, searchResults);
                 }
                 */
+
+        [Fact]
+        public async Task TestMarkInactive()
+        {
+            var testTeam = new Team()
+            {
+                TeamID = 321,
+                Name = "test",
+                IsTeamInactive = false
+            };
+            await teamRepo.AddTeam(testTeam);
+
+           
+
+            await teamRepo.MarkInactiveById(321);
+
+            var team = await teamRepo.FindTeamById(321);
+
+            Assert.Equal(team.IsTeamInactive, testTeam.IsTeamInactive);
+        }
+
+
+
         [Fact]
         public async Task TestFindTeamByProduct()
         {

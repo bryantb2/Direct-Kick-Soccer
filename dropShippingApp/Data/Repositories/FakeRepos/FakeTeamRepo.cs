@@ -65,11 +65,17 @@ namespace dropShippingApp.Data.Repositories
             //var groupList = new List<ProductGroup>();
 
             Team foundTeam = null;
-            foreach(Team t in teams)
+            IEnumerable<CustomProduct> cp;
+          
+            foreach (Team t in teams)
             {
-                foreach(CustomProduct p in t.ProductGroups.SelectMany(x => x.ChildProducts))
+                cp = t.ProductGroups.SelectMany(x => x.ChildProducts);
+                
+
+
+                foreach(CustomProduct p in cp)
                 {
-                    //groupList[0].ChildProducts.Add(p);
+                  
                   
                     if (p.CustomProductID == productId)
                     {
@@ -80,7 +86,7 @@ namespace dropShippingApp.Data.Repositories
                 if (foundTeam != null)
                     break;
 
-               // foundTeam.AddProductGroup(groupList[0]);
+              
             }
            
             return await Task.FromResult<Team>(foundTeam);
