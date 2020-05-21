@@ -150,6 +150,7 @@ namespace ProductTests
         {
             // arrange
             var groupList = new List<ProductGroup>();
+            groupList.Add(new ProductGroup());
 
             var colorArr = new string[] { "Blue", "Green", "Red" };
             var sizeArr = new string[] { "Small", "Medium", "Large" };
@@ -162,9 +163,38 @@ namespace ProductTests
             var productCategories = new List<ProductCategory>();
             var teamCategories = new List<TeamCategory>();
 
-
-            RosterProduct product1 = new RosterProduct
+            for (var i = 0; i < 3; i++)
             {
+                var color = new ProductColor()
+                {
+                    IsColorActive = true,
+                    ColorName = colorArr[i]
+                };
+                var size = new ProductSize()
+                {
+                    IsSizeActive = true,
+                    SizeName = sizeArr[i]
+                };
+                var productCategory = new ProductCategory()
+                {
+                    Name = productCategoryArr[i],
+                    //BriefDescription = categoryDesc[i]
+                };
+                var teamCategory = new TeamCategory()
+                {
+                    Name = teamCategoryArr[i],
+                };
+
+                colors.Add(color);
+                sizes.Add(size);
+                productCategories.Add(productCategory);
+                teamCategories.Add(teamCategory);
+
+            }
+
+                RosterProduct product1 = new RosterProduct
+            {
+                RosterProductID = 1,
                 ModelNumber = 1,
                 BasePrice = 10,
                 IsProductActive = true,
@@ -189,6 +219,7 @@ namespace ProductTests
 
             RosterProduct product2 = new RosterProduct
             {
+                RosterProductID = 2,
                 ModelNumber = 2,
                 BasePrice = 30,
                 IsProductActive = true,
@@ -213,6 +244,7 @@ namespace ProductTests
 
             RosterProduct product3 = new RosterProduct
             {
+                RosterProductID = 3,
                 ModelNumber = 3,
                 BasePrice = 80,
                 IsProductActive = true,
@@ -237,6 +269,7 @@ namespace ProductTests
 
             CustomProduct customProduct = new CustomProduct
             {
+                CustomProductID = 1,
                 BaseProduct = product1,
                 ProductPNG = "http://placekitten.com/200/300",
                 IsProductActive = true
@@ -257,7 +290,8 @@ namespace ProductTests
 
             CustomProduct customProduct2 = new CustomProduct
             {
-                BaseProduct = product1,
+                CustomProductID = 2,
+                BaseProduct = product2,
                 ProductPNG = "http://placekitten.com/200/300",
                 IsProductActive = true
             };
@@ -277,7 +311,8 @@ namespace ProductTests
 
             CustomProduct customProduct3 = new CustomProduct
             {
-                BaseProduct = product1,
+                CustomProductID = 3,
+                BaseProduct = product3,
                 ProductPNG = "http://placekitten.com/200/300",
                 IsProductActive = true
             };
@@ -310,7 +345,7 @@ namespace ProductTests
             await teamRepo.AddTeam(testTeam);
 
             // act
-            Team t = await teamRepo.FindTeamByProductId(1);
+            Team t = await teamRepo.FindTeamByProductId(2);
 
             // assert
 

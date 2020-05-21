@@ -62,14 +62,14 @@ namespace dropShippingApp.Data.Repositories
         public async Task<Team> FindTeamByProductId(int productId)
         {
             // will find custom product in team
-          //  var groupList = new List<ProductGroup>();
+            //var groupList = new List<ProductGroup>();
 
             Team foundTeam = null;
             foreach(Team t in teams)
             {
                 foreach(CustomProduct p in t.ProductGroups.SelectMany(x => x.ChildProducts))
                 {
-                   // groupList[0].ChildProducts.Add(p);
+                    //groupList[0].ChildProducts.Add(p);
                   
                     if (p.CustomProductID == productId)
                     {
