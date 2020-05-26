@@ -10,7 +10,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
-using dropShippingApp.HelperUtilities;
 using Microsoft.AspNetCore.Identity;
 
 
@@ -30,7 +29,7 @@ namespace dropShippingApp.Controllers
         private ITeamCreationReqRepo teamRequestRepo;
 
         public TeamController(
-            ITeamRepo teamRepo, 
+            ITeamRepo teamRepo,
             ITeamSortRepo sortRepo,
             ITeamCategoryRepo categoryRepo,
             IOrderRepo orderRepo,
@@ -150,8 +149,8 @@ namespace dropShippingApp.Controllers
             // IMPORTANT: at no point will the user be allowed to search AND browse by category AT THE SAME TIME
 
             // get products by appropriate query
-            var filteredTeams = categoryId != -1 ? 
-                SearchHelper.FilterByCategory<Team>(teamRepo.GetTeams, categoryId) 
+            var filteredTeams = categoryId != -1 ?
+                SearchHelper.FilterByCategory<Team>(teamRepo.GetTeams, categoryId)
                 : SearchHelper.SearchByString<Team>(teamRepo.GetTeams, searchTerm);
 
             // get sort and check sort type
@@ -217,11 +216,46 @@ namespace dropShippingApp.Controllers
             {
                 // verify users role, after roles are set up
                 // get the users team
-                return View("TeamSettings", user.ManagedTeam);
+                Team usersTeam = user.ManagedTeam;
+                TeamSettingsViewModel teamSettings = new TeamSettingsViewModel();
+                teamSettings.TeamID = usersTeam.TeamID;
+                teamSettings.Name = usersTeam.Name;
+                teamSettings.Country = usersTeam.Country;
+                teamSettings.Providence = usersTeam.Providence;
+                teamSettings.StreetAddress = usersTeam.StreetAddress;
+                teamSettings.ZipCode = usersTeam.ZipCode;
+                teamSettings.CorporatePageURL = usersTeam.CorporatePageURL;
+                teamSettings.BusinessEmail = usersTeam.BusinessEmail;
+                teamSettings.PhoneNumber = usersTeam.PhoneNumber;
+                teamSettings.Description = usersTeam.Description;
+
+                return View("TeamSettings", teamSettings);
             }
-            
+
             // If user is null, redirect to a Team/Index
             return View("Index");
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> TeamSettings(int id, TeamSettingsViewModel teamSettings)
+        {
+            if (ModelState.IsValid)
+            {
+                Team foundTeam = await teamRepo.FindTeamById(id);
+                foundTeam.Name = teamSettings.Name;
+                foundTeam.Country = teamSettings.Country;
+                foundTeam.Providence = teamSettings.Providence;
+                foundTeam.StreetAddress = teamSettings.StreetAddress;
+                foundTeam.ZipCode = teamSettings.ZipCode;
+                foundTeam.CorporatePageURL = teamSettings.CorporatePageURL;
+                foundTeam.BusinessEmail = teamSettings.BusinessEmail;
+                foundTeam.PhoneNumber = teamSettings.PhoneNumber;
+                foundTeam.Description = teamSettings.Description;
+                
+                await teamRepo.UpdateTeam(foundTeam);
+            }
+            return View(teamSettings);
         }
 
         public async Task<IActionResult> TeamManager()
@@ -230,9 +264,7 @@ namespace dropShippingApp.Controllers
             var user = await userRepo.GetUserDataAsync(HttpContext.User);
             if (user != null && user.ManagedTeam != null)
             {
-                // verify users role, after roles are set up
-                // get the users team
-                return View("TeamManager", user.ManagedTeam);
+                return View("TeamManager", user.ManagedTeam.ProductGroups);
             }
             return View("Index");
         }
