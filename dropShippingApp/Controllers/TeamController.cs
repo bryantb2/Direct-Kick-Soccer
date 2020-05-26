@@ -1,6 +1,7 @@
 using dropShippingApp.Data.Repositories;
 using dropShippingApp.HelperUtilities;
 using dropShippingApp.Models;
+using Microsoft.AspNetCore.Identity;
 using dropShippingApp.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
@@ -17,6 +18,21 @@ namespace dropShippingApp.Controllers
 {
     public class TeamController : Controller
     {
+
+        private ITeamRepo teamRepo;
+        private ILocationRepo locRepo;
+        private ITeamCreationReqRepo requestRepo;
+        private IUserRepo userRepo;
+        
+        private UserManager<AppUser> userManager;
+        public TeamController(ITeamRepo t, ILocationRepo l,ITeamCreationReqRepo r,IUserRepo u)
+        {
+            userRepo = u;
+            requestRepo = r;
+            locRepo = l;
+            teamRepo = t;
+         }
+
         private UserManager<AppUser> userManager;
         private ICustomProductRepo customProductRepo;
         private IProductGroupRepo productGroupRepo;
@@ -77,6 +93,7 @@ namespace dropShippingApp.Controllers
                     categoryId = categoryId,
                     currentPage = 0
                 });
+
         }
 
         public async Task<IActionResult> NextPage(int currentPage, int categoryId = -1, string searchTerm = null)
@@ -379,7 +396,7 @@ namespace dropShippingApp.Controllers
         [HttpPost]
         public async Task<IActionResult> TeamReq(TeamCreationRequest request)
         {
-            MyWordFilter filter = new MyWordFilter();// documentation https://github.com/smurfpandey/WordFilter
+            MyWordFilter filter = new MyWordFilter();
             if (ModelState.IsValid)
             {
                 if (filter.BadWords(request.TeamDescription) == false && filter.BadWords(request.TeamName)==false
