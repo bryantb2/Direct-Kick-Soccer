@@ -32,7 +32,9 @@ namespace UnitTests
             //sortRepo = new FakeSortRepo();
             //customProductRepo = new FakeCustomProductRepo();
             rosterRepo = new FakeRosterProductRepo();
-            controller = new ProductController(rosterRepo,productGroupRepo, teamRepo);
+
+            //turn on in productCOntroller
+            //controller = new ProductController(rosterRepo,productGroupRepo, teamRepo);
         }
 
         public void Dispose()
