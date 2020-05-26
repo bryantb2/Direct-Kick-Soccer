@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace dropShippingApp.Data.Repositories
 {
-    public interface ISortRepo
+    public interface IProductSortRepo
     {
         List<ProductSort> Sorts { get; }
         ProductSort GetSortById(int sortId);

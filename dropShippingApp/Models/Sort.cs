@@ -3,9 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace dropShippingApp.Views.TeamManagement
+namespace dropShippingApp.Models
 {
-    public class ChangeProducts
+    public class Sort
     {
+        public string SortName { get; set; }
     }
 }

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using dropShippingApp.Models;
 
-namespace dropShippingApp.Data.Repositories
+namespace dropShippingApp.Data.Repositories.FakeRepos
 {
     public class FakeTeamRepo : ITeamRepo
     {
@@ -62,21 +62,19 @@ namespace dropShippingApp.Data.Repositories
         public async Task<Team> FindTeamByProductId(int productId)
         {
             // will find custom product in team
-            Team foundTeam = null;
-            foreach(Team t in teams)
+            Team foundTeam = (from t in teams
+                              where t.TeamID == productId
+                              select t).FirstOrDefault();
+
+            if(foundTeam!=null)
             {
-                foreach(CustomProduct p in t.TeamProducts)
-                {
-                    if (p.CustomProductID == productId)
-                    {
-                        foundTeam = t;
-                        break;
-                    }
-                }
-                if (foundTeam != null)
-                    break;
+                return await Task.FromResult<Team>(foundTeam);
             }
-            return await Task.FromResult<Team>(foundTeam);
+            else
+            {
+                return await Task.FromResult<Team>(null);
+            }
+
         }
 
         public async Task MarkInactiveById(int teamId)

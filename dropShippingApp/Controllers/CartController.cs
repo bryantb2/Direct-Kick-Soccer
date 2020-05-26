@@ -27,6 +27,7 @@ namespace dropShippingApp.Controllers
         private ICartRepo cartRepo;
         private IUserRepo userRepo;
         private ICustomProductRepo customProductRepo;
+        private IProductGroupRepo groupRepo;
 
         public CartController(
                 UserManager<AppUser> usrMgr,
@@ -36,7 +37,8 @@ namespace dropShippingApp.Controllers
                 IOrderRepo orderRepo,
                 ICartRepo cartRepo,
                 IUserRepo userRepo,
-                ICustomProductRepo customProductRepo)
+                ICustomProductRepo customProductRepo,
+                IProductGroupRepo groupRepo)
         {
             this.userManager = usrMgr;
             this.signInManager = signinMgr;
@@ -46,6 +48,7 @@ namespace dropShippingApp.Controllers
             this.cartRepo = cartRepo;
             this.userRepo = userRepo;
             this.customProductRepo = customProductRepo;
+            this.groupRepo = groupRepo;
         }
 
         // ------------------- PHASE 1
@@ -67,20 +70,39 @@ namespace dropShippingApp.Controllers
         // view cart
         public async Task<IActionResult> Index()
         {
+            // get user
             var user = await userRepo.GetUserDataAsync(HttpContext.User);
             if (user != null)
             {
-                CartViewModel cartVM = new CartViewModel();
-                var cartItemList = new List<CartItem>();
-                foreach(CartItem item in user.Cart.CartItems)
+                // build cart item VM objects
+                var totalCartPrice = 0m;
+                var cartItemVMList = new List<CartItemViewModel>();
+                for(var i = 0; i < user.Cart.CartItems.Count; i++)
                 {
+                    // get the actual cart item
                     // add to running cart total
-                    cartVM.CartPrice += (item.Quantity * item.ProductSelection.CurrentPrice);
-                    // add item to list
-                    cartItemList.Add(item);
+                    var currentCartitem = user.Cart.CartItems[i];
+                    totalCartPrice += (currentCartitem.Quantity * currentCartitem.ProductSelection.CurrentPrice);
+
+                    // get the product group item belongs to
+                    var productGroup = groupRepo.GetGroupByProductId(currentCartitem.ProductSelection.CustomProductID);
+
+                    // build cart item VM object and add to list
+                    var newCartItemVM = new CartItemViewModel()
+                    {
+                        CartItem = currentCartitem,
+                        ProductTitle = productGroup.Title,
+                        ProductDescription = productGroup.Description,
+                        GeneralThumbnail = productGroup.GeneralThumbnail
+                    };
+                    cartItemVMList.Add(newCartItemVM);
                 }
-                // set item list
-                cartVM.CartItems = cartItemList;
+                // create cart view model
+                CartViewModel cartVM = new CartViewModel()
+                {
+                    CartPrice = totalCartPrice,
+                    CartItemVMs = cartItemVMList
+                };
                 return View(cartVM);
             }
             
@@ -103,64 +125,67 @@ namespace dropShippingApp.Controllers
         }
 
         // add item to cart
-        public async Task<IActionResult> AddToCart(int productId, int quantity)
+        public async Task<IActionResult> AddToCart(int productGroupId, int? productId, int? quantity)
         {
-            // get user
-            var user = await userRepo.GetUserDataAsync(HttpContext.User);
-            
-            if(quantity > 0)
+            if(productId != null && quantity != null)
             {
-                // check if product already in cart
-                var existingCartItem = user.Cart.CartItems.Find(item => item.ProductSelection.CustomProductID == productId);
-                if (existingCartItem != null)
-                {
-                    // update existing
-                    existingCartItem.Quantity += quantity;
-                    await cartRepo.UpdateCartItem(existingCartItem);
-                }
-                else
-                {
-                    // add new item
-                    // get product
-                    var foundProduct = await customProductRepo.GetCustomProductById(productId);
-                    if (foundProduct == null)
-                        return NotFound();
+                // get user
+                var user = await userRepo.GetUserDataAsync(HttpContext.User);
 
-                    // add to DB
-                    var newItem = new CartItem()
+                if (quantity > 0)
+                {
+                    // check if product already in cart
+                    var existingCartItem = user.Cart.CartItems.Find(item => item.ProductSelection.CustomProductID == productId);
+                    if (existingCartItem != null)
                     {
-                        Quantity = quantity,
-                        ProductSelection = foundProduct
-                    };
-                    await cartRepo.AddCartItem(newItem);
+                        // update existing
+                        existingCartItem.Quantity += (int)quantity;
+                        await cartRepo.UpdateCartItem(existingCartItem);
+                    }
+                    else
+                    {
+                        // add new item
+                        // get product
+                        var foundProduct = await customProductRepo.GetCustomProductById((int)productId);
+                        if (foundProduct == null)
+                            return NotFound();
 
-                    // add to cart and user
-                    user.Cart.AddItem(newItem);
-                    await userManager.UpdateAsync(user);
+                        // add to DB
+                        var newItem = new CartItem()
+                        {
+                            Quantity = (int)quantity,
+                            ProductSelection = foundProduct
+                        };
+                        await cartRepo.AddCartItem(newItem);
+
+                        // add to cart and user
+                        user.Cart.AddItem(newItem);
+                        await userManager.UpdateAsync(user);
+                    }
+
+                    // redirect to cart
+                    return RedirectToAction("Index");
                 }
-
-                // redirect to cart
-                return RedirectToAction("Index");
             }
 
             return RedirectToAction("ViewProduct", "Product", new
             {
-                productId = productId
+                productGroupId
             });
         }
 
         // update cart contents
         [HttpPost]
-        public async Task<IActionResult> UpdateCart([FromBody] List<CartItemViewModel> cartItems) //UpdateCartVM cart)
+        public async Task<IActionResult> UpdateCart([FromBody] List<UpdateCartItemViewModel> cartItems)
         {
             // change cart items quantities
             var user = await userManager.GetUserAsync(HttpContext.User);
 
             // update cart items
-            for (var i = 0; i < cartItems.Count; i++) //cart.CartItems.Count; i++)
+            for (var i = 0; i < cartItems.Count; i++)
             {
                 // find item and update
-                var currentItem = cartItems[i]; //cart.CartItems[i];
+                var currentItem = cartItems[i];
                 if(currentItem.Quantity > 0)
                 {
                     // update if greater than 0
@@ -187,7 +212,11 @@ namespace dropShippingApp.Controllers
         {
             // get user from DB
             var user = await userRepo.GetUserDataAsync(HttpContext.User);
-            var paypalOrder = await PaypalOrder.CreateOrder(configuration, teamRepo, user);
+            // create custom order provider
+            var orderProvider = new PaypalOrder(configuration, teamRepo, groupRepo, user);
+            // get order from provider
+            var paypalOrder = await orderProvider.GetOrder();
+            // serialize order and return
             var orderJSON = JsonConvert.SerializeObject(paypalOrder);
             return Ok(orderJSON);
         }
@@ -196,28 +225,33 @@ namespace dropShippingApp.Controllers
         public async Task<IActionResult> GetAndSaveOrder([FromBody] OrderResponse order)
         {
             // get user from DB
-            // get order from paypal
-            // parse response body
             var user = await userManager.GetUserAsync(HttpContext.User);
-            //var response = await PaypalTransaction.GetOrder(configuration, order.OrderID);
-            //var responseData = response.Result<PayPalCheckoutSdk.Orders.Order>();
-
+            // process paypal order
             var processedOrder = await PaypalTransaction.ProcessOrder(configuration, order.OrderID);
 
-            var newOrder = new Order()
-            {
-                PaypalOrderId = order.OrderID
-            };
-
+            // create order log to store in DB
             // save order to DB
-            await orderRepo.AddOrder(newOrder);
+            var newDatabaseOrder = await PaypalTransaction.BuildDatabaseOrder(groupRepo, teamRepo, user, order.OrderID);
+            await orderRepo.AddOrder(newDatabaseOrder);
 
             // update user in DB
-            user.AddPurchaseOrder(newOrder);
+            user.AddPurchaseOrder(newDatabaseOrder);
             await userManager.UpdateAsync(user);
+
+            // clear user cart
+            await ClearCart(user.Cart);
 
             // redirect to main cart page
             return RedirectToAction("Index");
+        }
+
+        private async Task ClearCart(Cart userCart)
+        {
+            for(var i = 0; i < userCart.CartItems.Count; i++)
+            {
+                var currentCartItem = userCart.CartItems[i];
+                await cartRepo.RemoveCartItem(currentCartItem.CartItemID);
+            }
         }
     }
 }

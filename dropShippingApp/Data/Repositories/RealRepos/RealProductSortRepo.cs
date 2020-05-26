@@ -6,10 +6,10 @@ using System.Threading.Tasks;
 
 namespace dropShippingApp.Data.Repositories.RealRepos
 {
-    public class RealSortRepo : ISortRepo
+    public class RealProductSortRepo : IProductSortRepo
     {
         private ApplicationDbContext context;
-        public RealSortRepo(ApplicationDbContext context)
+        public RealProductSortRepo(ApplicationDbContext context)
         {
             this.context = context;
         }
@@ -25,7 +25,7 @@ namespace dropShippingApp.Data.Repositories.RealRepos
         public ProductSort GetSortById(int sortId)
         {
             return this.context.ProductSorts.ToList()
-                .Find(sort => sort.ProductSortID == sortId);
+                .Find(sort => sort.SortID == sortId);
         }
 
         public async Task AddSort(ProductSort sort)
@@ -36,7 +36,7 @@ namespace dropShippingApp.Data.Repositories.RealRepos
 
         public async Task<ProductSort> RemoveSortById(int sortId)
         {
-            var foundSort = this.context.ProductSorts.ToList().Find(sort => sort.ProductSortID == sortId);
+            var foundSort = this.context.ProductSorts.ToList().Find(sort => sort.SortID == sortId);
             this.context.ProductSorts.Remove(foundSort);
             await this.context.SaveChangesAsync();
             return foundSort;

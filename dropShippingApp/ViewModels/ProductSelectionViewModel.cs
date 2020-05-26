@@ -6,10 +6,10 @@ using System.Threading.Tasks;
 
 namespace dropShippingApp.ViewModels
 {
-    public class ProductViewModel
+    public class ProductSelectionViewModel
     {
-        public CustomProduct Product { get; set; }
+        public ProductGroup ProductGroup { get; set; }
         public int Quantity { get; set; }
-
+        public int ProductId { get; set; }
     }
 }

@@ -1,21 +1,24 @@
-﻿using dropShippingApp.Data.Repositories;
+using dropShippingApp.Data.Repositories;
 using dropShippingApp.HelperUtilities;
 using dropShippingApp.Models;
-
 using Microsoft.AspNetCore.Identity;
+using dropShippingApp.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using PayPal.Api;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Identity;
 
 
 namespace dropShippingApp.Controllers
 {
     public class TeamController : Controller
     {
+
         private ITeamRepo teamRepo;
         private ILocationRepo locRepo;
         private ITeamCreationReqRepo requestRepo;
@@ -28,7 +31,184 @@ namespace dropShippingApp.Controllers
             requestRepo = r;
             locRepo = l;
             teamRepo = t;
+         }
+
+        private UserManager<AppUser> userManager;
+        private ICustomProductRepo customProductRepo;
+        private IProductGroupRepo productGroupRepo;
+        private ITeamRepo teamRepo;
+        private ITeamSortRepo teamSortRepo;
+        private ITeamCategoryRepo categoryRepo;
+        private IOrderRepo orderRepo;
+        private IUserRepo userRepo;
+        private ILocationRepo locationRepo;
+        private ITeamCreationReqRepo teamRequestRepo;
+
+        public TeamController(
+            ITeamRepo teamRepo,
+            ITeamSortRepo sortRepo,
+            ITeamCategoryRepo categoryRepo,
+            IOrderRepo orderRepo,
+            IUserRepo userRepo,
+            ILocationRepo locationRepo,
+            ICustomProductRepo customProductRepo,
+            IProductGroupRepo productGroupRepo,
+            UserManager<AppUser> userManager,
+            ITeamCreationReqRepo teamRequestRepo)
+        {
+            this.teamRepo = teamRepo;
+            this.teamSortRepo = sortRepo;
+            this.categoryRepo = categoryRepo;
+            this.orderRepo = orderRepo;
+            this.userRepo = userRepo;
+            this.locationRepo = locationRepo;
+            this.customProductRepo = customProductRepo;
+            this.productGroupRepo = productGroupRepo;
+            this.userManager = userManager;
+            this.teamRequestRepo = teamRequestRepo;
         }
+
+        public async Task<IActionResult> Index()
+        {
+            var teamList = teamRepo.GetTeams;
+            return View(teamList);
+        }
+
+        public async Task<IActionResult> Browse()
+        {
+            return View("Search", null);
+        }
+
+        public async Task<IActionResult> BackToFirstPage(int categoryId = -1, string searchTerm = null)
+        {
+            if (searchTerm != null)
+                return RedirectToAction("Search", new
+                {
+                    searchString = searchTerm,
+                    currentPage = 0
+                });
+            else
+                return RedirectToAction("DisplayByCategory", new
+                {
+                    categoryId = categoryId,
+                    currentPage = 0
+                });
+
+        }
+
+        public async Task<IActionResult> NextPage(int currentPage, int categoryId = -1, string searchTerm = null)
+        {
+            if (searchTerm != null)
+                return RedirectToAction("Search", new
+                {
+                    searchString = searchTerm,
+                    currentPage = currentPage + 1
+                });
+            else
+                return RedirectToAction("DisplayByCategory", new
+                {
+                    categoryId = categoryId,
+                    currentPage = currentPage + 1
+                });
+        }
+
+        public async Task<IActionResult> PreviousPage(int currentPage, int categoryId = -1, string searchTerm = null)
+        {
+            if (searchTerm != null)
+                return RedirectToAction("Search", new
+                {
+                    searchString = searchTerm,
+                    currentPage = currentPage - 1
+                });
+            else
+                return RedirectToAction("DisplayByCategory", new
+                {
+                    categoryId = categoryId,
+                    currentPage = currentPage - 1
+                });
+        }
+
+        public async Task<IActionResult> Search(string searchString, int currentPage = -1)
+        {
+            // search for teams
+            var foundTeams = SearchHelper.SearchByString<Team>(teamRepo.GetTeams, searchString);
+
+            // create browse view model
+            var browseVM = SearchHelper.CreateBrowseObject<Team>(
+                currentPage == -1 ? 0 : currentPage,
+                searchTerm: searchString,
+                queriedTeams: foundTeams);
+
+            // return view
+            return View("Search", browseVM);
+        }
+
+        public async Task<IActionResult> DisplayByCategory(int categoryId, int currentPage = -1)
+        {
+            // get products by category
+            var categoryTeams = SearchHelper.FilterByCategory<Team>(teamRepo.GetTeams, categoryId);
+
+            // get current category
+            var category = categoryRepo.GetCategoryById(categoryId);
+
+            // create browse view model
+            var browseVM = SearchHelper.CreateBrowseObject<Team>(
+                currentPage == -1 ? 0 : currentPage,
+                teamCategory: category,
+                queriedTeams: categoryTeams);
+
+            // return view
+            return View("Search", browseVM);
+        }
+
+        public async Task<IActionResult> SortTeams(int sortId, int categoryId = -1, string searchTerm = null, int currentPage = -1)
+        {
+            // IMPORTANT: at no point will the user be allowed to search AND browse by category AT THE SAME TIME
+
+            // get products by appropriate query
+            var filteredTeams = categoryId != -1 ?
+                SearchHelper.FilterByCategory<Team>(teamRepo.GetTeams, categoryId)
+                : SearchHelper.SearchByString<Team>(teamRepo.GetTeams, searchTerm);
+
+            // get sort and check sort type
+            var foundSort = teamSortRepo.GetSortById(sortId);
+            if (foundSort.SortName.ToUpper() == "OLDEST")
+            {
+                filteredTeams.Sort((team1, team2) => team1.DateJoined.CompareTo(team2.DateJoined));
+            }
+            else if (foundSort.SortName.ToUpper() == "NEWEST")
+            {
+                filteredTeams.Sort((team1, team2) => team2.DateJoined.CompareTo(team1.DateJoined));
+            }
+            else if (foundSort.SortName.ToUpper() == "MOST POPULAR")
+            {
+                SearchHelper.SortByMostPopular<Team>(ref filteredTeams, orderRepo.GetOrders);
+            }
+
+            // create browse view model
+            BrowseViewModel browseVM = null;
+            if (categoryId != -1)
+            {
+                // means user is browsing by category
+                var foundCategory = categoryRepo.GetCategoryById(categoryId);
+                browseVM = SearchHelper.CreateBrowseObject<Team>(
+                    currentPage == -1 ? 0 : currentPage,
+                    teamCategory: foundCategory,
+                    queriedTeams: filteredTeams);
+            }
+            else
+            {
+                // user is browsing products THEY searched
+                browseVM = SearchHelper.CreateBrowseObject<Team>(
+                    currentPage == -1 ? 0 : currentPage,
+                    searchTerm: searchTerm,
+                    queriedTeams: filteredTeams);
+            }
+
+            // return list
+            return View("Search", browseVM);
+        }
+
 
         public async Task<ViewResult> BuildTeam(Team team)
         {
@@ -37,6 +217,7 @@ namespace dropShippingApp.Controllers
             await teamRepo.AddTeam(team);
             return View(team);
         }
+
         public async Task<ViewResult> MarkTeamInactive(int teamId)
         {
             // TODO
@@ -45,98 +226,157 @@ namespace dropShippingApp.Controllers
             return View();
         }
 
-        // only admins will have access to this
-        public async Task<ViewResult> RemoveTeam(int teamId)
+        public async Task<IActionResult> TeamSettings()
         {
-            // TODO
-            // returns redirect to browse teams
-            await teamRepo.RemoveTeam(teamId);
-            return View();
-        }
-
-        public async Task<ViewResult> ViewTeam(int teamId)
-        {
-            // TODO
-            // returns specific team page
-            var team = await teamRepo.FindTeamById(teamId);
-            return View(team);
-        }
-
-        public async Task<ViewResult> BrowseTeams()
-        {
-            // TODO
-            // returns team results page 
-            var teamList = teamRepo.GetTeams;
-            return View(teamList);
-        }
-
-        public async Task<ViewResult> SearchTeams(string searchTerm)
-        {
-            // TODO
-            // returns team results page (will have view model with search term)
-            var teamList = teamRepo.GetTeams;
-            List<Team> searchResults = SearchListForMatches(teamList, searchTerm);
-            return View(searchResults);
-        }
-
-        // private stat and searching methods
-        private List<Team> SearchListForMatches(List<Team> teams, string searchTerm)
-        {
-            List<Team> searchResults = new List<Team>();
-            foreach (Team t in teams)
+            var user = await userRepo.GetUserDataAsync(HttpContext.User);
+            if (user != null && user.ManagedTeam != null)
             {
-                // search on team name
-                if (t.Name.ToUpper().Contains(searchTerm.ToUpper()))
-                    searchResults.Add(t);
-                foreach (Tag tag in t.TeamTags)
-                {
-                    // search on product tags
-                    if (tag.TagLine.ToUpper().Contains(searchTerm.ToUpper()))
-                        searchResults.Add(t);
-                }
+                // verify users role, after roles are set up
+                // get the users team
+                Team usersTeam = user.ManagedTeam;
+                TeamSettingsViewModel teamSettings = new TeamSettingsViewModel();
+                teamSettings.TeamID = usersTeam.TeamID;
+                teamSettings.Name = usersTeam.Name;
+                teamSettings.Country = usersTeam.Country;
+                teamSettings.Providence = usersTeam.Providence;
+                teamSettings.StreetAddress = usersTeam.StreetAddress;
+                teamSettings.ZipCode = usersTeam.ZipCode;
+                teamSettings.CorporatePageURL = usersTeam.CorporatePageURL;
+                teamSettings.BusinessEmail = usersTeam.BusinessEmail;
+                teamSettings.PhoneNumber = usersTeam.PhoneNumber;
+                teamSettings.Description = usersTeam.Description;
+
+                return View("TeamSettings", teamSettings);
             }
-            return searchResults;
+
+            // If user is null, redirect to a Team/Index
+            return View("Index");
         }
 
-        // TODO 
-        // DO NOT WRITE CODE FOR THESE UNTIL BOTH THE PRODUCT AND TEAM REPOS ARE FINISHED...
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> TeamSettings(int id, TeamSettingsViewModel teamSettings)
+        {
+            if (ModelState.IsValid)
+            {
+                Team foundTeam = await teamRepo.FindTeamById(id);
+                foundTeam.Name = teamSettings.Name;
+                foundTeam.Country = teamSettings.Country;
+                foundTeam.Providence = teamSettings.Providence;
+                foundTeam.StreetAddress = teamSettings.StreetAddress;
+                foundTeam.ZipCode = teamSettings.ZipCode;
+                foundTeam.CorporatePageURL = teamSettings.CorporatePageURL;
+                foundTeam.BusinessEmail = teamSettings.BusinessEmail;
+                foundTeam.PhoneNumber = teamSettings.PhoneNumber;
+                foundTeam.Description = teamSettings.Description;
+                
+                await teamRepo.UpdateTeam(foundTeam);
+            }
+            return View(teamSettings);
+        }
+
+        public async Task<IActionResult> TeamManager()
+        {
+            // display the main management page for teams
+            var user = await userRepo.GetUserDataAsync(HttpContext.User);
+            if (user != null && user.ManagedTeam != null)
+            {
+                return View("TeamManager", user.ManagedTeam.ProductGroups);
+            }
+            return View("Index");
+        }
 
         public async Task<IActionResult> ManageTeamProducts()
         {
             // TODO
             // returns team product management page
+           
             return View();
         }
 
-        public async Task<IActionResult> AddTeamProduct()
+        public async Task<IActionResult> AddTeamProduct(int groupId, CustomProduct customProduct)
         {
-            // TODO
-            // redirects to team product management page
-            return View();
+            if(ModelState.IsValid)
+            {
+                // redirects to team product management page
+                var user = await userRepo.GetUserDataAsync(HttpContext.User);
+                // get the group
+                var group = user.ManagedTeam.ProductGroups.Find(group => group.ProductGroupID == groupId);
+                // add product to DB
+                // add product to group
+                // update group in DB
+                // update user in DB
+                await customProductRepo.AddCustomProduct(customProduct);
+                group.ChildProducts.Add(customProduct);
+                await productGroupRepo.UpdateProductGroup(group);
+                await userManager.UpdateAsync(user);
+
+                // return view
+                throw new NotImplementedException();
+            }
+            // add return statement here too
+            throw new NotImplementedException();
         }
 
-        public async Task<IActionResult> UpdateTeamProduct()
+        public async Task<IActionResult> UpdateTeamProduct(int groupId, CustomProduct customProduct)
         {
-            // TODO
-            // redirects to team product management page
-            return View();
+            if (ModelState.IsValid)
+            {
+                // redirects to team product management page
+                var user = await userRepo.GetUserDataAsync(HttpContext.User);
+                // update in database
+                await customProductRepo.UpdateCustomProduct(customProduct);
+
+                // return view
+                throw new NotImplementedException();
+            }
+            // add return statement here too
+            throw new NotImplementedException();
         }
 
-        public async Task<IActionResult> RemoveTeamProduct()
+        public async Task<IActionResult> RemoveTeamProduct(int groupId, int productId)
         {
-            // TODO
-            // redirects to team product management page
-            return View();
+            if (ModelState.IsValid)
+            {
+                // redirects to team product management page
+                var user = await userRepo.GetUserDataAsync(HttpContext.User);
+                // find product
+                var product = user.ManagedTeam.ProductGroups.Find(group => group.ProductGroupID == groupId).ChildProducts
+                    .Find(product => product.CustomProductID == productId);
+
+                if (product != null)
+                    await customProductRepo.RemoveCustomProduct(productId);
+
+                // return view
+                throw new NotImplementedException();
+            }
+            // add return statement here too
+            throw new NotImplementedException();
         }
 
-        public async Task<IActionResult> UpdateTeamSettings(Team updatedTeam)
+        public async Task<IActionResult> MarkProductInActive(int groupId, int productId)
         {
-            // CHECK TO MAKE SURE SENDER HAS THE TEAM IN THEIR APPROVED HISTORY 
-            // otherwise they could change the team id and f*** up another person's team
-            // TODO: will take in settings view model
-            // redirect to home management page
-            await teamRepo.UpdateTeam(updatedTeam);
-            return View();
+            if (ModelState.IsValid)
+            {
+                // redirects to team product management page
+                var user = await userRepo.GetUserDataAsync(HttpContext.User);
+                // find product
+                var product = user.ManagedTeam.ProductGroups.Find(group => group.ProductGroupID == groupId).ChildProducts
+                    .Find(product => product.CustomProductID == productId);
+
+                if (product != null)
+                {
+                    // mark inactive
+                    // change in DB
+                    product.IsProductActive = false;
+                    await customProductRepo.UpdateCustomProduct(product);
+                }
+
+                // return view
+                throw new NotImplementedException();
+            }
+            // add return statement here too
+            throw new NotImplementedException();
         }
 
         public async Task<IActionResult> UploadNewBanner()
@@ -147,57 +387,43 @@ namespace dropShippingApp.Controllers
             return View();
         }
 
-        [HttpGet]
-        public IActionResult TeamReq()
+
+        public async Task<IActionResult> TeamReq()
         {
             return View();
         }
+
         [HttpPost]
-        public async Task<IActionResult> TeamReq(string name, string description, string email, string corporatePageURL,string streetAddress,
-                                      string country, string providence, string zipCode)
+        public async Task<IActionResult> TeamReq(TeamCreationRequest request)
         {
             MyWordFilter filter = new MyWordFilter();
-            if (ModelState.GetValidationState(nameof(name))==ModelValidationState.Valid &&
-                ModelState.GetValidationState(nameof(description)) == ModelValidationState.Valid &&
-                ModelState.GetValidationState(nameof(email)) == ModelValidationState.Valid &&
-                ModelState.GetValidationState(nameof(corporatePageURL)) == ModelValidationState.Valid &&
-                ModelState.GetValidationState(nameof(streetAddress)) == ModelValidationState.Valid &&
-                ModelState.GetValidationState(nameof(country)) == ModelValidationState.Valid &&
-                ModelState.GetValidationState(nameof(providence)) == ModelValidationState.Valid &&
-                ModelState.GetValidationState(nameof(zipCode)) == ModelValidationState.Valid)
+            if (ModelState.IsValid)
             {
-                if (filter.BadWords(name) == false && filter.BadWords(description)==false
-                   && filter.BadWords(email)==false && filter.BadWords(corporatePageURL)==false
-                    && filter.BadWords(streetAddress)==false) 
+                if (filter.BadWords(request.TeamDescription) == false && filter.BadWords(request.TeamName)==false
+                   && filter.BadWords(request.BusinessEmail) ==false && filter.BadWords(request.CorporatePageURL) ==false
+                    && filter.BadWords(request.StreetAddress) ==false) 
                 {
-                    List<Country> countries = locRepo.GetAllCountries;
-                    Country myCountry = countries.First(c => c.CountryName.ToLower() == country.ToLower());
+                    List<Country> countries = locationRepo.GetAllCountries;
+                    Country myCountry = countries.First(c => c.CountryName.ToLower() == request.Country.CountryName.ToLower());
 
-                    List<Province> provinces = locRepo.GetAllProvinces;
-                    Province myProv = provinces.First(p => p.ProvienceAbbreviation.ToLower() == providence.ToLower());
-                    TeamCreationRequest request = new TeamCreationRequest
+                    List<Province> provinces = locationRepo.GetAllProvinces;
+                    Province myProv = provinces.First(p => p.ProvienceAbbreviation.ToLower() == request.Providence.ProvinceName.ToLower());
+                    TeamCreationRequest req = new TeamCreationRequest
                     {
-                        TeamName = name,
-                        TeamDescription = description,
-                        BusinessEmail = email,
-                        CorporatePageURL = corporatePageURL,
-                        StreetAddress = streetAddress,
+                        TeamName = request.TeamName,
+                        TeamDescription = request.TeamDescription,
+                        BusinessEmail = request.BusinessEmail,
+                        CorporatePageURL = request.CorporatePageURL,
+                        StreetAddress = request.StreetAddress,
                         Country = myCountry,
                         Providence = myProv,
-                        ZipCode = zipCode
-
+                        ZipCode = request.ZipCode
                     };
-                    await requestRepo.AddReq(request);
-                    AppUser user = await userRepo.GetUserDataAsync(HttpContext.User);
-                    user.AddCreationRequest(request);
-                    await userManager.UpdateAsync(user);
+                    await teamRequestRepo.AddReq(req);
+
                     return View("ReqConfirm");
-                    
                 }
             }
-                
-                
-
             return View("TeamReq");
         }
 

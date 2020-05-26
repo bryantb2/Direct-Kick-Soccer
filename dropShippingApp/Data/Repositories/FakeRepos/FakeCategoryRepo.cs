@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace dropShippingApp.Data.Repositories.FakeRepos
 {
-    public class FakeCategoryRepo : ICategoryRepo
+    /*public class FakeCategoryRepo : ICategoryRepo
     {
         private List<ProductCategory> categories = new List<ProductCategory>();
 
@@ -64,5 +64,5 @@ namespace dropShippingApp.Data.Repositories.FakeRepos
             }
 
         }
-    }
+    }*/
 }

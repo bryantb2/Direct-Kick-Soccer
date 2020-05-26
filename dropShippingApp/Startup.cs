@@ -70,11 +70,11 @@ namespace dropShippingApp
             services.AddTransient<ITeamRepo, RealTeamRepo>();
             services.AddTransient<ITeamCreationReqRepo, RealTeamRequestRepo>();
             services.AddTransient<IUserRepo, RealUserRepo>();
-            services.AddTransient<ICategoryRepo, RealCategoryRepo>();
-            services.AddTransient<ISortRepo, RealSortRepo>();
-
-            // injection config for paypal services
-            //services.AddSingleton<IConfiguration>(Configuration);
+            services.AddTransient<IProductSortRepo, RealProductSortRepo>();
+            services.AddTransient<ITeamSortRepo, RealTeamSortRepo>();
+            services.AddTransient<ITeamCategoryRepo, RealTeamCategoryRepo>();
+            services.AddTransient<IProductCategoryRepo, RealProductCategoryRepo>();
+            services.AddTransient<IProductGroupRepo, RealProductGroupRepo>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

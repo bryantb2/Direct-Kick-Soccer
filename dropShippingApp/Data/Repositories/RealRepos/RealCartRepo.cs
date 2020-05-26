@@ -31,7 +31,6 @@ namespace dropShippingApp.Data.Repositories.RealRepos
                             .ThenInclude(selectedProduct => selectedProduct.BaseProduct)
                     .Include(cart => cart.CartItems) // get custom product tags
                         .ThenInclude(cartItem => cartItem.ProductSelection)
-                            .ThenInclude(selectedProduct => selectedProduct.ProductTags)
                     .Include(cart => cart.CartItems) // get custom pricing history
                         .ThenInclude(cartItem => cartItem.ProductSelection)
                             .ThenInclude(selectedProduct => selectedProduct.PricingHistory)
@@ -64,7 +63,6 @@ namespace dropShippingApp.Data.Repositories.RealRepos
                             .ThenInclude(selectedProduct => selectedProduct.BaseProduct)
                     .Include(cart => cart.CartItems) // get custom product tags
                         .ThenInclude(cartItem => cartItem.ProductSelection)
-                            .ThenInclude(selectedProduct => selectedProduct.ProductTags)
                     .Include(cart => cart.CartItems) // get custom pricing history
                         .ThenInclude(cartItem => cartItem.ProductSelection)
                             .ThenInclude(selectedProduct => selectedProduct.PricingHistory)
@@ -96,7 +94,6 @@ namespace dropShippingApp.Data.Repositories.RealRepos
                             .ThenInclude(selectedProduct => selectedProduct.BaseProduct)
                     .Include(cart => cart.CartItems) // get custom product tags
                         .ThenInclude(cartItem => cartItem.ProductSelection)
-                            .ThenInclude(selectedProduct => selectedProduct.ProductTags)
                     .Include(cart => cart.CartItems) // get custom pricing history
                         .ThenInclude(cartItem => cartItem.ProductSelection)
                             .ThenInclude(selectedProduct => selectedProduct.PricingHistory)
@@ -163,7 +160,6 @@ namespace dropShippingApp.Data.Repositories.RealRepos
                 .Include(cartItem => cartItem.ProductSelection)
                     .ThenInclude(selectedProduct => selectedProduct.BaseProduct)
                 .Include(cartItem => cartItem.ProductSelection)
-                    .ThenInclude(selectedProduct => selectedProduct.ProductTags)
                 .Include(cartItem => cartItem.ProductSelection)
                     .ThenInclude(selectedProduct => selectedProduct.PricingHistory)
                 .Include(cartItem => cartItem.ProductSelection)

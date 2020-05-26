@@ -8,7 +8,9 @@ namespace dropShippingApp.ViewModels
 {
     public class CartItemViewModel
     {
-        public int Quantity { get; set; }
-        public int ItemID { get; set; }
+        public CartItem CartItem { get; set; }
+        public string ProductTitle { get; set; }
+        public string ProductDescription { get; set; }
+        public string GeneralThumbnail { get; set; }
     }
 }

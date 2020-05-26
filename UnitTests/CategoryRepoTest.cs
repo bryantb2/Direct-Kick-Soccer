@@ -10,7 +10,7 @@ using Xunit;
 
 namespace UnitTests
 {
-    public class CategoryRepoTest
+   /* public class CategoryRepoTest
     {
         private ICategoryRepo categoryRepo;
         private ProductController controller;
@@ -103,5 +103,5 @@ namespace UnitTests
             Assert.Equal(category, result);
         }
 
-    }
+    }*/
 }

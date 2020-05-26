@@ -1,0 +1,35 @@
+﻿@model Team
+@*@model BrowseViewModel*@
+@*@{
+    ViewData["Title"] = "TeamProduct";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>View Products for @Model.Name</h1>
+
+<table>
+    <thead>
+        <tr>
+            <th>
+                Product Title
+            </th>
+            <th>
+                Image
+            </th>
+            <th>
+                Price
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach(var item in Model.ProductGroups)
+        {
+        <tr>
+            <td><a asp-action="ViewProduct" asp-route-id="@Model.ProductGroups.">@item.ProductTitle</a></td>
+            <td>@item.CustomImagePNG</td>
+            <td>@item.CurrentPrice</td>
+        </tr>
+        }
+    </tbody>
+</table>*@

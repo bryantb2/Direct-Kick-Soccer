@@ -6,11 +6,11 @@ using System.Threading.Tasks;
 
 namespace dropShippingApp.Data.Repositories.RealRepos
 {
-    public class RealCategoryRepo : ICategoryRepo
+    public class RealProductCategoryRepo : IProductCategoryRepo
     {
         private ApplicationDbContext context;
 
-        public RealCategoryRepo(ApplicationDbContext c)
+        public RealProductCategoryRepo(ApplicationDbContext c)
         {
             this.context = c;
         }
@@ -19,34 +19,34 @@ namespace dropShippingApp.Data.Repositories.RealRepos
         {
             get 
             {
-                return this.context.Categories.ToList();
+                return this.context.ProductCategories.ToList();
             }
         }
 
-        public async Task<ProductCategory> GetCategoryById(int categoryId)
+        public ProductCategory GetCategoryById(int categoryId)
         {
-            return this.context.Categories.ToList()
+            return this.context.ProductCategories.ToList()
                 .Find(category => category.ProductCategoryID == categoryId);
         }
 
         public async Task AddCategory(ProductCategory category)
         {
-            this.context.Categories.Add(category);
+            this.context.ProductCategories.Add(category);
             await this.context.SaveChangesAsync();
         }
 
         public async Task<ProductCategory> RemoveCategory(int categoryId)
         {
-            var foundCategory = this.context.Categories.ToList()
+            var foundCategory = this.context.ProductCategories.ToList()
                 .Find(category => category.ProductCategoryID == categoryId);
-            this.context.Categories.Remove(foundCategory);
+            this.context.ProductCategories.Remove(foundCategory);
             await this.context.SaveChangesAsync();
             return foundCategory;
         }
 
         public async Task UpdateCategory(ProductCategory category)
         {
-            this.context.Categories.Update(category);
+            this.context.ProductCategories.Update(category);
             await this.context.SaveChangesAsync();
         }
     }

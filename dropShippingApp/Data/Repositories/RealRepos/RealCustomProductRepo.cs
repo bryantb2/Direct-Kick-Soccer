@@ -20,7 +20,6 @@ namespace dropShippingApp.Data.Repositories.RealRepos
             get 
             {
                 return this.context.CustomProducts
-                    .Include(product => product.ProductTags)
                     .Include(product => product.PricingHistory)
                     .Include(product => product.BaseProduct)
                     .Include(product => product.BaseProduct)
@@ -47,7 +46,6 @@ namespace dropShippingApp.Data.Repositories.RealRepos
         public async Task<CustomProduct> GetCustomProductById(int customProductId)
         {
             return this.context.CustomProducts
-                .Include(product => product.ProductTags)
                 .Include(product => product.PricingHistory)
                 .Include(product => product.BaseProduct)
                 .Include(product => product.BaseProduct)
@@ -70,12 +68,16 @@ namespace dropShippingApp.Data.Repositories.RealRepos
             await context.SaveChangesAsync();
         }
 
-        public async Task RemoveCustomProduct(CustomProduct product)
+        public async Task<CustomProduct> RemoveCustomProduct(int productId)
         {
             // Make sure the product that is passed in is not null
-            if (product != null)
-                context.CustomProducts.Remove(product);
-            await context.SaveChangesAsync();
+            var foundProduct = this.context.CustomProducts.ToList().Find(product => product.CustomProductID == productId);
+            if (foundProduct != null)
+            {
+                this.context.CustomProducts.Remove(foundProduct);
+                await context.SaveChangesAsync();
+            }
+            return foundProduct;
         }
     }
 }

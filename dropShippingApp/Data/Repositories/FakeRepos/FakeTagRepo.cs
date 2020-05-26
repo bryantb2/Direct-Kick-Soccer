@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace dropShippingApp.Data.Repositories.RealRepos
+namespace dropShippingApp.Data.Repositories.FakeRepos
 {
     public class FakeTagRepo //: ITagRepo
     {
