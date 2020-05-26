@@ -288,6 +288,8 @@ namespace dropShippingApp.Migrations
                     Description = table.Column<string>(nullable: false),
                     Title = table.Column<string>(nullable: false),
                     GeneralThumbnail = table.Column<string>(nullable: false),
+                    PrintDesignPNG = table.Column<string>(nullable: false),
+                    BaseGroupModelNumber = table.Column<int>(nullable: false),
                     TeamID = table.Column<int>(nullable: true)
                 },
                 constraints: table =>

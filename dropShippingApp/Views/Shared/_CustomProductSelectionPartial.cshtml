@@ -1,0 +1,34 @@
+﻿@model CustomProductSelectionCardVM
+
+<link rel="stylesheet" type="text/css" href="~/css/PartialViewStyles.css" />
+
+<article class="profileContainer rounded shadow-lg bg-light w-100">
+    <div class="innerProfileContainer p-4 text-dark">
+        <div class="d-flex flex-column justify-content-center">
+            <div class="p-2 text-center">
+                <h2>@Model.TitleText</h2>
+            </div>
+        </div>
+
+        <div id="groupSelectionWrapper">
+            <select id="groupSelection" asp-for=@Model.SelectedGroupID onchange="handleGroupSelection(event)">
+                <option selected value="-100">Choose a Variant</option>
+                @foreach (var group in Model.ProductGroups)
+                {
+                    <option value=@group.ProductGroupID>@group.Title</option>
+                }
+            </select>
+
+            <select id="productSelection" asp-for=@Model.SelectedGroupID style="display: none">
+                <option selected value="-100">Select A Product</option>
+            </select>
+        </div>
+
+        <div>
+            <a asp-controller=@Model.ControllerName asp-action=@Model.ActionName
+                class="d-flex p-2 pageParagraph btn btn-link">@Model.ButtonText</a>
+        </div>
+    </div>
+</article>
+
+<script src="~/js/ManagementClient.js"></script>

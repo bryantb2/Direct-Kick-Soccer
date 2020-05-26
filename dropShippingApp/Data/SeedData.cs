@@ -30,7 +30,6 @@ namespace dropShippingApp.Data
                 var sizeArr = new string[] { "Small", "Medium", "Large" };
                 var productCategoryArr = new string[] { "Pants", "Shirt", "Jersey" };
                 var teamCategoryArr = new string[] { "Sports", "Business", "Casual" };
-                //var categoryDesc = new string[] { "For your legs", "For your torso", "For your team" };
 
                 var colors = new List<ProductColor>();
                 var sizes = new List<ProductSize>();
@@ -197,25 +196,6 @@ namespace dropShippingApp.Data
                 context.RosterProducts.Add(product4);
 
 
-                // ------------------------------------------- ADDING PRODUCT FAMILIES ------------------------------------------- //
-                var groupNames = new string[] { "Best Socks", "Lazy Pants", "Bedazzled Shirts" };
-                var groupDesc = new string[] { "Mhmmmm tasty", "For the morbidly obese", "Extremely gay" };
-                var groupList = new List<ProductGroup>();
-
-                for(var i = 0; i < 3; i++)
-                {
-                    ProductGroup group = new ProductGroup()
-                    {
-                        Title = groupNames[i],
-                        Description = groupDesc[i],
-                        GeneralThumbnail = "https://i.picsum.photos/id/174/200/200.jpg"
-                    };
-                    context.ProductGroups.Add(group);
-                    await context.SaveChangesAsync();
-                    groupList.Add(group);
-                }
-
-
                 // ------------------------------------------- ADDING CUSTOM PRODUCTS ------------------------------------------- //
                 CustomProduct customProduct = new CustomProduct
                 {
@@ -366,11 +346,37 @@ namespace dropShippingApp.Data
                 context.CustomProducts.Add(customProduct7);
                 await context.SaveChangesAsync();
 
+                
+                // ------------------------------------------- ADDING PRODUCT FAMILIES ------------------------------------------- //
+                var groupNames = new string[] { "Best Socks", "Lazy Pants", "Bedazzled Shirts" };
+                var groupDesc = new string[] { "Mhmmmm tasty", "For the morbidly obese", "Extremely gay" };
+                var groupList = new List<ProductGroup>();
+
+                for (var i = 0; i < 3; i++)
+                {
+                    ProductGroup group = new ProductGroup()
+                    {
+                        Title = groupNames[i],
+                        Description = groupDesc[i],
+                        GeneralThumbnail = "https://i.picsum.photos/id/174/200/200.jpg",
+                        PrintDesignPNG = "https://i.picsum.photos/id/174/200/200.jpg",
+                        BaseGroupModelNumber = i + 1
+                    };
+
+                    context.ProductGroups.Add(group);
+                    await context.SaveChangesAsync();
+                    groupList.Add(group);
+                }
 
                 // adding products to group
                 groupList[0].ChildProducts = new List<CustomProduct>() { customProduct, customProduct2, customProduct3 };
                 groupList[1].ChildProducts = new List<CustomProduct>() { customProduct4, customProduct5, customProduct6 };
                 groupList[2].ChildProducts = new List<CustomProduct>() { customProduct7 };
+
+                context.ProductGroups.Update(groupList[0]);
+                context.ProductGroups.Update(groupList[1]);
+                context.ProductGroups.Update(groupList[2]);
+                await context.SaveChangesAsync();
 
 
                 // ------------------------------------------- ADDING COUNTRY/STATE ------------------------------------------- //

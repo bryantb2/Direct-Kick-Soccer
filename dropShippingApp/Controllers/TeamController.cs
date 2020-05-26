@@ -384,5 +384,20 @@ namespace dropShippingApp.Controllers
             return View("TeamReq");
         }
 
+
+
+        // HEADLESS API METHODS
+        public async Task<IActionResult> GetProductsByGroupId(int id)
+        {
+            var user = await userRepo.GetUserDataAsync(HttpContext.User);
+            if(user != null)
+            {
+                // get product from DB
+                // return product list
+                var productGroup = user.ManagedTeam.ProductGroups.Find(group => group.ProductGroupID == id);
+                return Ok(productGroup.ChildProducts);
+            }
+            return BadRequest();
+        }
     }
 }

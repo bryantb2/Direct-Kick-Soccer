@@ -34,6 +34,8 @@ namespace dropShippingApp.Data.Repositories.RealRepos
 
                 .Include(user => user.UserOrderHistory)
 
+                .Include(user => user.ManagedTeam) // get product groups
+                    .ThenInclude(team => team.ProductGroups)
                 .Include(user => user.ManagedTeam) // get team products and base roster product
                     .ThenInclude(team => team.ProductGroups)
                     .ThenInclude(product => product.ProductTags)
@@ -159,7 +161,7 @@ namespace dropShippingApp.Data.Repositories.RealRepos
                     .ThenInclude(request => request.Country)
                 .Include(user => user.CreationRequestHistory) // include request state
                     .ThenInclude(request => request.Providence)
-
+                .Include(user => user.ManagedTeam)
                 .Include(user => user.ManagedTeam) // get team tags
                     .ThenInclude(team => team.TeamTags)
                 .Include(user => user.ManagedTeam) // get team country
@@ -169,6 +171,8 @@ namespace dropShippingApp.Data.Repositories.RealRepos
 
                 .Include(user => user.UserOrderHistory)
 
+                .Include(user => user.ManagedTeam) // get product groups
+                    .ThenInclude(team => team.ProductGroups)
                 .Include(user => user.ManagedTeam) // get team products and base roster product
                     .ThenInclude(team => team.ProductGroups)
                     .ThenInclude(product => product.ProductTags)
