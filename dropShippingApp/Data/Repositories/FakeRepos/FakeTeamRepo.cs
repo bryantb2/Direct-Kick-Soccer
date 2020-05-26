@@ -4,7 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using dropShippingApp.Models;
 
-namespace dropShippingApp.Data.Repositories
+namespace dropShippingApp.Data.Repositories.FakeRepos
 {
     public class FakeTeamRepo : ITeamRepo
     {
