@@ -10,8 +10,8 @@ using dropShippingApp.Data;
 namespace dropShippingApp.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20200514013036_initial")]
-    partial class initial
+    [Migration("20200526224126_Initial")]
+    partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -524,6 +524,9 @@ namespace dropShippingApp.Migrations
 
                     b.Property<int?>("CountryID")
                         .HasColumnType("int");
+
+                    b.Property<string>("ProvienceAbbreviation")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("ProvinceName")
                         .HasColumnType("nvarchar(max)");

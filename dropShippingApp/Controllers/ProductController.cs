@@ -39,12 +39,12 @@ namespace dropShippingApp.Controllers
             this.teamRepo = teamRepo;
         }
         //for testing controller.
-        public ProductController(IRosterProductRepo rosterProductRepo,IProductGroupRepo productGroupRepo, ITeamRepo teamRepo)
-        {
-            this.teamRepo = teamRepo;
-            this.productGroupRepo = productGroupRepo;
-            this.rosterProductRepo = rosterProductRepo;
-        }
+        //public ProductController(IRosterProductRepo rosterProductRepo,IProductGroupRepo productGroupRepo, ITeamRepo teamRepo)
+        //{
+        //    this.teamRepo = teamRepo;
+        //    this.productGroupRepo = productGroupRepo;
+        //    this.rosterProductRepo = rosterProductRepo;
+        //}
 
         public async Task<IActionResult> Index()
         {

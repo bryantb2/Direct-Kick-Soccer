@@ -4,9 +4,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace dropShippingApp.Data.Repositories.RealRepos
+namespace dropShippingApp.Data.Repositories.FakeRepos
 {
-    public class ITeamRepo //: ITagRepo
+    public class FakeTagRepo //: ITagRepo
     {
         private List<Tag> tags = new List<Tag>();
 
