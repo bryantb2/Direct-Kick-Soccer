@@ -52,7 +52,6 @@
                     @if (SignInManager.IsSignedIn(User))
                     {
                         <li class="nav-item dropdown">
-                            @*<a class="nav-link text-dark dropdown-toggle"><span class="glyphicon glyphicon-user" data-toggle="dropdown" style="padding-right: 5px"></span>Welcome @UserManager.GetUserName(User)</a>*@
                             <a class="nav-link text-dark dropdown-toggle" data-toggle="dropdown" asp-area="" asp-controller="Account" asp-action="Index">Welcome @UserManager.GetUserName(User)</a>
                             <ul class="dropdown-menu">
                                 <li><a class="nav-link text-dark" asp-controller="" asp-action=""><span class="glyphicon" style="padding-right: 5px"></span>Orders (Not Active)</a></li>
@@ -81,12 +80,11 @@
             @RenderBody()
         </main>
     </div>
-
-    @*<footer class="border-top footer text-muted">
+    <footer class="border-top footer text-muted">
         <div class="container">
             &copy; 2020 - Team Sports NW - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
         </div>
-    </footer>*@
+    </footer>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>

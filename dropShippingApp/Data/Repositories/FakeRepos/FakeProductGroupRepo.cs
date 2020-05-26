@@ -21,6 +21,11 @@ namespace dropShippingApp.Data.Repositories.FakeRepos
             productGroups.Add(group);
         }
 
+        public ProductGroup GetGroupById(int groupId)
+        {
+            throw new NotImplementedException();
+        }
+
         public async Task<ProductGroup> GetGroupByIdAsync(int groupId)
         {
             ProductGroup pg = productGroups.Find(p => p.ProductGroupID == groupId);
@@ -33,6 +38,11 @@ namespace dropShippingApp.Data.Repositories.FakeRepos
             {
                 return await Task.FromResult<ProductGroup>(null);
             }
+        }
+
+        public ProductGroup GetGroupByProductId(int productId)
+        {
+            throw new NotImplementedException();
         }
 
         public async Task<ProductGroup> GetGroupByProductIdAsync(int productId)

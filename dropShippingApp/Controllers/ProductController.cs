@@ -54,12 +54,12 @@ namespace dropShippingApp.Controllers
         public async Task<IActionResult> ViewProduct(int productGroupId)
         {
             // get product group
-            var foundGroup = productGroupRepo.GetGroupByIdAsync(productGroupId);
+            var foundGroup = productGroupRepo.GetGroupById(productGroupId);
 
             // setup view model
             var viewProductVM = new ProductSelectionViewModel()
             {
-                ProductGroup = await foundGroup
+                ProductGroup = foundGroup
             };
 
             // send to view
