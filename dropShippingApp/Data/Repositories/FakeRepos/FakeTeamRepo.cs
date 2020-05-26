@@ -62,19 +62,34 @@ namespace dropShippingApp.Data.Repositories.FakeRepos
         public async Task<Team> FindTeamByProductId(int productId)
         {
             // will find custom product in team
-            Team foundTeam = (from t in teams
-                              where t.TeamID == productId
-                              select t).FirstOrDefault();
+            //var groupList = new List<ProductGroup>();
 
-            if(foundTeam!=null)
+            Team foundTeam = null;
+            IEnumerable<CustomProduct> cp;
+          
+            foreach (Team t in teams)
             {
-                return await Task.FromResult<Team>(foundTeam);
-            }
-            else
-            {
-                return await Task.FromResult<Team>(null);
-            }
+                cp = t.ProductGroups.SelectMany(x => x.ChildProducts);
+                
 
+
+                foreach(CustomProduct p in cp)
+                {
+                  
+                  
+                    if (p.CustomProductID == productId)
+                    {
+                        foundTeam = t;
+                        break;
+                    }
+                }
+                if (foundTeam != null)
+                    break;
+
+              
+            }
+           
+            return await Task.FromResult<Team>(foundTeam);
         }
 
         public async Task MarkInactiveById(int teamId)
