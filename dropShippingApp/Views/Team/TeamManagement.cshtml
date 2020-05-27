@@ -57,11 +57,11 @@
         </div>
         <div class="col-6 my-5">
             <partial name="~/Views/Shared/_CustomProductSelectionPartial.cshtml"
-                     model='@new CustomProductSelectionCardVM { ProductGroups = Model.Team.ProductGroups, ControllerName = "Team", ActionName = "ModifyProduct", ButtonText = "Modify Product", TitleText = "Modify Existing Product" }' />
+                     model='@new CustomProductSelectionCardVM { ProductGroups = Model.Team.ProductGroups, ControllerName = "Team", ActionName = "UpdateTeamProduct", ButtonText = "Modify Product", TitleText = "Modify Existing Product" }' />
         </div>
         <div class="col-6 my-5">
             <partial name="~/Views/Shared/_CustomProductSelectionPartial.cshtml"
-                     model='@new CustomProductSelectionCardVM { ProductGroups = Model.Team.ProductGroups, ControllerName = "Team", ActionName = "RemoveProduct", ButtonText = "Remove Product", TitleText = "Remove Existing Product" }' />
+                     model='@new CustomProductSelectionCardVM { ProductGroups = Model.Team.ProductGroups, ControllerName = "Team", ActionName = "RemoveTeamProduct", ButtonText = "Remove Product", TitleText = "Remove Existing Product" }' />
         </div>
     </div>
 </section>

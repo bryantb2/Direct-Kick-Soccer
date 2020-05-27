@@ -29,6 +29,7 @@ namespace dropShippingApp.Controllers
         private ILocationRepo locationRepo;
         private ITeamCreationReqRepo teamRequestRepo;
         private ITagRepo tagRepo;
+        private IPricingRepo pricingRepo;
 
         public TeamController(
             ITeamRepo teamRepo, 
@@ -41,7 +42,8 @@ namespace dropShippingApp.Controllers
             IProductGroupRepo productGroupRepo,
             UserManager<AppUser> userManager,
             ITeamCreationReqRepo teamRequestRepo,
-            ITagRepo tagRepo)
+            ITagRepo tagRepo,
+            IPricingRepo pricingRepo)
         {
             this.teamRepo = teamRepo;
             this.teamSortRepo = sortRepo;
@@ -54,6 +56,7 @@ namespace dropShippingApp.Controllers
             this.userManager = userManager;
             this.teamRequestRepo = teamRequestRepo;
             this.tagRepo = tagRepo;
+            this.pricingRepo = pricingRepo;
         }
 
         public async Task<IActionResult> Index()
@@ -361,6 +364,69 @@ namespace dropShippingApp.Controllers
             return View("ModifyGroup", updatedGroup);
         }
 
+        public async Task<IActionResult> UpdateTeamProduct(CustomProductSelectionCardVM selectedProductModel)
+        {
+            // redirects to team product management page
+            var user = await userRepo.GetUserDataAsync(HttpContext.User);
+            if (user != null)
+            {
+                // get group and product data
+                var selectedGroup = user.ManagedTeam.ProductGroups
+                    .Find(group => group.ProductGroupID == selectedProductModel.SelectedGroupID);
+                var selectedProduct = selectedGroup.ChildProducts
+                    .Find(product => product.CustomProductID == selectedProductModel.SelectedProductID);
+                if (selectedGroup != null && selectedProduct != null)
+                {
+                    var modifyProductVM = new UpdateProductVM()
+                    {
+                        ProductId = selectedProductModel.SelectedProductID,
+                        GroupId = selectedProductModel.SelectedGroupID,
+                        ProductName = selectedGroup.Title,
+                        ProductImageURL = selectedProduct.ProductPNG,
+                        CurrentPrice = selectedProduct.CurrentPrice
+                    };
+                    return View("ModifyProduct", modifyProductVM);
+                }
+            }
+            return RedirectToAction("TeamManagement");
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> UpdateTeamProduct(UpdateProductVM updatedProduct)
+        {
+            if (ModelState.IsValid)
+            {
+                // redirects to team product management page
+                var user = await userRepo.GetUserDataAsync(HttpContext.User);
+                if (user != null)
+                {
+                    // get product
+                    var foundProduct = user.ManagedTeam.ProductGroups
+                        .Find(group => group.ProductGroupID == updatedProduct.GroupId).ChildProducts
+                        .Find(product => product.CustomProductID == updatedProduct.ProductId);
+                    // set product properties
+                    foundProduct.ProductPNG = updatedProduct.ProductImageURL;
+                    if(updatedProduct.CurrentPrice != null)
+                    {
+                        var newPricingHistory = new PricingHistory()
+                        {
+                            DateChanged = DateTime.Now,
+                            NewPrice = (decimal)updatedProduct.CurrentPrice
+                        };
+                        // save pricing history to DB
+                        await pricingRepo.AddHistory(newPricingHistory);
+                        foundProduct.AddPricingHistory(newPricingHistory);
+                    }
+
+                    // save product changes in DB
+                    await customProductRepo.UpdateCustomProduct(foundProduct);
+                    return RedirectToAction("TeamManagement");
+                }
+            }
+            ModelState.AddModelError(nameof(UpdateProductVM.ProductName), "Please make sure to fill out all fields");
+            return View("ModifyGroup", updatedProduct);
+        }
+
         public async Task<IActionResult> AddTeamProduct(int groupId, CustomProduct customProduct)
         {
             if(ModelState.IsValid)
@@ -385,40 +451,32 @@ namespace dropShippingApp.Controllers
             throw new NotImplementedException();
         }
 
-        public async Task<IActionResult> UpdateTeamProduct(int groupId, CustomProduct customProduct)
+        public async Task<IActionResult> RemoveTeamProduct(UpdateProductVM updatedProduct)
         {
             if (ModelState.IsValid)
             {
                 // redirects to team product management page
                 var user = await userRepo.GetUserDataAsync(HttpContext.User);
-                // update in database
-                await customProductRepo.UpdateCustomProduct(customProduct);
+                if(user != null)
+                {
+                    // get product to be removed
+                    var foundProduct = user.ManagedTeam.ProductGroups
+                        .Find(group => group.ProductGroupID == updatedProduct.GroupId).ChildProducts
+                        .Find(product => product.CustomProductID == updatedProduct.ProductId);
 
-                // return view
-                throw new NotImplementedException();
+                    // remove from group
+                    var foundGroup = user.ManagedTeam.ProductGroups
+                        .Find(group => group.ProductGroupID == updatedProduct.GroupId);
+                    foundGroup.ChildProducts.Remove(foundProduct);
+                    await productGroupRepo.UpdateProductGroup(foundGroup);
+
+                    // remove product from DB
+                    await customProductRepo.RemoveCustomProduct(foundProduct.CustomProductID);
+                    return RedirectToAction("TeamManagement");
+                }
             }
-            // add return statement here too
-            throw new NotImplementedException();
-        }
-
-        public async Task<IActionResult> RemoveTeamProduct(int groupId, int productId)
-        {
-            if (ModelState.IsValid)
-            {
-                // redirects to team product management page
-                var user = await userRepo.GetUserDataAsync(HttpContext.User);
-                // find product
-                var product = user.ManagedTeam.ProductGroups.Find(group => group.ProductGroupID == groupId).ChildProducts
-                    .Find(product => product.CustomProductID == productId);
-
-                if (product != null)
-                    await customProductRepo.RemoveCustomProduct(productId);
-
-                // return view
-                throw new NotImplementedException();
-            }
-            // add return statement here too
-            throw new NotImplementedException();
+            ModelState.AddModelError(nameof(UpdateProductVM.ProductId), "Please make sure to fill out all fields");
+            return View("ModifyGroup", updatedProduct);
         }
 
         public async Task<IActionResult> MarkProductInActive(int groupId, int productId)

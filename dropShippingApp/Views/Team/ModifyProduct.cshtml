@@ -1,0 +1,24 @@
+﻿
+@{
+    ViewData["Title"] = "ModifyProduct";
+    Layout = "_Layout";
+}
+@model UpdateProductVM
+
+
+    <section>
+        <h1>Change @Model.ProductName Product</h1>
+        <form asp-controller="Team" asp-action="UpdateTeamProduct" method="post" asp-route-GroupId=@Model.GroupId asp-route-ProductId=@Model.ProductId>
+            <div class="d-flex flex-column">
+                <div class="d-flex">
+                    <label>Set New Price: </label><input type="number" asp-for=@Model.CurrentPrice />
+                </div>
+                <div class="d-flex">
+                    <label>Product Image URL: </label><input type="text" asp-for=@Model.ProductImageURL />
+                </div>
+            </div>
+            <button class="btn btn-link" type="submit">Update Product</button>
+        </form>
+    </section>
+
+
