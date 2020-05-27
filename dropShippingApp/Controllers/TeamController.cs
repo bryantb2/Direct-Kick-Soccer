@@ -28,6 +28,7 @@ namespace dropShippingApp.Controllers
         private IUserRepo userRepo;
         private ILocationRepo locationRepo;
         private ITeamCreationReqRepo teamRequestRepo;
+        private ITagRepo tagRepo;
 
         public TeamController(
             ITeamRepo teamRepo, 
@@ -39,7 +40,8 @@ namespace dropShippingApp.Controllers
             ICustomProductRepo customProductRepo,
             IProductGroupRepo productGroupRepo,
             UserManager<AppUser> userManager,
-            ITeamCreationReqRepo teamRequestRepo)
+            ITeamCreationReqRepo teamRequestRepo,
+            ITagRepo tagRepo)
         {
             this.teamRepo = teamRepo;
             this.teamSortRepo = sortRepo;
@@ -51,6 +53,7 @@ namespace dropShippingApp.Controllers
             this.productGroupRepo = productGroupRepo;
             this.userManager = userManager;
             this.teamRequestRepo = teamRequestRepo;
+            this.tagRepo = tagRepo;
         }
 
         public async Task<IActionResult> Index()
@@ -249,6 +252,83 @@ namespace dropShippingApp.Controllers
             // returns team product management page
            
             return View();
+        }
+
+        public async Task<IActionResult> UpdateGroup(CustomGroupSelectionCardVM groupModel)
+        {
+            // get user and select the group attached to its team
+            var user = await userRepo.GetUserDataAsync(HttpContext.User);
+            if(user != null)
+            {
+                // get the group and return view
+                var foundGroup = user.ManagedTeam.ProductGroups
+                    .Find(group => group.ProductGroupID == groupModel.SelectedGroupID);
+                return View("ModifyGroup", foundGroup);
+            }
+            return RedirectToAction("TeamManagement");
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> UpdateGroup(UpdateGroupVM updatedGroup)
+        {
+            if(ModelState.IsValid)
+            {
+                var user = await userRepo.GetUserDataAsync(HttpContext.User);
+                if (user != null)
+                {
+                    // get the group
+                    var foundGroup = user.ManagedTeam.ProductGroups
+                        .Find(group => group.ProductGroupID == updatedGroup.GroupID);
+                    // apply updated properties
+                    foundGroup.Description = updatedGroup.Description;
+                    foundGroup.Title = updatedGroup.Title;
+                    foundGroup.GeneralThumbnail = updatedGroup.ThumbnailURL;
+
+                    // check new tags
+                    var tagList = tagRepo.GetTags;
+                    if (updatedGroup.NewTagName != null)
+                    {
+                        // add existing tag from DB
+                        var existingTag = tagList.Find(tag => tag.TagLine.ToUpper() == updatedGroup.NewTagName.ToUpper());
+                        if(existingTag == null)
+                        {
+                            // create tag and add to DB if it does not exist
+                            var newTag = new Tag()
+                            {
+                                TagLine = updatedGroup.NewTagName
+                            };
+                            await tagRepo.AddTag(newTag);
+                            existingTag = newTag;
+                        }
+                        var groupTags = foundGroup.ProductTags;
+                        groupTags.Add(existingTag);
+                        foundGroup.ProductTags = groupTags;
+                    }
+                    else if(updatedGroup.ExistingTagID != null )
+                    {
+                        // get existing tag from DB, add to group
+                        var existingTag = tagList.Find(tag => tag.TagID == updatedGroup.ExistingTagID);
+                        var groupTags = foundGroup.ProductTags;
+                        groupTags.Add(existingTag);
+                        foundGroup.ProductTags = groupTags;
+                    }
+                    // check remove tag
+                    if(updatedGroup.RemovedTagID != null)
+                    {
+                        // find and remove tag in list
+                        var groupTags = foundGroup.ProductTags;
+                        var removedTagIndex = groupTags.FindIndex(tag => tag.TagID == updatedGroup.RemovedTagID);
+                        groupTags.RemoveAt(removedTagIndex);
+                        foundGroup.ProductTags = groupTags;
+                    }
+
+                    // update group in DB
+                    await productGroupRepo.UpdateProductGroup(foundGroup);
+                    return RedirectToAction("TeamManagement");
+                }
+            }
+            ModelState.AddModelError(nameof(UpdateGroupVM.Title), "Please make sure to fill out all required fields");
+            return View("ModifyGroup", updatedGroup);
         }
 
         public async Task<IActionResult> AddTeamProduct(int groupId, CustomProduct customProduct)

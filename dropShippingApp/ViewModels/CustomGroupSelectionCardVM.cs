@@ -14,7 +14,7 @@ namespace dropShippingApp.ViewModels
         public string ButtonText { get; set; }
         public string TitleText { get; set; }
 
-        // these are for sending data up to the 
+        // these are for sending data up to the controller
         public int SelectedGroupID { get; set; }
     }
 }
