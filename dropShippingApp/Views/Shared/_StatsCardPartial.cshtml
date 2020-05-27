@@ -1,0 +1,20 @@
+﻿
+@model StatsCardVM
+
+<link rel="stylesheet" type="text/css" href="~/css/PartialViewStyles.css" />
+
+<article class="profileContainer rounded shadow-lg bg-light w-100">
+    <div class="innerProfileContainer p-4 text-dark">
+        <div class="d-flex flex-column justify-content-center">
+            <div class="p-2 text-center">
+                <h2>@Model.StatNumber</h2>
+            </div>
+        </div>
+        <hr class="my-2 border-dark" />
+        <div>
+            <p class="d-flex p-2 pageParagraph">
+                @Model.StatName
+            </p>
+        </div>
+    </div>
+</article>

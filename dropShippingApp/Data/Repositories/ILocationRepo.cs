@@ -10,14 +10,14 @@ namespace dropShippingApp.Data.Repositories
 	{
 		// Crud OPS for Country
 		Task AddCountry(Country newCountry);
-		List<Country> GetAllCountries { get; }
+		List<Country> Countries { get; }
 		Task UpdateCountry(Country updatedCountry);
 		Task RemoveCountry(Country country);
 	
 
 		// Crud OPS for Province
 		Task AddProvince(Province newProvince);
-		List<Province> GetAllProvinces { get; }
+		List<Province> Provinces { get; }
 		Task UpdateProvince(Province updatedProvince);
 		Task RemoveProvince(Province province);
 	}

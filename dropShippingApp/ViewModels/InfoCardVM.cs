@@ -5,8 +5,9 @@ using System.Threading.Tasks;
 
 namespace dropShippingApp.ViewModels
 {
-    public class UpdateCartVM
+    public class InfoCardVM
     {
-        public List<CartItemVM> CartItems { get; set; }
+        public string Title { get; set; }
+        public string MainText { get; set; }
     }
 }

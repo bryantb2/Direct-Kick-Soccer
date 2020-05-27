@@ -27,11 +27,13 @@ namespace dropShippingApp.Data.Repositories.RealRepos
                     .Include(product => product.BaseProduct)
                         .ThenInclude(baseProduct => baseProduct.BaseSize)
                     .Include(product => product.BaseProduct)
-                        .ThenInclude(baseProduct => baseProduct.ProductTags)
-                    .Include(product => product.BaseProduct)
                         .ThenInclude(baseProduct => baseProduct.PricingHistory)
                     .Include(product => product.BaseProduct)
-                        .ThenInclude(baseProduct => baseProduct.Category)
+                        .ThenInclude(baseProduct => baseProduct.RosterGroup)
+                        .ThenInclude(group => group.ProductTags)
+                    .Include(product => product.BaseProduct)
+                        .ThenInclude(baseProduct => baseProduct.RosterGroup)
+                        .ThenInclude(group => group.Category)
                     .ToList();
             } 
         }
@@ -53,11 +55,13 @@ namespace dropShippingApp.Data.Repositories.RealRepos
                 .Include(product => product.BaseProduct)
                     .ThenInclude(baseProduct => baseProduct.BaseSize)
                 .Include(product => product.BaseProduct)
-                    .ThenInclude(baseProduct => baseProduct.ProductTags)
-                .Include(product => product.BaseProduct)
                     .ThenInclude(baseProduct => baseProduct.PricingHistory)
                 .Include(product => product.BaseProduct)
-                    .ThenInclude(baseProduct => baseProduct.Category)
+                    .ThenInclude(baseProduct => baseProduct.RosterGroup)
+                    .ThenInclude(group => group.ProductTags)
+                .Include(product => product.BaseProduct)
+                    .ThenInclude(baseProduct => baseProduct.RosterGroup)
+                    .ThenInclude(group => group.Category)
                 .ToList()
                 .Find(product => product.CustomProductID == customProductId);
         }

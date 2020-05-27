@@ -43,7 +43,7 @@ namespace dropShippingApp.Models
         public DateTime DateJoined { get; set; }
         [Required]
         public TeamCategory Category { get; set; }
-        public List<ProductGroup> ProductGroups { get { return productGroups; } set { productGroups = value; } }
+        public List<ProductGroup> ProductGroups { get { return this.productGroups; } }
 
         // methods
         public void AddTag(Tag tag) => teamTags.Add(tag);

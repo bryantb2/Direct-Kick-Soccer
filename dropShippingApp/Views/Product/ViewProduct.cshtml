@@ -4,36 +4,36 @@
 }
 @model ProductSelectionViewModel;
 
-    <section>
-        <h1>@Model.ProductGroup.Title</h1>
-        <form asp-controller="Cart" asp-action="AddToCart" method="post" asp-route-productGroupId=@Model.ProductGroup.ProductGroupID>
-            <div class="d-flex flex-column">
-                <div class="p-2">
-                    <img src=@Model.ProductGroup.GeneralThumbnail width="300" />
-                </div>
-                <select id="variantSelection" asp-for=@Model.ProductId>
-                    <option selected value="">Choose a Variant</option>
-                    @foreach (var product in Model.ProductGroup.ChildProducts)
-                    {
-                        <option value=@product.CustomProductID>Size - @product.BaseProduct.BaseSize.SizeName && Color - @product.BaseProduct.BaseColor.ColorName</option>
-                    }
-                </select>
-                <div class="p-2">
-                    Price - @Model.ProductGroup.GetHighestPrice.ToString("c")
-                </div>
-                <div class="p-2">
-                    Quantity - <input class="qnty_input" type="number" asp-for="Quantity" min="1" value=@Model.Quantity />
-                </div>
-                <div class="p-2">
-                    @foreach (var tag in Model.ProductGroup.ProductTags)
-                    {
-                        <span>@tag</span>
-                    }
-                </div>
+<section>
+    <h1>@Model.ProductGroup.Title</h1>
+    <form asp-controller="Cart" asp-action="AddToCart" method="post" asp-route-productGroupId=@Model.ProductGroup.ProductGroupID>
+        <div class="d-flex flex-column">
+            <div class="p-2">
+                <img src=@Model.ProductGroup.GeneralThumbnail width="300" />
             </div>
-            <br />
-            <p>@Model.ProductGroup.Description</p>
-            <br />
-            <button type="submit">Add to Cart</button>
-        </form>
-    </section>
+            <select id="variantSelection" asp-for=@Model.ProductId>
+                <option selected value="">Choose a Variant</option>
+                @foreach (var product in Model.ProductGroup.ChildProducts)
+                {
+                    <option value=@product.CustomProductID>Size - @product.BaseProduct.BaseSize.SizeName && Color - @product.BaseProduct.BaseColor.ColorName</option>
+                }
+            </select>
+            <div class="p-2">
+                Price - @Model.ProductGroup.GetHighestPrice.ToString("c")
+            </div>
+            <div class="p-2">
+                Quantity - <input class="qnty_input" type="number" asp-for="Quantity" min="1" value=@Model.Quantity />
+            </div>
+            <div class="p-2">
+                @foreach (var tag in Model.ProductGroup.ProductTags)
+                {
+                    <span>@tag</span>
+                }
+            </div>
+        </div>
+        <br />
+        <p>@Model.ProductGroup.Description</p>
+        <br />
+        <button type="submit">Add to Cart</button>
+    </form>
+</section>

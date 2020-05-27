@@ -28,28 +28,38 @@ namespace dropShippingApp.Data.Repositories.RealRepos
                 var carts = this.context.Carts
                     .Include(cart => cart.CartItems) // get custom product
                         .ThenInclude(cartItem => cartItem.ProductSelection)
-                            .ThenInclude(selectedProduct => selectedProduct.BaseProduct)
+                        .ThenInclude(selectedProduct => selectedProduct.BaseProduct)
                     .Include(cart => cart.CartItems) // get custom product tags
                         .ThenInclude(cartItem => cartItem.ProductSelection)
                     .Include(cart => cart.CartItems) // get custom pricing history
                         .ThenInclude(cartItem => cartItem.ProductSelection)
-                            .ThenInclude(selectedProduct => selectedProduct.PricingHistory)
+                        .ThenInclude(selectedProduct => selectedProduct.PricingHistory)
                     .Include(cart => cart.CartItems) // get roster base color
                         .ThenInclude(cartItem => cartItem.ProductSelection) 
-                            .ThenInclude(selectedProduct => selectedProduct.BaseProduct)
-                                .ThenInclude(baseProduct => baseProduct.BaseColor)
+                         .ThenInclude(selectedProduct => selectedProduct.BaseProduct)
+                        .ThenInclude(baseProduct => baseProduct.BaseColor)
                     .Include(cart => cart.CartItems) // get roster base size
                         .ThenInclude(cartItem => cartItem.ProductSelection) 
-                            .ThenInclude(selectedProduct => selectedProduct.BaseProduct)
-                                .ThenInclude(baseProduct => baseProduct.BaseSize)
-                    .Include(cart => cart.CartItems) // get roster product tags
-                        .ThenInclude(cartItem => cartItem.ProductSelection) 
-                            .ThenInclude(selectedProduct => selectedProduct.BaseProduct)
-                                .ThenInclude(baseProduct => baseProduct.ProductTags)
+                        .ThenInclude(selectedProduct => selectedProduct.BaseProduct)
+                        .ThenInclude(baseProduct => baseProduct.BaseSize)
                     .Include(cart => cart.CartItems) // get pricing history for roster product
                         .ThenInclude(cartItem => cartItem.ProductSelection)
-                            .ThenInclude(selectedProduct => selectedProduct.BaseProduct)
-                                .ThenInclude(baseProduct => baseProduct.PricingHistory)
+                        .ThenInclude(selectedProduct => selectedProduct.BaseProduct)
+                        .ThenInclude(baseProduct => baseProduct.PricingHistory)
+                    .Include(cart => cart.CartItems) // get roster product group
+                        .ThenInclude(cartItem => cartItem.ProductSelection)
+                        .ThenInclude(selectedProduct => selectedProduct.BaseProduct)
+                        .ThenInclude(baseProduct => baseProduct.RosterGroup)
+                    .Include(cart => cart.CartItems) // get roster product category
+                        .ThenInclude(cartItem => cartItem.ProductSelection)
+                        .ThenInclude(selectedProduct => selectedProduct.BaseProduct)
+                        .ThenInclude(baseProduct => baseProduct.RosterGroup)
+                        .ThenInclude(group => group.Category)
+                    .Include(cart => cart.CartItems) // get roster product tags
+                        .ThenInclude(cartItem => cartItem.ProductSelection)
+                        .ThenInclude(selectedProduct => selectedProduct.BaseProduct)
+                        .ThenInclude(baseProduct => baseProduct.RosterGroup)
+                        .ThenInclude(group => group.ProductTags)
                     .ToList();
                 return carts;
             }
@@ -60,28 +70,38 @@ namespace dropShippingApp.Data.Repositories.RealRepos
             return this.context.Carts
                     .Include(cart => cart.CartItems) // get custom product
                         .ThenInclude(cartItem => cartItem.ProductSelection)
-                            .ThenInclude(selectedProduct => selectedProduct.BaseProduct)
+                        .ThenInclude(selectedProduct => selectedProduct.BaseProduct)
                     .Include(cart => cart.CartItems) // get custom product tags
                         .ThenInclude(cartItem => cartItem.ProductSelection)
                     .Include(cart => cart.CartItems) // get custom pricing history
                         .ThenInclude(cartItem => cartItem.ProductSelection)
-                            .ThenInclude(selectedProduct => selectedProduct.PricingHistory)
+                        .ThenInclude(selectedProduct => selectedProduct.PricingHistory)
                     .Include(cart => cart.CartItems) // get roster base color
                         .ThenInclude(cartItem => cartItem.ProductSelection)
-                            .ThenInclude(selectedProduct => selectedProduct.BaseProduct)
-                                .ThenInclude(baseProduct => baseProduct.BaseColor)
+                         .ThenInclude(selectedProduct => selectedProduct.BaseProduct)
+                        .ThenInclude(baseProduct => baseProduct.BaseColor)
                     .Include(cart => cart.CartItems) // get roster base size
                         .ThenInclude(cartItem => cartItem.ProductSelection)
-                            .ThenInclude(selectedProduct => selectedProduct.BaseProduct)
-                                .ThenInclude(baseProduct => baseProduct.BaseSize)
-                    .Include(cart => cart.CartItems) // get roster product tags
-                        .ThenInclude(cartItem => cartItem.ProductSelection)
-                            .ThenInclude(selectedProduct => selectedProduct.BaseProduct)
-                                .ThenInclude(baseProduct => baseProduct.ProductTags)
+                        .ThenInclude(selectedProduct => selectedProduct.BaseProduct)
+                        .ThenInclude(baseProduct => baseProduct.BaseSize)
                     .Include(cart => cart.CartItems) // get pricing history for roster product
                         .ThenInclude(cartItem => cartItem.ProductSelection)
-                            .ThenInclude(selectedProduct => selectedProduct.BaseProduct)
-                                .ThenInclude(baseProduct => baseProduct.PricingHistory)
+                        .ThenInclude(selectedProduct => selectedProduct.BaseProduct)
+                        .ThenInclude(baseProduct => baseProduct.PricingHistory)
+                    .Include(cart => cart.CartItems) // get roster product group
+                        .ThenInclude(cartItem => cartItem.ProductSelection)
+                        .ThenInclude(selectedProduct => selectedProduct.BaseProduct)
+                        .ThenInclude(baseProduct => baseProduct.RosterGroup)
+                    .Include(cart => cart.CartItems) // get roster product category
+                        .ThenInclude(cartItem => cartItem.ProductSelection)
+                        .ThenInclude(selectedProduct => selectedProduct.BaseProduct)
+                        .ThenInclude(baseProduct => baseProduct.RosterGroup)
+                        .ThenInclude(group => group.Category)
+                    .Include(cart => cart.CartItems) // get roster product tags
+                        .ThenInclude(cartItem => cartItem.ProductSelection)
+                        .ThenInclude(selectedProduct => selectedProduct.BaseProduct)
+                        .ThenInclude(baseProduct => baseProduct.RosterGroup)
+                        .ThenInclude(group => group.ProductTags)
                     .ToList()
                     .Find(cart => cart.CartID == cartId);
         }
@@ -91,29 +111,40 @@ namespace dropShippingApp.Data.Repositories.RealRepos
             var foundCart = this.context.Carts
                 .Include(cart => cart.CartItems) // get custom product
                         .ThenInclude(cartItem => cartItem.ProductSelection)
-                            .ThenInclude(selectedProduct => selectedProduct.BaseProduct)
+                        .ThenInclude(selectedProduct => selectedProduct.BaseProduct)
                     .Include(cart => cart.CartItems) // get custom product tags
                         .ThenInclude(cartItem => cartItem.ProductSelection)
                     .Include(cart => cart.CartItems) // get custom pricing history
                         .ThenInclude(cartItem => cartItem.ProductSelection)
-                            .ThenInclude(selectedProduct => selectedProduct.PricingHistory)
+                        .ThenInclude(selectedProduct => selectedProduct.PricingHistory)
                     .Include(cart => cart.CartItems) // get roster base color
                         .ThenInclude(cartItem => cartItem.ProductSelection)
-                            .ThenInclude(selectedProduct => selectedProduct.BaseProduct)
-                                .ThenInclude(baseProduct => baseProduct.BaseColor)
+                         .ThenInclude(selectedProduct => selectedProduct.BaseProduct)
+                        .ThenInclude(baseProduct => baseProduct.BaseColor)
                     .Include(cart => cart.CartItems) // get roster base size
                         .ThenInclude(cartItem => cartItem.ProductSelection)
-                            .ThenInclude(selectedProduct => selectedProduct.BaseProduct)
-                                .ThenInclude(baseProduct => baseProduct.BaseSize)
-                    .Include(cart => cart.CartItems) // get roster product tags
-                        .ThenInclude(cartItem => cartItem.ProductSelection)
-                            .ThenInclude(selectedProduct => selectedProduct.BaseProduct)
-                                .ThenInclude(baseProduct => baseProduct.ProductTags)
+                        .ThenInclude(selectedProduct => selectedProduct.BaseProduct)
+                        .ThenInclude(baseProduct => baseProduct.BaseSize)
                     .Include(cart => cart.CartItems) // get pricing history for roster product
                         .ThenInclude(cartItem => cartItem.ProductSelection)
-                            .ThenInclude(selectedProduct => selectedProduct.BaseProduct)
-                                .ThenInclude(baseProduct => baseProduct.PricingHistory)
-                    .ToList().Find(cart => 
+                        .ThenInclude(selectedProduct => selectedProduct.BaseProduct)
+                        .ThenInclude(baseProduct => baseProduct.PricingHistory)
+                    .Include(cart => cart.CartItems) // get roster product group
+                        .ThenInclude(cartItem => cartItem.ProductSelection)
+                        .ThenInclude(selectedProduct => selectedProduct.BaseProduct)
+                        .ThenInclude(baseProduct => baseProduct.RosterGroup)
+                    .Include(cart => cart.CartItems) // get roster product category
+                        .ThenInclude(cartItem => cartItem.ProductSelection)
+                        .ThenInclude(selectedProduct => selectedProduct.BaseProduct)
+                        .ThenInclude(baseProduct => baseProduct.RosterGroup)
+                        .ThenInclude(group => group.Category)
+                    .Include(cart => cart.CartItems) // get roster product tags
+                        .ThenInclude(cartItem => cartItem.ProductSelection)
+                        .ThenInclude(selectedProduct => selectedProduct.BaseProduct)
+                        .ThenInclude(baseProduct => baseProduct.RosterGroup)
+                        .ThenInclude(group => group.ProductTags)
+                    .ToList()
+                    .Find(cart => 
                         cart.CartItems.Find(item => item.CartItemID == itemId) != null);
             return foundCart;
         }
@@ -164,16 +195,24 @@ namespace dropShippingApp.Data.Repositories.RealRepos
                     .ThenInclude(selectedProduct => selectedProduct.PricingHistory)
                 .Include(cartItem => cartItem.ProductSelection)
                     .ThenInclude(selectedProduct => selectedProduct.BaseProduct)
-                        .ThenInclude(baseProduct => baseProduct.BaseColor)
+                    .ThenInclude(baseProduct => baseProduct.BaseColor)
                 .Include(cartItem => cartItem.ProductSelection)
                     .ThenInclude(selectedProduct => selectedProduct.BaseProduct)
-                        .ThenInclude(baseProduct => baseProduct.BaseSize)
+                    .ThenInclude(baseProduct => baseProduct.BaseSize)
                 .Include(cartItem => cartItem.ProductSelection)
                     .ThenInclude(selectedProduct => selectedProduct.BaseProduct)
-                        .ThenInclude(baseProduct => baseProduct.ProductTags)
+                    .ThenInclude(baseProduct => baseProduct.PricingHistory)
                 .Include(cartItem => cartItem.ProductSelection)
                     .ThenInclude(selectedProduct => selectedProduct.BaseProduct)
-                        .ThenInclude(baseProduct => baseProduct.PricingHistory)
+                    .ThenInclude(baseProduct => baseProduct.RosterGroup)
+                .Include(cartItem => cartItem.ProductSelection)
+                    .ThenInclude(selectedProduct => selectedProduct.BaseProduct)
+                    .ThenInclude(baseProduct => baseProduct.RosterGroup)
+                    .ThenInclude(group => group.Category)
+                .Include(cartItem => cartItem.ProductSelection)
+                    .ThenInclude(selectedProduct => selectedProduct.BaseProduct)
+                    .ThenInclude(baseProduct => baseProduct.RosterGroup)
+                    .ThenInclude(group => group.ProductTags)
                 .ToList()
                 .Find(item => item.CartItemID == cartId);
         }

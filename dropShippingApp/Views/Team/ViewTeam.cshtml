@@ -1,0 +1,68 @@
+﻿
+@{
+    ViewData["Title"] = "ViewTeam";
+    Layout = "_Layout";
+}
+@model Team
+
+<link rel="stylesheet" type="text/css" href="~/css/TeamStyles.css" />
+
+<section>
+    <div class="view-team-banner-container">
+        <img class="view-team-banner-img" src=@Model.TeamBannerPNG />
+        <div class="view-team-banner-text">
+            <h1>Welcome to @Model.Name's Page</h1>
+        </div>
+    </div>
+    <article class="d-flex flex-column">
+        <h3>Team Info</h3>
+        <div class="p-2"><b>Bio:</b> @Model.Description</div>
+        <div class="p-2"><b>Location:</b> @Model.Providence.ProvinceName, @Model.Country.CountryName @Model.StreetAddress @Model.ZipCode</div>
+        <div class="p-2"><b>Date Joined:</b> @Model.DateJoined.ToString()</div>
+        <div class="p-2"><b>Main Business Page:</b> @Model.CorporatePageURL</div>
+        <div class="p-2"><b>Phone Number:</b> @Model.PhoneNumber</div>
+        <div class="p-2"><b>Merchandise Category:</b> @Model.Category.Name</div>
+    </article> 
+    <article>
+        <h3>Offered Product Lines</h3>
+        <div>
+            @if (Model.ProductGroups.Count != 0)
+            {
+                <table class="table">
+                    <thead>
+                        <tr>
+                        <th></th>
+                        <th>Product</th>
+                        <th>Price</th>
+                        <th>Description</th>
+                        <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var group in Model.ProductGroups)
+                        {
+                            <tr>
+                                <td>
+                                    <img width="100" src=@group.GeneralThumbnail />
+                                </td>
+                                <td>@group.Title</td>
+                                <td>@group.GetLowestPrice.ToString("c")</td>
+                                <td>@group.Description</td>
+                                <td>
+                                    <a class="btn btn-link" style="display:inline-block" asp-controller="Product" asp-action="ViewProduct" asp-route-productGroupId="@group.ProductGroupID">View Product</a>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            }
+            else
+            {
+                <div class="text-center">
+                    <h2>0 Product Lines Currently Available</h2>
+                </div>
+            }
+        </div>
+    </article>
+</section>
+

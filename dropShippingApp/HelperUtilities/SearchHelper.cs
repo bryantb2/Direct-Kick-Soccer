@@ -117,7 +117,7 @@ namespace dropShippingApp.HelperUtilities
                 foreach (var group in listAsGroups)
                 {
                     // remove current item if it's product does not contain the current category
-                    var filteredGroupProducts = group.ChildProducts.Where(product => product.BaseProduct.Category.ProductCategoryID == categoryId);
+                    var filteredGroupProducts = group.ChildProducts.Where(product => product.BaseProduct.RosterGroup.Category.ProductCategoryID == categoryId);
                     if (filteredGroupProducts.Count() == 0)
                         filteredGroups.Remove(group);
                 }
@@ -198,9 +198,9 @@ namespace dropShippingApp.HelperUtilities
                     {
                         foreach (var product in group.ChildProducts)
                         {
-                            if (DoesQueryContainString(cleanedSearchTerm, product.BaseProduct.ProductTags))
+                            if (DoesQueryContainString(cleanedSearchTerm, product.BaseProduct.RosterGroup.ProductTags))
                                 hasMatch = true;
-                            else if (DoesQueryContainString(cleanedSearchTerm, product.BaseProduct.ModelNumber.ToString()))
+                            else if (DoesQueryContainString(cleanedSearchTerm, product.BaseProduct.RosterGroup.ModelNumber.ToString()))
                                 hasMatch = true;
                             else if (DoesQueryContainString(cleanedSearchTerm, product.BaseProduct.SKU.ToString()))
                                 hasMatch = true;
@@ -208,9 +208,9 @@ namespace dropShippingApp.HelperUtilities
                                 hasMatch = true;
                             else if (DoesQueryContainString(cleanedSearchTerm, product.BaseProduct.BaseSize.SizeName))
                                 hasMatch = true;
-                            else if (DoesQueryContainString(cleanedSearchTerm, product.BaseProduct.ProductTags))
+                            else if (DoesQueryContainString(cleanedSearchTerm, product.BaseProduct.RosterGroup.ProductTags))
                                 hasMatch = true;
-                            else if (DoesQueryContainString(cleanedSearchTerm, product.BaseProduct.Category.Name))
+                            else if (DoesQueryContainString(cleanedSearchTerm, product.BaseProduct.RosterGroup.Category.Name))
                                 hasMatch = true;
                             // no need to keep searching if we already have one match
                             if (hasMatch)

@@ -76,7 +76,7 @@ namespace dropShippingApp.Controllers
             {
                 // build cart item VM objects
                 var totalCartPrice = 0m;
-                var cartItemVMList = new List<CartItemViewModel>();
+                var cartItemVMList = new List<CartItemVM>();
                 for(var i = 0; i < user.Cart.CartItems.Count; i++)
                 {
                     // get the actual cart item
@@ -88,7 +88,7 @@ namespace dropShippingApp.Controllers
                     var productGroup = groupRepo.GetGroupByProductId(currentCartitem.ProductSelection.CustomProductID);
 
                     // build cart item VM object and add to list
-                    var newCartItemVM = new CartItemViewModel()
+                    var newCartItemVM = new CartItemVM()
                     {
                         CartItem = currentCartitem,
                         ProductTitle = productGroup.Title,
@@ -176,7 +176,7 @@ namespace dropShippingApp.Controllers
 
         // update cart contents
         [HttpPost]
-        public async Task<IActionResult> UpdateCart([FromBody] List<UpdateCartItemViewModel> cartItems)
+        public async Task<IActionResult> UpdateCart([FromBody] List<UpdateCartItemVM> cartItems)
         {
             // change cart items quantities
             var user = await userManager.GetUserAsync(HttpContext.User);

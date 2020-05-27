@@ -1,0 +1,80 @@
+﻿@{
+    Layout = "_Layout";
+    ViewData["Title"] = "Team Management";
+}
+@model TeamManagementVM
+@inject UserManager<AppUser> UserManager
+
+<link rel="stylesheet" type="text/css" href="~/css/TeamStyles.css" />
+
+<section>
+    <div class="view-team-banner-container">
+        <img class="view-team-banner-img" src=@Model.Team.TeamBannerPNG />
+        <div class="view-team-banner-text">
+            <h1>[Team Image]</h1>
+        </div>
+    </div>
+    <div class="row my-4">
+        <div class="col-12 my-5">
+            <partial name="~/Views/Shared/_InfoCardPartial.cshtml"
+                     model='@new InfoCardVM { Title = "Dashboard Info", MainText = "Welcome to the management dashboard " + @UserManager.GetUserName(User) }' />
+        </div>
+        <div class="col-4 my-5">
+            <partial name="~/Views/Shared/_StatsCardPartial.cshtml"
+                     model='@new StatsCardVM { StatNumber = Model.MonthlySales, StatName = "Monthly Sales" }' />
+        </div>
+        <div class="col-4 my-5">
+            <partial name="~/Views/Shared/_StatsCardPartial.cshtml"
+                     model='@new StatsCardVM { StatNumber = Model.WeeklySales, StatName = "Weekly Sales" }' />
+        </div>
+        <div class="col-4 my-5">
+            <partial name="~/Views/Shared/_StatsCardPartial.cshtml"
+                     model='@new StatsCardVM { StatNumber = Model.LifeTimeSales, StatName = "Lifetime Sales" }' />
+        </div>
+        <div class="col-6 my-5">
+            <partial name="~/Views/Shared/_ButtonCardPartial.cshtml"
+                     model='@new ButtonCardVM { ControllerName="Team", ActionName = "UpdateBanner", ButtonText = "Change Banner", TitleText = "Updated Banner Image" }' />
+        </div>
+        <div class="col-6 my-5">
+            <partial name="~/Views/Shared/_ButtonCardPartial.cshtml"
+                     model='@new ButtonCardVM { ControllerName="Team", ActionName = "ReplaceSettings", ButtonText = "Change Settings", TitleText = "Updated Basic Team Info" }' />
+        </div>
+        <div class="col-12 my-5">
+            <partial name="~/Views/Shared/_InfoCardPartial.cshtml"
+                     model='@new InfoCardVM { Title = "Management Actions", MainText = "Using the tools below, you can add, remove, or update your team products and groups." }' />
+        </div>
+        <div class="col-6 my-5">
+            <partial name="~/Views/Shared/_CustomGroupSelectionPartial.cshtml"
+                     model='@new CustomGroupSelectionCardVM { ProductGroups = Model.Team.ProductGroups, ControllerName = "Team", ActionName = "UpdateGroup", ButtonText = "Modify Group", TitleText = "Modify Existing Group" }' />
+        </div>
+        <div class="col-6 my-5">
+            <partial name="~/Views/Shared/_CustomGroupSelectionPartial.cshtml"
+                     model='@new CustomGroupSelectionCardVM { ProductGroups = Model.Team.ProductGroups, ControllerName = "Team", ActionName = "RemoveGroup", ButtonText = "Remove Group", TitleText = "Remove Existing Group" }' />
+        </div>
+        <div class="col-12 my-5">
+            <article class="profileContainer rounded shadow-lg bg-light w-100">
+                <div class="innerProfileContainer p-4 text-dark">
+                    <div class="d-flex flex-column justify-content-center">
+                        <div class="p-2 text-center">
+                            <h2>Add New Group</h2>
+                        </div>
+                    </div>
+                    <hr class="my-2 border-dark" />
+                    <button asp-controller="Team" asp-action="AddGroup" class="d-flex p-2 pageParagraph btn btn-link">Create New Group</button>
+                </div>
+            </article>
+        </div>
+        <div class="col-12 my-5">
+            <partial name="~/Views/Shared/_CustomProductSelectionPartial.cshtml"
+                     model='@new CustomProductSelectionCardVM { ProductGroups = Model.Team.ProductGroups, ControllerName = "Team", ActionName = "RemoveProduct", ButtonText = "Remove Product", TitleText = "Remove Existing Product" }' />
+        </div>
+        <div class="col-6 my-5">
+            <partial name="~/Views/Shared/_CustomProductSelectionPartial.cshtml"
+                     model='@new CustomProductSelectionCardVM { ProductGroups = Model.Team.ProductGroups, ControllerName = "Team", ActionName = "UpdateTeamProduct", ButtonText = "Modify Product", TitleText = "Modify Existing Product" }' />
+        </div>
+        <div class="col-6 my-5">
+            <partial name="~/Views/Shared/_CustomProductSelectionPartial.cshtml"
+                     model='@new CustomProductSelectionCardVM { ProductGroups = Model.Team.ProductGroups, ControllerName = "Team", ActionName = "RemoveTeamProduct", ButtonText = "Remove Product", TitleText = "Remove Existing Product" }' />
+        </div>
+    </div>
+</section>

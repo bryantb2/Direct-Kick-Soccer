@@ -30,7 +30,6 @@ namespace dropShippingApp.Data
                 var sizeArr = new string[] { "Small", "Medium", "Large" };
                 var productCategoryArr = new string[] { "Pants", "Shirt", "Jersey" };
                 var teamCategoryArr = new string[] { "Sports", "Business", "Casual" };
-                //var categoryDesc = new string[] { "For your legs", "For your torso", "For your team" };
 
                 var colors = new List<ProductColor>();
                 var sizes = new List<ProductSize>();
@@ -74,16 +73,39 @@ namespace dropShippingApp.Data
                 }
 
 
-                // ------------------------------------------- ADDING ROSTER PRODUCTS ------------------------------------------- //
+                // ------------------------------------------- ADDING ROSTER PRODUCTS AND ROSTER GROUPS ------------------------------------------- //
+                RosterGroup group1 = new RosterGroup()
+                {
+                    Description = "The shirt group from sandmar",
+                    Title = "Shirts",
+                    ModelNumber = 1,
+                    GeneralThumbnail = "https://picsum.photos/200",
+                    Category = productCategories[0]
+                };
+                RosterGroup group2 = new RosterGroup()
+                {
+                    Description = "Sandmar Jeans",
+                    Title = "Jeans",
+                    ModelNumber = 2,
+                    GeneralThumbnail = "https://picsum.photos/200",
+                    Category = productCategories[1]
+                };
+                RosterGroup group3 = new RosterGroup()
+                {
+                    Description = "Athletic Shoes",
+                    Title = "Shoes",
+                    ModelNumber = 3,
+                    GeneralThumbnail = "https://picsum.photos/200",
+                    Category = productCategories[2]
+                };
+
                 RosterProduct product1 = new RosterProduct
                 {
-                    ModelNumber = 1,
-                    BasePrice = 10,
                     IsProductActive = true,
                     SKU = 1,
                     BaseColor = colors[0],
                     BaseSize = sizes[0],
-                    Category = productCategories[0]
+                    RosterGroup = group1
                 };
                 PricingHistory pricingHistory = new PricingHistory
                 {
@@ -101,13 +123,11 @@ namespace dropShippingApp.Data
 
                 RosterProduct product2 = new RosterProduct
                 {
-                    ModelNumber = 2,
-                    BasePrice = 30,
                     IsProductActive = true,
-                    SKU = 1,
+                    SKU = 2,
                     BaseColor = colors[1],
                     BaseSize = sizes[1],
-                    Category = productCategories[1]
+                    RosterGroup = group1
                 };
                 PricingHistory pricingHistory3 = new PricingHistory
                 {
@@ -125,13 +145,11 @@ namespace dropShippingApp.Data
 
                 RosterProduct product3 = new RosterProduct
                 {
-                    ModelNumber = 3,
-                    BasePrice = 80,
                     IsProductActive = true,
                     SKU = 1,
                     BaseColor = colors[2],
                     BaseSize = sizes[2],
-                    Category = productCategories[2]
+                    RosterGroup = group2
                 };
                 PricingHistory pricingHistory5 = new PricingHistory
                 {
@@ -149,13 +167,11 @@ namespace dropShippingApp.Data
 
                 RosterProduct product4 = new RosterProduct
                 {
-                    ModelNumber = 4,
-                    BasePrice = 80,
                     IsProductActive = false,
-                    SKU = 1,
+                    SKU = 2,
                     BaseColor = colors[0],
                     BaseSize = sizes[1],
-                    Category = productCategories[2]
+                    RosterGroup = group2
                 };
                 PricingHistory pricingHistory7 = new PricingHistory
                 {
@@ -171,29 +187,13 @@ namespace dropShippingApp.Data
                 product4.AddPricingHistory(pricingHistory8);
 
                 // SAVING ROSTER PRODUCTS TO CONTEXT
+                context.RosterGroups.Add(group1);
+                context.RosterGroups.Add(group2);
+                context.RosterGroups.Add(group3);
                 context.RosterProducts.Add(product1);
                 context.RosterProducts.Add(product2);
                 context.RosterProducts.Add(product3);
                 context.RosterProducts.Add(product4);
-
-
-                // ------------------------------------------- ADDING PRODUCT FAMILIES ------------------------------------------- //
-                var groupNames = new string[] { "Best Socks", "Lazy Pants", "Bedazzled Shirts" };
-                var groupDesc = new string[] { "Mhmmmm tasty", "For the morbidly obese", "Extremely gay" };
-                var groupList = new List<ProductGroup>();
-
-                for(var i = 0; i < 3; i++)
-                {
-                    ProductGroup group = new ProductGroup()
-                    {
-                        Title = groupNames[i],
-                        Description = groupDesc[i],
-                        GeneralThumbnail = "https://i.picsum.photos/id/174/200/200.jpg"
-                    };
-                    context.ProductGroups.Add(group);
-                    await context.SaveChangesAsync();
-                    groupList.Add(group);
-                }
 
 
                 // ------------------------------------------- ADDING CUSTOM PRODUCTS ------------------------------------------- //
@@ -346,11 +346,37 @@ namespace dropShippingApp.Data
                 context.CustomProducts.Add(customProduct7);
                 await context.SaveChangesAsync();
 
+                
+                // ------------------------------------------- ADDING PRODUCT FAMILIES ------------------------------------------- //
+                var groupNames = new string[] { "Best Socks", "Lazy Pants", "Bedazzled Shirts" };
+                var groupDesc = new string[] { "Mhmmmm tasty", "For the morbidly obese", "Extremely gay" };
+                var groupList = new List<ProductGroup>();
+
+                for (var i = 0; i < 3; i++)
+                {
+                    ProductGroup group = new ProductGroup()
+                    {
+                        Title = groupNames[i],
+                        Description = groupDesc[i],
+                        GeneralThumbnail = "https://i.picsum.photos/id/174/200/200.jpg",
+                        PrintDesignPNG = "https://i.picsum.photos/id/174/200/200.jpg",
+                        BaseGroupModelNumber = i + 1
+                    };
+
+                    context.ProductGroups.Add(group);
+                    await context.SaveChangesAsync();
+                    groupList.Add(group);
+                }
 
                 // adding products to group
                 groupList[0].ChildProducts = new List<CustomProduct>() { customProduct, customProduct2, customProduct3 };
                 groupList[1].ChildProducts = new List<CustomProduct>() { customProduct4, customProduct5, customProduct6 };
                 groupList[2].ChildProducts = new List<CustomProduct>() { customProduct7 };
+
+                context.ProductGroups.Update(groupList[0]);
+                context.ProductGroups.Update(groupList[1]);
+                context.ProductGroups.Update(groupList[2]);
+                await context.SaveChangesAsync();
 
 
                 // ------------------------------------------- ADDING COUNTRY/STATE ------------------------------------------- //

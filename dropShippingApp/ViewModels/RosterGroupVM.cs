@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace dropShippingApp.ViewModels
 {
-    public class CartViewModel
+    // this groups all the products of a single product group together
+    public class RosterGroupVM
     {
-        public Decimal CartPrice { get; set; }
-        public List<CartItemViewModel> CartItemVMs { get; set; }
+        public List<RosterProduct> ProductList { get; set; }
     }
 }
