@@ -38,6 +38,13 @@ namespace dropShippingApp.Controllers
             this.productGroupRepo = productGroupRepo;
             this.teamRepo = teamRepo;
         }
+        //for testing controller.
+        //public ProductController(IRosterProductRepo rosterProductRepo,IProductGroupRepo productGroupRepo, ITeamRepo teamRepo)
+        //{
+        //    this.teamRepo = teamRepo;
+        //    this.productGroupRepo = productGroupRepo;
+        //    this.rosterProductRepo = rosterProductRepo;
+        //}
 
         public async Task<IActionResult> Index()
         {
@@ -185,24 +192,6 @@ namespace dropShippingApp.Controllers
 
             // return list
             return View("Search", browseVM);
-        }
-
-        public async Task<IActionResult> GetProductBySKU(int SKU)
-        {
-            var foundProduct = customProductRepo.CustomProducts
-                .Find(product => product.BaseProduct.SKU == SKU);
-
-            // add admin view at some point to browse products
-            throw new NotImplementedException();
-        }
-
-        public async Task<IActionResult> GetProductsByModelNumber(int modelNumber)
-        {
-            var foundProducts = customProductRepo.CustomProducts
-                .Where(product => product.BaseProduct.RosterGroup.ModelNumber == modelNumber);
-
-            // add admin view at some point to browse products
-            throw new NotImplementedException();
         }
     }
 }

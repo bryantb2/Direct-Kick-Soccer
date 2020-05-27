@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace dropShippingApp.Data.Repositories.RealRepos
 {
-    public class RealTeamReqRepo:ITeamCreationReqRepo
+    public class RealTeamRequestRepo:ITeamCreationReqRepo
     {
         private ApplicationDbContext context;
 

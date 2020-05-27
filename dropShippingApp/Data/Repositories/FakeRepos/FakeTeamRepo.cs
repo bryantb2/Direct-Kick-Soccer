@@ -4,9 +4,9 @@ using System.Linq;
 using System.Threading.Tasks;
 using dropShippingApp.Models;
 
-namespace dropShippingApp.Data.Repositories
+namespace dropShippingApp.Data.Repositories.FakeRepos
 {
-    /*public class FakeTeamRepo : ITeamRepo
+    public class FakeTeamRepo : ITeamRepo
     {
         // private fields
         private List<Team> teams = new List<Team>();
@@ -59,14 +59,24 @@ namespace dropShippingApp.Data.Repositories
             }
         }
 
-        /*public async Task<Team> FindTeamByProductId(int productId)
+        public async Task<Team> FindTeamByProductId(int productId)
         {
             // will find custom product in team
+            //var groupList = new List<ProductGroup>();
+
             Team foundTeam = null;
-            foreach(Team t in teams)
+            IEnumerable<CustomProduct> cp;
+          
+            foreach (Team t in teams)
             {
-                foreach(CustomProduct p in t.TeamProducts)
+                cp = t.ProductGroups.SelectMany(x => x.ChildProducts);
+                
+
+
+                foreach(CustomProduct p in cp)
                 {
+                  
+                  
                     if (p.CustomProductID == productId)
                     {
                         foundTeam = t;
@@ -75,7 +85,10 @@ namespace dropShippingApp.Data.Repositories
                 }
                 if (foundTeam != null)
                     break;
+
+              
             }
+           
             return await Task.FromResult<Team>(foundTeam);
         }
 
@@ -87,5 +100,5 @@ namespace dropShippingApp.Data.Repositories
                 foundTeam.IsTeamInactive = true;
             }
         }
-    }*/
+    }
 }
