@@ -30,6 +30,7 @@ namespace dropShippingApp.Controllers
         private ITeamCreationReqRepo teamRequestRepo;
         private ITagRepo tagRepo;
         private IPricingRepo pricingRepo;
+        private IRosterGroupRepo rosterGroupRepo;
 
         public TeamController(
             ITeamRepo teamRepo, 
@@ -43,7 +44,8 @@ namespace dropShippingApp.Controllers
             UserManager<AppUser> userManager,
             ITeamCreationReqRepo teamRequestRepo,
             ITagRepo tagRepo,
-            IPricingRepo pricingRepo)
+            IPricingRepo pricingRepo,
+            IRosterGroupRepo rosterGroupRepo)
         {
             this.teamRepo = teamRepo;
             this.teamSortRepo = sortRepo;
@@ -57,6 +59,7 @@ namespace dropShippingApp.Controllers
             this.teamRequestRepo = teamRequestRepo;
             this.tagRepo = tagRepo;
             this.pricingRepo = pricingRepo;
+            this.rosterGroupRepo = rosterGroupRepo;
         }
 
         public async Task<IActionResult> Index()
@@ -205,14 +208,6 @@ namespace dropShippingApp.Controllers
             return View("Search", browseVM);
         }
 
-        public async Task<IActionResult> MarkTeamInactive(int teamId)
-        {
-            // TODO
-            // returns redirect to browse teams
-            await teamRepo.MarkInactiveById(teamId);
-            return View();
-        }
-
         public async Task<IActionResult> TeamSettings()
         {
             var user = await userRepo.GetUserDataAsync(HttpContext.User);
@@ -249,12 +244,77 @@ namespace dropShippingApp.Controllers
             return View("Index");
         }
 
-        public async Task<IActionResult> ManageTeamProducts()
+        public async Task<IActionResult> AddGroup()
         {
-            // TODO
-            // returns team product management page
-           
-            return View();
+            var tagList = tagRepo.GetTags;
+            var rosterGroupList = rosterGroupRepo.ProductGroups;
+            var createGroupVM = new CreateGroupVM()
+            {
+                DatabaseTags = tagList,
+                RosterGroups = rosterGroupList
+            };
+            return View("AddGroup", createGroupVM);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> AddGroup(CreateGroupVM createdGroupModel)
+        {
+            if(ModelState.IsValid)
+            {
+                // valid user
+                var user = await userRepo.GetUserDataAsync(HttpContext.User);
+                if (user != null)
+                {
+                    // get base roster group
+                    var rosterGroup = rosterGroupRepo.GetGroupById(createdGroupModel.SelectedRosterGroupID);
+                    // create product group
+                    var newGroup = new ProductGroup()
+                    {
+                        Title = createdGroupModel.Title,
+                        Description = createdGroupModel.Description,
+                        GeneralThumbnail = createdGroupModel.GeneralThumbnail,
+                        PrintDesignPNG = createdGroupModel.PrintDesignPNG,
+                        BaseGroupModelNumber = rosterGroup.ModelNumber
+                    };
+
+
+                    // check new tags
+                    var tagList = tagRepo.GetTags;
+                    if (createdGroupModel.NewTagName != null)
+                    {
+                        // add existing tag from DB
+                        var existingTag = tagList.Find(tag => tag.TagLine.ToUpper() == createdGroupModel.NewTagName.ToUpper());
+                        if (existingTag == null)
+                        {
+                            // create tag and add to DB if it does not exist
+                            var newTag = new Tag()
+                            {
+                                TagLine = createdGroupModel.NewTagName
+                            };
+                            await tagRepo.AddTag(newTag);
+                            existingTag = newTag;
+                        }
+                        newGroup.ProductTags.Add(existingTag);
+                    }
+                    else if (createdGroupModel.ExistingTagID != null)
+                    {
+                        // get existing tag from DB, add to group
+                        var existingTag = tagList.Find(tag => tag.TagID == createdGroupModel.ExistingTagID);
+                        newGroup.ProductTags.Add(existingTag);
+                    }
+
+                    // save new group to DB
+                    await productGroupRepo.AddProductGroup(newGroup);
+
+                    // update user team data
+                    user.ManagedTeam.ProductGroups.Add(newGroup);
+                    await userManager.UpdateAsync(user);
+
+                    return RedirectToAction("TeamManagement");
+                }
+            }
+            ModelState.AddModelError(nameof(CreateGroupVM.Title), "Please make sure to fill out all required fields");
+            return View("AddGroup", createdGroupModel);
         }
 
         public async Task<IActionResult> RemoveGroup(int SelectedGroupID)
@@ -477,31 +537,6 @@ namespace dropShippingApp.Controllers
             }
             ModelState.AddModelError(nameof(UpdateProductVM.ProductId), "Please make sure to fill out all fields");
             return View("ModifyGroup", updatedProduct);
-        }
-
-        public async Task<IActionResult> MarkProductInActive(int groupId, int productId)
-        {
-            if (ModelState.IsValid)
-            {
-                // redirects to team product management page
-                var user = await userRepo.GetUserDataAsync(HttpContext.User);
-                // find product
-                var product = user.ManagedTeam.ProductGroups.Find(group => group.ProductGroupID == groupId).ChildProducts
-                    .Find(product => product.CustomProductID == productId);
-
-                if (product != null)
-                {
-                    // mark inactive
-                    // change in DB
-                    product.IsProductActive = false;
-                    await customProductRepo.UpdateCustomProduct(product);
-                }
-
-                // return view
-                throw new NotImplementedException();
-            }
-            // add return statement here too
-            throw new NotImplementedException();
         }
 
         public async Task<IActionResult> UploadNewBanner()

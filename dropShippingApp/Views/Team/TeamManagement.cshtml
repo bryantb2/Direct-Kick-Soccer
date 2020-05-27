@@ -52,6 +52,19 @@
                      model='@new CustomGroupSelectionCardVM { ProductGroups = Model.Team.ProductGroups, ControllerName = "Team", ActionName = "RemoveGroup", ButtonText = "Remove Group", TitleText = "Remove Existing Group" }' />
         </div>
         <div class="col-12 my-5">
+            <article class="profileContainer rounded shadow-lg bg-light w-100">
+                <div class="innerProfileContainer p-4 text-dark">
+                    <div class="d-flex flex-column justify-content-center">
+                        <div class="p-2 text-center">
+                            <h2>Add New Group</h2>
+                        </div>
+                    </div>
+                    <hr class="my-2 border-dark" />
+                    <button asp-controller="Team" asp-action="AddGroup" class="d-flex p-2 pageParagraph btn btn-link">Create New Group</button>
+                </div>
+            </article>
+        </div>
+        <div class="col-12 my-5">
             <partial name="~/Views/Shared/_CustomProductSelectionPartial.cshtml"
                      model='@new CustomProductSelectionCardVM { ProductGroups = Model.Team.ProductGroups, ControllerName = "Team", ActionName = "RemoveProduct", ButtonText = "Remove Product", TitleText = "Remove Existing Product" }' />
         </div>
