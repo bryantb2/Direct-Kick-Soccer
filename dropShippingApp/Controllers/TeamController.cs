@@ -400,12 +400,14 @@ namespace dropShippingApp.Controllers
                         TeamName = request.TeamName,
                         TeamDescription = request.TeamDescription,
                         BusinessEmail = request.BusinessEmail,
+                        PhoneNumber = request.PhoneNumber,
                         CorporatePageURL = request.CorporatePageURL,
                         StreetAddress = request.StreetAddress,
                         Country = myCountry,
                         Providence = myProv,
                         ZipCode = request.ZipCode
                     };
+                    
                     await teamRequestRepo.AddReq(req);
 
                     return View("ReqConfirm");
