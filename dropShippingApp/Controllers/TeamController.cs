@@ -254,7 +254,22 @@ namespace dropShippingApp.Controllers
             return View();
         }
 
-        public async Task<IActionResult> UpdateGroup(CustomGroupSelectionCardVM groupModel)
+        public async Task<IActionResult> RemoveGroup(int SelectedGroupID)
+        {
+            // get user and select the group attached to its team
+            var user = await userRepo.GetUserDataAsync(HttpContext.User);
+            if (user != null)
+            {
+                // check if group exists, for secure removal
+                var doesGroupExist = user.ManagedTeam.ProductGroups
+                    .Exists(group => group.ProductGroupID == SelectedGroupID);
+                if(doesGroupExist)
+                    await productGroupRepo.RemoveProductGroup(SelectedGroupID);
+            }
+            return RedirectToAction("TeamManagement");
+        }
+
+        public async Task<IActionResult> UpdateGroup(int SelectedGroupID)
         {
             // get user and select the group attached to its team
             var user = await userRepo.GetUserDataAsync(HttpContext.User);
@@ -262,8 +277,23 @@ namespace dropShippingApp.Controllers
             {
                 // get the group and return view
                 var foundGroup = user.ManagedTeam.ProductGroups
-                    .Find(group => group.ProductGroupID == groupModel.SelectedGroupID);
-                return View("ModifyGroup", foundGroup);
+                    .Find(group => group.ProductGroupID == SelectedGroupID);
+
+                if(foundGroup == null)
+                    return RedirectToAction("TeamManagement");
+
+                // create updated group VM from found group
+                var updateGroupVM = new UpdateGroupVM()
+                { 
+                    GroupID = foundGroup.ProductGroupID,
+                    Title = foundGroup.Title,
+                    Description = foundGroup.Description,
+                    ThumbnailURL = foundGroup.GeneralThumbnail,
+                    DatabaseTags = tagRepo.GetTags,
+                    ExistingGroupTags = foundGroup.ProductTags
+                };
+
+                return View("ModifyGroup", updateGroupVM);
             }
             return RedirectToAction("TeamManagement");
         }

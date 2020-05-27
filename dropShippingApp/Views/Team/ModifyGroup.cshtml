@@ -7,7 +7,7 @@
 
 <section>
     <h1>Modifying @Model.Title Group </h1>
-    <form asp-controller="Team" asp-action="UpdateGroup" method="post">
+    <form asp-controller="Team" asp-action="UpdateGroup" method="post" asp-route-GroupID=@Model.GroupID>
         <div class="d-flex flex-column">
             <div class="d-flex">
                 <label>Group Title: </label><input type="text" asp-for=@Model.Title />
@@ -31,9 +31,9 @@
             </div>
             <div class="d-flex">
                 <label>Remove Existing Tag: </label>
-                <select id="tagList" asp-for=@Model.ExistingGroupTags>
+                <select id="tagList" asp-for=@Model.RemovedTagID>
                     <option selected value="">Select Tag to Remove</option>
-                    @foreach (var tag in Model.DatabaseTags)
+                    @foreach (var tag in Model.ExistingGroupTags)
                     {
                         <option value=@tag.TagID>@tag.TagLine</option>
                     }

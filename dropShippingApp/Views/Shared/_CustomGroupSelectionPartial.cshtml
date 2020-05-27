@@ -9,17 +9,18 @@
                 <h2>@Model.TitleText</h2>
             </div>
         </div>
-        <select id="groupSelection" asp-for=@Model.SelectedGroupID>
-            <option selected value="">Choose a Variant</option>
-            @foreach (var group in Model.ProductGroups)
-            {
-                <option value=@group.ProductGroupID>@group.Title</option>
-            }
-        </select>
-        <hr class="my-2 border-dark" />
-        <div>
-            <a asp-controller=@Model.ControllerName asp-action=@Model.ActionName
-               class="d-flex p-2 pageParagraph btn btn-link">@Model.ButtonText</a>
-        </div>
+        <form asp-controller=@Model.ControllerName asp-action=@Model.ActionName method="get">
+            <select id="groupSelection" asp-for=@Model.SelectedGroupID>
+                <option selected value="">Choose a Product Group</option>
+                @foreach (var group in Model.ProductGroups)
+                {
+                    <option value=@group.ProductGroupID>@group.Title</option>
+                }
+            </select>
+            <hr class="my-2 border-dark" />
+            <div>
+                <button type="submit" class="d-flex p-2 pageParagraph btn btn-link">@Model.ButtonText</button>
+            </div>
+        </form>
     </div>
 </article>

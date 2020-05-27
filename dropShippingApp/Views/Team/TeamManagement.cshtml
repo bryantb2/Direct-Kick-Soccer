@@ -45,14 +45,15 @@
         </div>
         <div class="col-6 my-5">
             <partial name="~/Views/Shared/_CustomGroupSelectionPartial.cshtml"
-                     model='@new CustomGroupSelectionCardVM { ProductGroups = Model.Team.ProductGroups, ControllerName = "Team", ActionName = "ModifyGroup", ButtonText = "Modify Group", TitleText = "Modify Existing Group" }' />
+                     model='@new CustomGroupSelectionCardVM { ProductGroups = Model.Team.ProductGroups, ControllerName = "Team", ActionName = "UpdateGroup", ButtonText = "Modify Group", TitleText = "Modify Existing Group" }' />
         </div>
         <div class="col-6 my-5">
             <partial name="~/Views/Shared/_CustomGroupSelectionPartial.cshtml"
                      model='@new CustomGroupSelectionCardVM { ProductGroups = Model.Team.ProductGroups, ControllerName = "Team", ActionName = "RemoveGroup", ButtonText = "Remove Group", TitleText = "Remove Existing Group" }' />
         </div>
         <div class="col-12 my-5">
-            Add New Group
+            <partial name="~/Views/Shared/_CustomProductSelectionPartial.cshtml"
+                     model='@new CustomProductSelectionCardVM { ProductGroups = Model.Team.ProductGroups, ControllerName = "Team", ActionName = "RemoveProduct", ButtonText = "Remove Product", TitleText = "Remove Existing Product" }' />
         </div>
         <div class="col-6 my-5">
             <partial name="~/Views/Shared/_CustomProductSelectionPartial.cshtml"
