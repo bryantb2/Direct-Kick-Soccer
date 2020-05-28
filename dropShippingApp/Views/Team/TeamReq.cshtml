@@ -1,46 +1,47 @@
-﻿@model Team
+﻿@*@model Team*@
+@model TeamCreationRequest
 @{
     ViewData["Title"] = "View";
 }
 
     <h1>Submit a New Team Request - Under Construction</h1>
 <div>
-    <form method="post">
+    <form asp-controller="Team" asp-action="TeamReq" method="post">
       <div asp-validation-summary="All"class="required"></div>
 
-        <div><span asp-validation-for="Name" class="required"></span></div>
+        <div><span asp-validation-for="@Model.TeamName" class="required"></span></div>
         <div>
-            Organization Name:<input asp-for="Name" type="text" name="name" />
+            Organization Name:<input asp-for="@Model.TeamName" type="text" />
         </div>
 
-        <div><span asp-validation-for="Description" class="required"></span></div>
+        <div><span asp-validation-for="@Model.TeamDescription" class="required"></span></div>
         <div>
-            Organization Description: <input asp-for="Description" type="text"  name="description"/>
+            Organization Description: <input asp-for="@Model.TeamDescription" type="text"/>
         </div>
 
-        <div><span asp-validation-for="BusinessEmail" class="required"></span></div>
+        <div><span asp-validation-for="@Model.BusinessEmail" class="required"></span></div>
         <div>
-            Contact Email:<input asp-for="BusinessEmail" type="email" name="email" />
+            Contact Email:<input asp-for="@Model.BusinessEmail" type="text" name="businessemail" />
         </div>
 
-        <div><span asp-validation-for="CorporatePageURL" class="required"></span></div>
+        <div><span asp-validation-for="@Model.CorporatePageURL" class="required"></span></div>
         <div>
-            Coporate Page URL: <input asp-for="CorporatePageURL" type="text" name="corporatePageURL"/>
+            Coporate Page URL: <input asp-for="@Model.CorporatePageURL" type="text"/>
         </div>
 
-        <div><span asp-validation-for="PhoneNumber" class="required"></span></div>
+        <div><span asp-validation-for="@Model.PhoneNumber" class="required"></span></div>
         <div>
-            Contact Phone Number:<input asp-for="PhoneNumber" type="text" name="phoneNumber"/>
+            Contact Phone Number:<input asp-for="@Model.PhoneNumber" type="text"/>
         </div>
 
-        <div><span asp-validation-for="StreetAddress" class="required"></span></div>
+        <div><span asp-validation-for="@Model.StreetAddress" class="required"></span></div>
         <div>
-            Address:<input asp-for="StreetAddress" type="text" name="streetAddress" />
+            Address:<input asp-for="@Model.StreetAddress" type="text" />
         </div>
 
-        <div><span asp-validation-for="Country" class="required"></span></div>
+        <div><span class="required"></span></div>
         <div>
-            Country:<select id="country" name="country">
+            Country:<select asp-for="@Model.Country.CountryName" name="country">
                 <option value="United States of America">United States of America</option>
                 <option value="Afganistan">Afghanistan</option>
                 <option value="Albania">Albania</option>
@@ -291,10 +292,10 @@
             </select>
                     </div>
 
-        <div><span asp-validation-for="Providence" class="required"></span></div>
+        <div><span asp-validation-for="@Model.Providence" class="required"></span></div>
         <div>
             State:
-            <select name="providence">
+            <select asp-for="@Model.Providence.ProvinceName" name="province" >
                 <option value="">Choose a state</option>
                 <option value="AL">Alabama</option>
                 <option value="AK">Alaska</option>
@@ -351,9 +352,9 @@
                 </select>
         </div>
 
-        <div><span asp-validation-for="ZipCode" class="required"></span></div>
+        <div><span asp-validation-for="@Model.ZipCode" class="required"></span></div>
         <div>
-            Zip Code:<input asp-for="ZipCode" type="text" />
+            Zip Code:<input asp-for="@Model.ZipCode" type="text" />
         </div>
 
         <button type="submit">Submit</button>

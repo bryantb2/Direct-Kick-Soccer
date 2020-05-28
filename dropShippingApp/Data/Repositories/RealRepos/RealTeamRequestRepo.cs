@@ -7,10 +7,14 @@ using Microsoft.EntityFrameworkCore;
 
 namespace dropShippingApp.Data.Repositories.RealRepos
 {
-    public class RealTeamRequestRepo:ITeamCreationReqRepo
+    public class RealTeamRequestRepo : ITeamCreationReqRepo
     {
         private ApplicationDbContext context;
 
+        public RealTeamRequestRepo(ApplicationDbContext c)
+        {
+            this.context = c;
+        }
         public IQueryable<TeamCreationRequest>Reqs
         {
             get { return context.TeamCreationRequests.Include("Countries").Include("Providences"); }

@@ -10,8 +10,8 @@ using dropShippingApp.Data;
 namespace dropShippingApp.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20200527214814_initial")]
-    partial class initial
+    [Migration("20200528224602_Development")]
+    partial class Development
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -808,8 +808,8 @@ namespace dropShippingApp.Migrations
                     b.Property<bool>("IsApproved")
                         .HasColumnType("bit");
 
-                    b.Property<int>("PhoneNumber")
-                        .HasColumnType("int");
+                    b.Property<string>("PhoneNumber")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int?>("ProvidenceProvinceID")
                         .HasColumnType("int");

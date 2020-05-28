@@ -592,7 +592,7 @@ namespace dropShippingApp.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> TeamReq(TeamCreationRequest request)
+        public async Task<IActionResult> TeamReq(TeamCreationRequest request, string country, string province)
         {
             MyWordFilter filter = new MyWordFilter();
             if (ModelState.IsValid)
@@ -602,10 +602,10 @@ namespace dropShippingApp.Controllers
                     && filter.BadWords(request.StreetAddress) ==false) 
                 {
                     List<Country> countries = locationRepo.Countries;
-                    Country myCountry = countries.First(c => c.CountryName.ToLower() == request.Country.CountryName.ToLower());
+                    Country myCountry = countries.First(c => c.CountryName.ToLower() == country.ToLower());
 
                     List<Province> provinces = locationRepo.Provinces;
-                    Province myProv = provinces.First(p => p.ProvienceAbbreviation.ToLower() == request.Providence.ProvinceName.ToLower());
+                    Province myProv = provinces.First(p => p.ProvienceAbbreviation.ToLower() == province.ToLower());
                     TeamCreationRequest req = new TeamCreationRequest
                     {
                         TeamName = request.TeamName,
