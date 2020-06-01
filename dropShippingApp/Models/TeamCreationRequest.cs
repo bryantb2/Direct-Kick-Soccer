@@ -17,7 +17,7 @@ namespace dropShippingApp.Models
         public Province Providence { get; set; }
         public String CorporatePageURL { get; set; }
         public String BusinessEmail { get; set; }
-        public int PhoneNumber { get; set; }
+        public String PhoneNumber { get; set; }
         public bool IsApproved { get; set; }
 
         // methods
