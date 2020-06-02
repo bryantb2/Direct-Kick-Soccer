@@ -596,7 +596,7 @@ namespace dropShippingApp.Data
 
                 var userArr = new AppUser[3] { user1, user2, user3 };
                 var userPasswordArr = new String[3] { "WhoaDude123!", "MotherRussia123!", "MeatBallRevolver123!" };
-                var roles = new string[3] { "standard", "manager", "admin" };
+                var roles = new string[3] { "Standard", "Manager", "Admin" };
 
                 // assign passwords and add users to DB
                 for (var i = 0; i < userPasswordArr.Length; i++)
