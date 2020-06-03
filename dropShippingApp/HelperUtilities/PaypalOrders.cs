@@ -79,7 +79,6 @@ namespace dropShippingApp.HelperUtilities
         {
             // build purchase units
             // construct order request object
-            var purchaseUnits = await GenerateUnitsByTeam();
             OrderRequest orderRequest = new OrderRequest()
             {
                 CheckoutPaymentIntent = "CAPTURE",
@@ -94,12 +93,22 @@ namespace dropShippingApp.HelperUtilities
                 },
                 // purchase unit represents a purchase of one or more items from a seller
                 // there are many purchase units if there are many sellers (AKA team shops)
-                PurchaseUnits = purchaseUnits
+                PurchaseUnits = new List<PurchaseUnitRequest>()
+                {
+                    new PurchaseUnitRequest()
+                    {
+                        ReferenceId = this.configuration["PaypalCredentials:MerchantID"],
+                        Description = "Clothing and Apparel",
+                        CustomId = this.user.Id, // links transaction to app user
+                        AmountWithBreakdown = GeneratePUnitBreakdown(user.Cart.CartItems),
+                        Items = GeneratePUnitItems(user.Cart.CartItems)
+                    }
+                }
             };
             return orderRequest;
         }
 
-        private async Task<List<PurchaseUnitRequest>> GenerateUnitsByTeam()
+        /*private async Task<List<PurchaseUnitRequest>> GenerateUnitsByTeam()
         {
             // get unique teams list
             // create unit foreach unique team
@@ -115,7 +124,7 @@ namespace dropShippingApp.HelperUtilities
 
                 purchaseUnits.Add(new PurchaseUnitRequest()
                 {
-                    //ReferenceId = this.configuration["PaypalCredentials:MerchantID"], //team.TeamID.ToString(), // links purchase unit to paypal payee ID
+                    ReferenceId = team.TeamID.ToString(), // links purchase unit to paypal payee ID
                     Description = "Clothing and Apparel",
                     CustomId = user.Id.ToString(), // links transaction to app user
                     AmountWithBreakdown = teamBreakdown,
@@ -125,6 +134,7 @@ namespace dropShippingApp.HelperUtilities
             return purchaseUnits;
         }
 
+        /*
         private async Task<List<TeamProduct>> FindAndReturnTeamProducts(List<CartItem> cartItems)
         {
             // go through all products in cart
@@ -173,6 +183,7 @@ namespace dropShippingApp.HelperUtilities
             }
             return teamList;
         }
+        */
 
         private List<Item> GeneratePUnitItems(List<CartItem> cartItems)
         {
