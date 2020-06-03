@@ -11,6 +11,7 @@ namespace dropShippingApp.Models
     {
         [Key]
         public int OrderID { get; set; }
+        public DateTime DatePlaced { get; set; }
         public string PaypalOrderId { get; set; }
         public string SETrackingId { get; set; }
         public string SEReturnTrackingId { get; set; }

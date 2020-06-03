@@ -78,6 +78,7 @@ namespace dropShippingApp.HelperUtilities
             dropShippingApp.Models.Order newDBOrder = new dropShippingApp.Models.Order()
             {
                 PaypalOrderId = paypalOrderID,
+                DatePlaced = DateTime.Now,
                 ProductFamilyIDs = groupIdsList.ToArray(),
                 ProductIDs = productIdsList.ToArray(),
                 TeamIDs = teamIdsList.ToArray()

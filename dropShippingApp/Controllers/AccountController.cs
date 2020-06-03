@@ -49,10 +49,20 @@ namespace dropShippingApp.Controllers
             var userOrderList = new List<InvoiceVM>();
             for (var i = 0; i < userData.UserOrderHistory.Count; i++)
             {
-                // request order data from paypal
                 var currentOrder = userData.UserOrderHistory[i];
+                // request order data from paypal
                 var orderData = await PaypalTransaction.GetOrder(config, currentOrder.PaypalOrderId);
-                // get date sold
+                
+                // build product list from database order
+
+                
+                // create an invoice view model that will get added to the order list
+                var invoiceVM = new InvoiceVM()
+                {
+                    BaseOrder = currentOrder
+                };
+
+
             }
             return View("ViewInvoices", userOrderList);
         }
