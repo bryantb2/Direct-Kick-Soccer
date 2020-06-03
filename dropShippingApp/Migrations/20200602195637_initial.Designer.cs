@@ -10,8 +10,8 @@ using dropShippingApp.Data;
 namespace dropShippingApp.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20200528224602_Development")]
-    partial class Development
+    [Migration("20200602195637_initial")]
+    partial class initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {

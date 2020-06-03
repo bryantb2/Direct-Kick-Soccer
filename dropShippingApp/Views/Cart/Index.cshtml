@@ -42,8 +42,8 @@
         <script>
             const serverURL = "https://localhost:44386";
             paypal.Buttons({
-                createOrder: async function () {
-                    return await fetch(serverURL + '/Cart/CreateOrder', {
+                createOrder: function () {
+                    return fetch(serverURL + '/Cart/CreateOrder', {
                         method: 'POST',
                         headers: {
                             'content-type': 'application/json'
@@ -55,10 +55,10 @@
                         return data.id;
                     });
                 },
-                onApprove: async function (data) {
+                onApprove: function (data) {
                     console.log('logging on approve');
                     console.log(data);
-                    return await fetch(serverURL + '/Cart/GetAndSaveOrder', {
+                    return fetch(serverURL + '/Cart/GetAndSaveOrder', {
                         method: 'POST',
                         headers: {
                             'content-type': 'application/json'

@@ -1,14 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using dropShippingApp.Models;
 using PayPalCheckoutSdk.Core;
 using PayPalCheckoutSdk.Orders;
-using PayPal;
-using Microsoft.AspNetCore;
 using Microsoft.Extensions.Configuration;
-using PayPalHttp;
 using dropShippingApp.Data.Repositories;
 
 namespace dropShippingApp.HelperUtilities
@@ -119,7 +115,7 @@ namespace dropShippingApp.HelperUtilities
 
                 purchaseUnits.Add(new PurchaseUnitRequest()
                 {
-                    ReferenceId = team.TeamID.ToString(), // links purchase unit to team
+                    //ReferenceId = this.configuration["PaypalCredentials:MerchantID"], //team.TeamID.ToString(), // links purchase unit to paypal payee ID
                     Description = "Clothing and Apparel",
                     CustomId = user.Id.ToString(), // links transaction to app user
                     AmountWithBreakdown = teamBreakdown,
