@@ -90,7 +90,7 @@ namespace dropShippingApp.Data.Repositories.RealRepos
 
      
 
-        public async Task<Team> FindTeamById(int teamId)
+        public Team FindTeamById(int teamId)
         {
             return this.context.Teams
                 // basic team property objects
@@ -139,7 +139,7 @@ namespace dropShippingApp.Data.Repositories.RealRepos
                 .Find(team => team.TeamID == teamId);
         }
 
-        public async Task<Team> FindTeamByProductId(int productId)
+        public Team FindTeamByProductId(int productId)
         {
             return this.context.Teams
                 // basic team property objects

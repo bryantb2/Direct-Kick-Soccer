@@ -77,7 +77,7 @@ namespace dropShippingApp.Controllers
 
         public async Task<IActionResult> ViewTeam(int teamId)
         {
-            Team foundTeam = await teamRepo.FindTeamById(teamId);
+            Team foundTeam = teamRepo.FindTeamById(teamId);
             return View(foundTeam);
         }
 
@@ -244,7 +244,7 @@ namespace dropShippingApp.Controllers
         {
             if (ModelState.IsValid)
             {
-                Team foundTeam = await teamRepo.FindTeamById(id);
+                Team foundTeam = teamRepo.FindTeamById(id);
                 foundTeam.Name = teamSettings.Name;
                 foundTeam.Country = teamSettings.Country;
                 foundTeam.Providence = teamSettings.Providence;

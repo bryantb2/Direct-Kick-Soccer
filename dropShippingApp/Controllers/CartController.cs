@@ -225,7 +225,7 @@ namespace dropShippingApp.Controllers
         public async Task<IActionResult> GetAndSaveOrder([FromBody] OrderResponse order)
         {
             // get user from DB
-            var user = await userManager.GetUserAsync(HttpContext.User);
+            var user = await userRepo.GetUserDataAsync(HttpContext.User);
             // process paypal order
             var processedOrder = await PaypalTransaction.ProcessOrder(configuration, order.OrderID);
 
@@ -239,19 +239,23 @@ namespace dropShippingApp.Controllers
             await userManager.UpdateAsync(user);
 
             // clear user cart
-            await ClearCart(user.Cart);
+            await ClearCart(user);
 
             // redirect to main cart page
             return RedirectToAction("Index");
         }
 
-        private async Task ClearCart(Cart userCart)
+        private async Task ClearCart(AppUser user)
         {
-            for(var i = 0; i < userCart.CartItems.Count; i++)
+            // loop through cart items
+            for(var i = 0; i < user.Cart.CartItems.Count; i++)
             {
-                var currentCartItem = userCart.CartItems[i];
+                // remove cart items from DB
+                var currentCartItem = user.Cart.CartItems[i];
                 await cartRepo.RemoveCartItem(currentCartItem.CartItemID);
             }
+            // update user
+            await userManager.UpdateAsync(user);
         }
     }
 }

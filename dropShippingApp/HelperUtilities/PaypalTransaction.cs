@@ -61,17 +61,18 @@ namespace dropShippingApp.HelperUtilities
             for(var i = 0; i < cartItems.Count; i++)
             {
                 var currentItem = cartItems[i];
+                var currentItemId = currentItem.ProductSelection.CustomProductID;
                 // check product id
-                if (!productIdsList.Contains(currentItem.CartItemID.ToString()))
-                    productIdsList.Add(currentItem.CartItemID.ToString());
+                if (!productIdsList.Contains(currentItemId.ToString()))
+                    productIdsList.Add(currentItemId.ToString());
                 // get and check group id
-                var groupId = groupRepo.GetGroupByProductId(currentItem.CartItemID);
+                var groupId = groupRepo.GetGroupByProductId(currentItemId).ProductGroupID;
                 if (!groupIdsList.Contains(groupId.ToString()))
                     groupIdsList.Add(groupId.ToString());
                 // get and check team id
-                var teamid = await teamRepo.FindTeamByProductId(currentItem.CartItemID);
-                if (!teamIdsList.Contains(teamid.ToString()))
-                    teamIdsList.Add(teamid.ToString());
+                var teamId = teamRepo.FindTeamByProductId(currentItemId).TeamID;
+                if (!teamIdsList.Contains(teamId.ToString()))
+                    teamIdsList.Add(teamId.ToString());
             }
 
             dropShippingApp.Models.Order newDBOrder = new dropShippingApp.Models.Order()
