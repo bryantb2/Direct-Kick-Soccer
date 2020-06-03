@@ -146,7 +146,7 @@ namespace dropShippingApp.Controllers
                     {
                         // add new item
                         // get product
-                        var foundProduct = await customProductRepo.GetCustomProductById((int)productId);
+                        var foundProduct = customProductRepo.GetCustomProductById((int)productId);
                         if (foundProduct == null)
                             return NotFound();
 

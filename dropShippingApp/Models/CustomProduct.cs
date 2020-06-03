@@ -40,6 +40,17 @@ namespace dropShippingApp.Models
             }
         }
 
+        public decimal GetPriceAtTimeOfSale(DateTime saleDate)
+        {
+            for (var i = PricingHistory.Count - 1; i >= 0; i++)
+            {
+                var currentHistory = pricingHistory[i];
+                if (saleDate >= currentHistory.DateChanged)
+                    return currentHistory.NewPrice;
+            }
+            return 0m;
+        }
+
         // methods
         public void AddPricingHistory(PricingHistory history) => pricingHistory.Add(history);
         public PricingHistory RemovePricingHistory(int historyId)

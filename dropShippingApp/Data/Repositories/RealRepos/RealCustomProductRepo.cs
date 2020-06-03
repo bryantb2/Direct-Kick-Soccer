@@ -45,7 +45,7 @@ namespace dropShippingApp.Data.Repositories.RealRepos
             await context.SaveChangesAsync();
         }
 
-        public async Task<CustomProduct> GetCustomProductById(int customProductId)
+        public CustomProduct GetCustomProductById(int customProductId)
         {
             return this.context.CustomProducts
                 .Include(product => product.PricingHistory)

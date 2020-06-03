@@ -22,18 +22,24 @@ namespace dropShippingApp.Controllers
         private IUserRepo userRepo;
         private IOrderRepo orderRepo;
         private IConfiguration config;
+        private IProductGroupRepo customGroupRepo;
+        private ICustomProductRepo customProductRepo;
 
         public AccountController(UserManager<AppUser> usrMgr, 
             SignInManager<AppUser> signInMgr,
             IUserRepo userRepo,
             IOrderRepo orderRepo,
-            IConfiguration config)
+            IConfiguration config,
+            IProductGroupRepo customGroupRepo,
+            ICustomProductRepo customProductRepo)
         {
             signInManager = signInMgr;
             userManager = usrMgr;
             this.userRepo = userRepo;
             this.orderRepo = orderRepo;
             this.config = config;
+            this.customGroupRepo = customGroupRepo;
+            this.customProductRepo = customProductRepo;
         }
 
         public async Task<IActionResult> Index()
@@ -52,17 +58,37 @@ namespace dropShippingApp.Controllers
                 var currentOrder = userData.UserOrderHistory[i];
                 // request order data from paypal
                 var orderData = await PaypalTransaction.GetOrder(config, currentOrder.PaypalOrderId);
-                
-                // build product list from database order
 
+                // build product list from database order
+                var invoiceProductList = new List<ProductVM>();
+                foreach(var product in currentOrder.ProductIDs)
+                {
+                    // get product group and individual product from DB
+                    // determine unit price at time of sale
+                    var productGroupData = customGroupRepo.GetGroupByProductId(int.Parse(product));
+                    var productData = customProductRepo.GetCustomProductById(int.Parse(product));
+                    var unitPriceAtSale = productData.GetPriceAtTimeOfSale(currentOrder.DatePlaced);
+                    // create product VM
+                    var productVM = new ProductVM()
+                    {
+                        ProductGroupId = productGroupData.ProductGroupID,
+                        Title = productGroupData.Title,
+                        Description = productGroupData.Description,
+                        GeneralThumbnail = productGroupData.GeneralThumbnail,
+                        UnitPrice = unitPriceAtSale,
+                        Size = productData.BaseProduct.BaseSize,
+                        Color = productData.BaseProduct.BaseColor
+                    };
+                    invoiceProductList.Add(productVM);
+                }
                 
                 // create an invoice view model that will get added to the order list
                 var invoiceVM = new InvoiceVM()
                 {
-                    BaseOrder = currentOrder
+                    BaseOrder = currentOrder,
+                    PurchasedProducts = invoiceProductList
                 };
-
-
+                userOrderList.Add(invoiceVM);
             }
             return View("ViewInvoices", userOrderList);
         }
