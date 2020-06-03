@@ -2,6 +2,7 @@
 using dropShippingApp.ViewModels;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using PayPal.Api;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -23,22 +24,35 @@ namespace dropShippingApp.Controllers
 
         public async Task<IActionResult> Login(LoginViewModel model, string returnUrl)
         {
-            if (ModelState.IsValid)
+            try
             {
-                AppUser user = await userManager.FindByEmailAsync(model.Email);
-                if (user != null)
+                if (ModelState.IsValid)
                 {
-                    await signInManager.SignOutAsync();
-                    var result = await signInManager.PasswordSignInAsync(user, model.Password, false, false);
-                    if (result.Succeeded)
+                    AppUser user = await userManager.FindByEmailAsync(model.Email);
+                    if (user != null)
                     {
-                        return Redirect(returnUrl ?? "/");
+                        await signInManager.SignOutAsync();
+                        var result = await signInManager.PasswordSignInAsync(user, model.Password, false, false);
+                        if (result.Succeeded)
+                        {
+                            return Redirect(returnUrl ?? "/");
+                        }
                     }
-                }
-                ModelState.AddModelError(nameof(LoginViewModel.Email), "Invalid user or password");
+                    ModelState.AddModelError(nameof(LoginViewModel.Email), "Invalid user or password");
 
+                }
+                return View(model);
             }
-            return View(model);
+            catch
+            {
+                ErrorViewModel e = new ErrorViewModel
+                {
+                    RequestId = "DKS-0001",
+                    Message = "An error occured while trying to login."
+                };
+                return View("Error", e);
+            }
+        
         }
     }
 }
