@@ -15,7 +15,7 @@ using Microsoft.Extensions.Configuration;
 
 namespace dropShippingApp.Controllers
 {
-    public class AccountController:Controller
+    public class AccountController : Controller
     {
         private UserManager<AppUser> userManager;
         private SignInManager<AppUser> signInManager;

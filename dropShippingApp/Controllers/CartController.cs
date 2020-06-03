@@ -225,8 +225,8 @@ namespace dropShippingApp.Controllers
         public async Task<IActionResult> GetAndSaveOrder([FromBody] OrderResponse order)
         {
             // get user from DB
-            var user = await userRepo.GetUserDataAsync(HttpContext.User);
             // process paypal order
+            var user = await userRepo.GetUserDataAsync(HttpContext.User);
             var processedOrder = await PaypalTransaction.ProcessOrder(configuration, order.OrderID);
 
             // create order log to store in DB
@@ -235,27 +235,25 @@ namespace dropShippingApp.Controllers
             await orderRepo.AddOrder(newDatabaseOrder);
 
             // update user in DB
-            user.AddPurchaseOrder(newDatabaseOrder);
-            await userManager.UpdateAsync(user);
-
             // clear user cart
-            await ClearCart(user);
+            // update user
+            user.AddPurchaseOrder(newDatabaseOrder);
+            await ClearCart(user.Cart.CartItems.GetRange(0, user.Cart.CartItems.Count));
+            await userManager.UpdateAsync(user);
 
             // redirect to main cart page
             return RedirectToAction("Index");
         }
 
-        private async Task ClearCart(AppUser user)
+        private async Task ClearCart(List<CartItem> cartItems)
         {
             // loop through cart items
-            for(var i = 0; i < user.Cart.CartItems.Count; i++)
+            for(var i = 0; i < cartItems.Count; i++)
             {
                 // remove cart items from DB
-                var currentCartItem = user.Cart.CartItems[i];
+                var currentCartItem = cartItems[i];
                 await cartRepo.RemoveCartItem(currentCartItem.CartItemID);
             }
-            // update user
-            await userManager.UpdateAsync(user);
         }
     }
 }
