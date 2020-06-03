@@ -125,6 +125,11 @@ namespace dropShippingApp.Controllers
             return View(model);
         }
 
+        public async Task<IActionResult> FgtPwd()
+        {
+            return View();
+        }
+
         [HttpGet]
         public async Task<IActionResult> SignoutUser()
         {
