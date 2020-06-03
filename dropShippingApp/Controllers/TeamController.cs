@@ -383,8 +383,18 @@ namespace dropShippingApp.Controllers
                     foundTeam.Description = teamSettings.Description;
 
                     await teamRepo.UpdateTeam(foundTeam);
+
+                    var teamMangementVM = new TeamManagementVM()
+                    {
+                        LifeTimeSales = 0,
+                        MonthlySales = 0,
+                        WeeklySales = 0,
+                        Team = foundTeam,
+                        OfferedProductGroups = null
+                    };
+                    ViewBag.DefaultFooter = false;
+                    return View("TeamManagement", teamMangementVM);
                 }
-                return View(teamSettings);
             }
             catch
             {
@@ -395,7 +405,7 @@ namespace dropShippingApp.Controllers
                 };
                 return View("Error", e);
             }
- 
+            return View();
         }
 
         public async Task<IActionResult> TeamManagement()

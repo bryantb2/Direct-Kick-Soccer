@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace dropShippingApp.Migrations
 {
-    public partial class Development : Migration
+    public partial class Dev : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {

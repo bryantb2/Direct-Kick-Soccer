@@ -577,7 +577,8 @@ namespace dropShippingApp.Data
                     Email = "manager@test.com",
                     NormalizedEmail = "MANAGER@TEST.COM",
                     DateJoined = DateTimeOffset.UtcNow.ToUnixTimeSeconds(),
-                    Cart = carts[1]
+                    Cart = carts[1],
+                    ManagedTeam = team
                 };
                 var user3 = new AppUser
                 {
@@ -589,7 +590,6 @@ namespace dropShippingApp.Data
                     NormalizedEmail = "ADMIN@TEST.COM",
                     DateJoined = DateTimeOffset.UtcNow.ToUnixTimeSeconds(),
                     Cart = carts[2],
-                    ManagedTeam = team
                 };
 
                 

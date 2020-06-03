@@ -10,8 +10,8 @@ using dropShippingApp.Data;
 namespace dropShippingApp.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20200526232756_5-26-2020")]
-    partial class _5262020
+    [Migration("20200603225051_Dev")]
+    partial class Dev
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -460,11 +460,18 @@ namespace dropShippingApp.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+                    b.Property<int>("BaseGroupModelNumber")
+                        .HasColumnType("int");
+
                     b.Property<string>("Description")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("GeneralThumbnail")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PrintDesignPNG")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -592,6 +599,38 @@ namespace dropShippingApp.Migrations
                     b.ToTable("QuestionResponses");
                 });
 
+            modelBuilder.Entity("dropShippingApp.Models.RosterGroup", b =>
+                {
+                    b.Property<int>("RosterGroupID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int>("CategoryProductCategoryID")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("GeneralThumbnail")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("ModelNumber")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("RosterGroupID");
+
+                    b.HasIndex("CategoryProductCategoryID");
+
+                    b.ToTable("RosterGroups");
+                });
+
             modelBuilder.Entity("dropShippingApp.Models.RosterProduct", b =>
                 {
                     b.Property<int>("RosterProductID")
@@ -605,19 +644,13 @@ namespace dropShippingApp.Migrations
                     b.Property<int>("BaseColorProductColorID")
                         .HasColumnType("int");
 
-                    b.Property<decimal>("BasePrice")
-                        .HasColumnType("decimal(18,2)");
-
                     b.Property<int>("BaseSizeProductSizeID")
-                        .HasColumnType("int");
-
-                    b.Property<int>("CategoryProductCategoryID")
                         .HasColumnType("int");
 
                     b.Property<bool>("IsProductActive")
                         .HasColumnType("bit");
 
-                    b.Property<int>("ModelNumber")
+                    b.Property<int?>("RosterGroupID")
                         .HasColumnType("int");
 
                     b.Property<int>("SKU")
@@ -631,7 +664,7 @@ namespace dropShippingApp.Migrations
 
                     b.HasIndex("BaseSizeProductSizeID");
 
-                    b.HasIndex("CategoryProductCategoryID");
+                    b.HasIndex("RosterGroupID");
 
                     b.ToTable("RosterProducts");
                 });
@@ -646,7 +679,7 @@ namespace dropShippingApp.Migrations
                     b.Property<int?>("ProductGroupID")
                         .HasColumnType("int");
 
-                    b.Property<int?>("RosterProductID")
+                    b.Property<int?>("RosterGroupID")
                         .HasColumnType("int");
 
                     b.Property<string>("TagLine")
@@ -659,7 +692,7 @@ namespace dropShippingApp.Migrations
 
                     b.HasIndex("ProductGroupID");
 
-                    b.HasIndex("RosterProductID");
+                    b.HasIndex("RosterGroupID");
 
                     b.HasIndex("TeamID");
 
@@ -775,8 +808,8 @@ namespace dropShippingApp.Migrations
                     b.Property<bool>("IsApproved")
                         .HasColumnType("bit");
 
-                    b.Property<int>("PhoneNumber")
-                        .HasColumnType("int");
+                    b.Property<string>("PhoneNumber")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int?>("ProvidenceProvinceID")
                         .HasColumnType("int");
@@ -974,6 +1007,15 @@ namespace dropShippingApp.Migrations
                         .HasForeignKey("ParentMessageQuestionMessageID");
                 });
 
+            modelBuilder.Entity("dropShippingApp.Models.RosterGroup", b =>
+                {
+                    b.HasOne("dropShippingApp.Models.ProductCategory", "Category")
+                        .WithMany()
+                        .HasForeignKey("CategoryProductCategoryID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("dropShippingApp.Models.RosterProduct", b =>
                 {
                     b.HasOne("dropShippingApp.Models.AppUser", null)
@@ -992,11 +1034,9 @@ namespace dropShippingApp.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("dropShippingApp.Models.ProductCategory", "Category")
+                    b.HasOne("dropShippingApp.Models.RosterGroup", "RosterGroup")
                         .WithMany()
-                        .HasForeignKey("CategoryProductCategoryID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("RosterGroupID");
                 });
 
             modelBuilder.Entity("dropShippingApp.Models.Tag", b =>
@@ -1005,9 +1045,9 @@ namespace dropShippingApp.Migrations
                         .WithMany("ProductTags")
                         .HasForeignKey("ProductGroupID");
 
-                    b.HasOne("dropShippingApp.Models.RosterProduct", null)
+                    b.HasOne("dropShippingApp.Models.RosterGroup", null)
                         .WithMany("ProductTags")
-                        .HasForeignKey("RosterProductID");
+                        .HasForeignKey("RosterGroupID");
 
                     b.HasOne("dropShippingApp.Models.Team", null)
                         .WithMany("TeamTags")
