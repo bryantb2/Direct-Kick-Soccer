@@ -121,6 +121,9 @@ namespace dropShippingApp
                 endpoints.MapRazorPages();
             });
 
+            // Ensure that the database has been created and the latest migration applied
+            context.Database.Migrate();
+
             // seed DB
             SeedData.Seed(app.ApplicationServices);
         }

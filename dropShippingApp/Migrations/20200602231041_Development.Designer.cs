@@ -10,7 +10,7 @@ using dropShippingApp.Data;
 namespace dropShippingApp.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20200528224602_Development")]
+    [Migration("20200602231041_Development")]
     partial class Development
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

@@ -563,8 +563,8 @@ namespace dropShippingApp.Data
                     LastName = "Of Assguard",
                     UserName = "NoobSlayer",
                     NormalizedUserName = "NOOBSLAYER",
-                    Email = "abc123@gmail.com",
-                    NormalizedEmail = "ABC123@GMAIL.COM",
+                    Email = "standard@test.com",
+                    NormalizedEmail = "STANDARD@TEST.COM",
                     DateJoined = DateTimeOffset.UtcNow.ToUnixTimeSeconds(),
                     Cart = carts[0]
                 };
@@ -574,8 +574,8 @@ namespace dropShippingApp.Data
                     LastName = "Fire",
                     UserName = "Kalashnikov",
                     NormalizedUserName = "KALASHNIKOV",
-                    Email = "ak47@yahoo.com",
-                    NormalizedEmail = "AK47@YAHOO.COM",
+                    Email = "manager@test.com",
+                    NormalizedEmail = "MANAGER@TEST.COM",
                     DateJoined = DateTimeOffset.UtcNow.ToUnixTimeSeconds(),
                     Cart = carts[1]
                 };
@@ -585,8 +585,8 @@ namespace dropShippingApp.Data
                     LastName = "Gangsta",
                     UserName = "ItalianCowboy",
                     NormalizedUserName = "ITALIANCOWBODY",
-                    Email = "cowboy@gmail.com",
-                    NormalizedEmail = "COWBOY@GMAIL.COM",
+                    Email = "admin@test.com",
+                    NormalizedEmail = "ADMIN@TEST.COM",
                     DateJoined = DateTimeOffset.UtcNow.ToUnixTimeSeconds(),
                     Cart = carts[2],
                     ManagedTeam = team
@@ -596,7 +596,7 @@ namespace dropShippingApp.Data
 
                 var userArr = new AppUser[3] { user1, user2, user3 };
                 var userPasswordArr = new String[3] { "WhoaDude123!", "MotherRussia123!", "MeatBallRevolver123!" };
-                var roles = new string[3] { "standard", "manager", "admin" };
+                var roles = new string[3] { "Standard", "Manager", "Admin" };
 
                 // assign passwords and add users to DB
                 for (var i = 0; i < userPasswordArr.Length; i++)
