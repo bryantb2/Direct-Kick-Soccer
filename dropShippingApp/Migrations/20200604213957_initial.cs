@@ -416,6 +416,7 @@ namespace dropShippingApp.Migrations
                 {
                     OrderID = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
+                    DatePlaced = table.Column<DateTime>(nullable: false),
                     PaypalOrderId = table.Column<string>(nullable: true),
                     SETrackingId = table.Column<string>(nullable: true),
                     SEReturnTrackingId = table.Column<string>(nullable: true),
@@ -584,6 +585,28 @@ namespace dropShippingApp.Migrations
                         column: x => x.TeamID,
                         principalTable: "Teams",
                         principalColumn: "TeamID",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "OrderItems",
+                columns: table => new
+                {
+                    OrderItemID = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    ProductFamilyID = table.Column<string>(nullable: true),
+                    ProductID = table.Column<string>(nullable: true),
+                    TeamID = table.Column<string>(nullable: true),
+                    OrderID = table.Column<int>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_OrderItems", x => x.OrderItemID);
+                    table.ForeignKey(
+                        name: "FK_OrderItems_Orders_OrderID",
+                        column: x => x.OrderID,
+                        principalTable: "Orders",
+                        principalColumn: "OrderID",
                         onDelete: ReferentialAction.Restrict);
                 });
 
@@ -784,6 +807,11 @@ namespace dropShippingApp.Migrations
                 column: "ProductGroupID");
 
             migrationBuilder.CreateIndex(
+                name: "IX_OrderItems_OrderID",
+                table: "OrderItems",
+                column: "OrderID");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Orders_AppUserId",
                 table: "Orders",
                 column: "AppUserId");
@@ -928,7 +956,7 @@ namespace dropShippingApp.Migrations
                 name: "CartItems");
 
             migrationBuilder.DropTable(
-                name: "Orders");
+                name: "OrderItems");
 
             migrationBuilder.DropTable(
                 name: "PricingHistories");
@@ -950,6 +978,9 @@ namespace dropShippingApp.Migrations
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");
+
+            migrationBuilder.DropTable(
+                name: "Orders");
 
             migrationBuilder.DropTable(
                 name: "CustomProducts");

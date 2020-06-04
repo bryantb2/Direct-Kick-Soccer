@@ -231,7 +231,7 @@ namespace dropShippingApp.Controllers
 
             // create order log to store in DB
             // save order to DB
-            var newDatabaseOrder = await PaypalTransaction.BuildDatabaseOrder(groupRepo, teamRepo, user, order.OrderID);
+            var newDatabaseOrder = await PaypalTransaction.BuildDatabaseOrder(groupRepo, teamRepo, orderRepo, user, order.OrderID);
             await orderRepo.AddOrder(newDatabaseOrder);
 
             // update user in DB

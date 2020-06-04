@@ -391,6 +391,32 @@ namespace dropShippingApp.Migrations
                     b.ToTable("Orders");
                 });
 
+            modelBuilder.Entity("dropShippingApp.Models.OrderItem", b =>
+                {
+                    b.Property<int>("OrderItemID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int?>("OrderID")
+                        .HasColumnType("int");
+
+                    b.Property<string>("ProductFamilyID")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ProductID")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("TeamID")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("OrderItemID");
+
+                    b.HasIndex("OrderID");
+
+                    b.ToTable("OrderItems");
+                });
+
             modelBuilder.Entity("dropShippingApp.Models.PricingHistory", b =>
                 {
                     b.Property<int>("PricingHistoryID")
@@ -963,6 +989,13 @@ namespace dropShippingApp.Migrations
                     b.HasOne("dropShippingApp.Models.AppUser", null)
                         .WithMany("UserOrderHistory")
                         .HasForeignKey("AppUserId1");
+                });
+
+            modelBuilder.Entity("dropShippingApp.Models.OrderItem", b =>
+                {
+                    b.HasOne("dropShippingApp.Models.Order", null)
+                        .WithMany("OrderedItems")
+                        .HasForeignKey("OrderID");
                 });
 
             modelBuilder.Entity("dropShippingApp.Models.PricingHistory", b =>

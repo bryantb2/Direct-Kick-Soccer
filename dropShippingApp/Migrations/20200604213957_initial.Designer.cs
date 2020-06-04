@@ -10,7 +10,7 @@ using dropShippingApp.Data;
 namespace dropShippingApp.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20200602195637_initial")]
+    [Migration("20200604213957_initial")]
     partial class initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -369,6 +369,9 @@ namespace dropShippingApp.Migrations
                     b.Property<string>("AppUserId1")
                         .HasColumnType("nvarchar(450)");
 
+                    b.Property<DateTime>("DatePlaced")
+                        .HasColumnType("datetime2");
+
                     b.Property<string>("PaypalOrderId")
                         .HasColumnType("nvarchar(max)");
 
@@ -388,6 +391,32 @@ namespace dropShippingApp.Migrations
                     b.HasIndex("AppUserId1");
 
                     b.ToTable("Orders");
+                });
+
+            modelBuilder.Entity("dropShippingApp.Models.OrderItem", b =>
+                {
+                    b.Property<int>("OrderItemID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int?>("OrderID")
+                        .HasColumnType("int");
+
+                    b.Property<string>("ProductFamilyID")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ProductID")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("TeamID")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("OrderItemID");
+
+                    b.HasIndex("OrderID");
+
+                    b.ToTable("OrderItems");
                 });
 
             modelBuilder.Entity("dropShippingApp.Models.PricingHistory", b =>
@@ -962,6 +991,13 @@ namespace dropShippingApp.Migrations
                     b.HasOne("dropShippingApp.Models.AppUser", null)
                         .WithMany("UserOrderHistory")
                         .HasForeignKey("AppUserId1");
+                });
+
+            modelBuilder.Entity("dropShippingApp.Models.OrderItem", b =>
+                {
+                    b.HasOne("dropShippingApp.Models.Order", null)
+                        .WithMany("OrderedItems")
+                        .HasForeignKey("OrderID");
                 });
 
             modelBuilder.Entity("dropShippingApp.Models.PricingHistory", b =>

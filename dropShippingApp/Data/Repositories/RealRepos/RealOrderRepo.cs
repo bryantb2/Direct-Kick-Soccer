@@ -1,4 +1,5 @@
 ﻿using dropShippingApp.Models;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,7 +21,9 @@ namespace dropShippingApp.Data.Repositories.RealRepos
         {
             get
             {
-                return this.context.Orders.ToList();
+                return this.context.Orders
+                    .Include(order => order.OrderedItems)
+                    .ToList();
             }
         }
 

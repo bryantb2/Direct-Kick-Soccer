@@ -61,12 +61,12 @@ namespace dropShippingApp.Controllers
 
                 // build product list from database order
                 var invoiceProductList = new List<ProductVM>();
-                foreach(var product in currentOrder.ProductIDs)
+                foreach(var product in currentOrder.OrderedItems)
                 {
                     // get product group and individual product from DB
                     // determine unit price at time of sale
-                    var productGroupData = customGroupRepo.GetGroupByProductId(int.Parse(product));
-                    var productData = customProductRepo.GetCustomProductById(int.Parse(product));
+                    var productGroupData = customGroupRepo.GetGroupByProductId(int.Parse(product.ProductID));
+                    var productData = customProductRepo.GetCustomProductById(int.Parse(product.ProductID));
                     var unitPriceAtSale = productData.GetPriceAtTimeOfSale(currentOrder.DatePlaced);
                     // create product VM
                     var productVM = new ProductVM()
