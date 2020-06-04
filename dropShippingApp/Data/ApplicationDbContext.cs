@@ -17,6 +17,7 @@ namespace dropShippingApp.Data
         public DbSet<CustomProduct> CustomProducts { get; set; }
         public DbSet<RosterProduct> RosterProducts { get; set; }
         public DbSet<Order> Orders { get; set; }
+        public DbSet<OrderItem> OrderItems { get; set; }
         public DbSet<PricingHistory> PricingHistories { get; set; }
         public DbSet<ProductColor> ProductColors { get; set; }
         public DbSet<ProductSize> ProductSizes { get; set; }
