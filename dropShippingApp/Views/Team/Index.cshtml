@@ -6,7 +6,7 @@
     <div class="hero-image">
         <div class="hero-text">
             <h1 style="font-size:50px">Welcome to our Team Page!</h1>
-            <h4><a asp-controller="Team" asp-action="Browse">Browse Teams</a></h4>
+            <h4><a style="color:violet" asp-controller="Team" asp-action="Browse">Search Our Teams</a></h4>
         </div>
     </div>
 
@@ -26,7 +26,7 @@
                     <a asp-controller="Team" asp-action="ViewTeam" asp-route-teamId="@Model[0].TeamID">
                         <img src="http://placekitten.com/300/100" alt="Popular Team" style="width:100%">
                         <div class="carousel-caption">
-                            <h3>Popular Team #1 - @Model[0].Name</h3>
+                            <h3 style="color:violet">Popular Team #1 - @Model[0].Name</h3>
                         </div>
                     </a>
                 </div>
@@ -35,7 +35,7 @@
                     <a asp-controller="Team" asp-action="ViewTeam" asp-route-teamId="@Model[1].TeamID">
                         <img src="http://placekitten.com/300/100" alt="Popular Team" style="width:100%">
                         <div class="carousel-caption">
-                            <h3>Popular Team #2 - @Model[1].Name</h3>
+                            <h3 style="color:violet">Popular Team #2 - @Model[1].Name</h3>
                         </div>
                     </a>
                 </div>
@@ -44,7 +44,7 @@
                     <a asp-controller="Team" asp-action="ViewTeam" asp-route-teamId="@Model[2].TeamID">
                         <img src="http://placekitten.com/300/100" alt="Popular Team" style="width:100%;">
                         <div class="carousel-caption">
-                            <h3>Popular Team #3 - @Model[2].Name</h3>
+                            <h3 style="color:violet">Popular Team #3 - @Model[2].Name</h3>
                         </div>
                     </a>
                 </div>
