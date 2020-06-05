@@ -349,7 +349,7 @@ namespace dropShippingApp.Data
                 
                 // ------------------------------------------- ADDING PRODUCT FAMILIES ------------------------------------------- //
                 var groupNames = new string[] { "Best Socks", "Lazy Pants", "Bedazzled Shirts" };
-                var groupDesc = new string[] { "Mhmmmm tasty", "For the morbidly obese", "Extremely gay" };
+                var groupDesc = new string[] { "Mhmmmm tasty", "For the morbidly obese", "Extremely cool" };
                 var groupList = new List<ProductGroup>();
 
                 for (var i = 0; i < 3; i++)
