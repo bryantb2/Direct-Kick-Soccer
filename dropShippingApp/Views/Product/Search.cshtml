@@ -4,14 +4,15 @@
 
 
     <section class="pt-5">
-        <div>
+        <div class="panel-body">
+            <h1 style="text-align:center">Search for Products</h1>
             <form asp-controller="Product" asp-action="Search" method="get">
                 <div class="d-flex flex-row justify-content-center">
-                    <h1 class="p-2">Search for Products:</h1>
-                    <input class="p-2" type="text" placeholder="Enter a Search Term" asp-for=@Model.SearchString />
-                    <button class="btn" type="submit">Search</button>
+                    <input class="form-control" type="text" placeholder="Search Products" asp-for=@Model.SearchString />
+                    <button class="btn btn-primary" type="submit" style="margin-left: 5px">Search</button>
                 </div>
             </form>
+            <br />
 
             @if (Model != null)
             {

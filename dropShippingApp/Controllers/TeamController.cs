@@ -319,6 +319,7 @@ namespace dropShippingApp.Controllers
 
         public async Task<IActionResult> TeamSettings()
         {
+            ViewBag.DefaultFooter = false;
             try
             {
                 var user = await userRepo.GetUserDataAsync(HttpContext.User);
@@ -866,6 +867,7 @@ namespace dropShippingApp.Controllers
 
         public async Task<IActionResult> TeamReq()
         {
+            ViewBag.DefaultFooter = false;
             return View();
         }
 
