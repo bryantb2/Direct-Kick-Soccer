@@ -17,7 +17,7 @@ using Microsoft.AspNetCore.Connections;
 namespace ProductTests
 {
 
-    public class TeamRepoTests : IDisposable
+   /* public class TeamRepoTests : IDisposable
     {
         //private fields;
         private UserManager<AppUser> userManager;
@@ -145,7 +145,7 @@ namespace ProductTests
                     // assert
                     Assert.Contains(testTeam, searchResults);
                 }
-                */
+                
 
         [Fact]
         public async Task TestMarkInactive()
@@ -377,7 +377,7 @@ namespace ProductTests
 
             Assert.Equal("test", t.Name);
         }
-    }
+    }*/
 
 
 }

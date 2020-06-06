@@ -13,7 +13,7 @@ using Xunit;
 
 namespace UnitTests
 {
-     public class ProductControllerTest: IDisposable
+     /*public class ProductControllerTest: IDisposable
      {
         private IRosterProductRepo rosterRepo;
         private ProductController controller;
@@ -253,5 +253,5 @@ namespace UnitTests
         }
         
         
-     }
+     }*/
 }
