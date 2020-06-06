@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace dropShippingApp.Migrations
 {
-    public partial class initial : Migration
+    public partial class imgurDataConfig : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -45,6 +45,20 @@ namespace dropShippingApp.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Countries", x => x.CountryID);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "ImgurConfiguration",
+                columns: table => new
+                {
+                    ImgurConfigID = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    AccessToken = table.Column<string>(nullable: true),
+                    AccessLastUpdated = table.Column<DateTime>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ImgurConfiguration", x => x.ImgurConfigID);
                 });
 
             migrationBuilder.CreateTable(
@@ -954,6 +968,9 @@ namespace dropShippingApp.Migrations
 
             migrationBuilder.DropTable(
                 name: "CartItems");
+
+            migrationBuilder.DropTable(
+                name: "ImgurConfiguration");
 
             migrationBuilder.DropTable(
                 name: "OrderItems");

@@ -8,6 +8,11 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Web.Helpers;
 using Microsoft.EntityFrameworkCore;
+using RestSharp;
+using Microsoft.Extensions.Configuration;
+using dropShippingApp.HelperUtilities;
+using Newtonsoft.Json;
+using dropShippingApp.APIModels;
 
 namespace dropShippingApp.Data
 {
@@ -16,6 +21,7 @@ namespace dropShippingApp.Data
         public static async void Seed(IServiceProvider prov)
         {
             // get services
+            IConfiguration JSONConfig = prov.GetRequiredService<IConfiguration>();
             UserManager<AppUser> userManager = prov.GetRequiredService<UserManager<AppUser>>();
             RoleManager<IdentityRole> roleManager = prov.GetRequiredService<RoleManager<IdentityRole>>();
             ApplicationDbContext context = prov.GetRequiredService<ApplicationDbContext>();
@@ -675,6 +681,22 @@ namespace dropShippingApp.Data
                 context.TeamSorts.Add(oldestSort);
                 context.TeamSorts.Add(newestSort);
                 context.TeamSorts.Add(mostPopular);
+                await context.SaveChangesAsync();
+
+
+                // ------------------------------------------- CREATE IMGUR CONFIG DATA ------------------------------------------- //
+                var clientId = JSONConfig["ImgurCredentials:ClientID"];
+                var clientSecret = JSONConfig["ImgurCredentials:Secret"];
+                var responseToken = JSONConfig["ImgurCredentials:RefreshToken"];
+                var requestResponse = ImagurAuth.GetAccessToken(clientId, clientSecret, responseToken);
+                var requestBody = JsonConvert.DeserializeObject<ImgurTokenResponse>(requestResponse.Content);
+                var imgurData = new ImgurConfig
+                { 
+                    // test this
+                    AccessToken = requestBody.access_token,
+                    AccessLastUpdated = DateTime.Now
+                };
+                context.ImgurConfiguration.Add(imgurData);
                 await context.SaveChangesAsync();
 
             }

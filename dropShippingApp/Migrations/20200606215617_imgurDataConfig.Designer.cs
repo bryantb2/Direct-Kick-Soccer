@@ -10,8 +10,8 @@ using dropShippingApp.Data;
 namespace dropShippingApp.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20200604213957_initial")]
-    partial class initial
+    [Migration("20200606215617_imgurDataConfig")]
+    partial class imgurDataConfig
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -354,6 +354,24 @@ namespace dropShippingApp.Migrations
                     b.HasIndex("ProductGroupID");
 
                     b.ToTable("CustomProducts");
+                });
+
+            modelBuilder.Entity("dropShippingApp.Models.ImgurConfig", b =>
+                {
+                    b.Property<int>("ImgurConfigID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<DateTime>("AccessLastUpdated")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("AccessToken")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("ImgurConfigID");
+
+                    b.ToTable("ImgurConfiguration");
                 });
 
             modelBuilder.Entity("dropShippingApp.Models.Order", b =>

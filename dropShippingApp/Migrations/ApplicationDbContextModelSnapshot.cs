@@ -354,6 +354,24 @@ namespace dropShippingApp.Migrations
                     b.ToTable("CustomProducts");
                 });
 
+            modelBuilder.Entity("dropShippingApp.Models.ImgurConfig", b =>
+                {
+                    b.Property<int>("ImgurConfigID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<DateTime>("AccessLastUpdated")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("AccessToken")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("ImgurConfigID");
+
+                    b.ToTable("ImgurConfiguration");
+                });
+
             modelBuilder.Entity("dropShippingApp.Models.Order", b =>
                 {
                     b.Property<int>("OrderID")
