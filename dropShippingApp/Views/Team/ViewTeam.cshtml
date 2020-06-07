@@ -9,7 +9,14 @@
 
 <section>
     <div class="view-team-banner-container">
-        <img class="view-team-banner-img" src=@Model.TeamBannerLink />
+        @if (Model.ImgurImageID != null)
+        {
+            <img class="view-team-banner-img" src="https://api.imgur.com/3/image/" + @Model.ImgurImageID />
+        }
+        else
+        {
+            <img class="view-team-banner-img" src="https://www.hackworks.com/img/account/default-team-avatar.png" />
+        }
         <div class="view-team-banner-text">
             <h1>Welcome to @Model.Name's Page</h1>
         </div>

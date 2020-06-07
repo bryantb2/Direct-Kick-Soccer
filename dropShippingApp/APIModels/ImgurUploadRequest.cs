@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace dropShippingApp.APIModels
 {
-    public class ImgurUpload
+    public class ImgurUploadRequest
     {
         public IFormFile Image { get; set; }
         public string LinkToImage { get; set; }

@@ -456,8 +456,8 @@ namespace dropShippingApp.Data
                     PhoneNumber = "541-234-4040",
                     IsTeamInactive = false,
                     IsHostTeam = true,
-                    Category = teamCategories[0],
-                    TeamBannerLink = "https://picsum.photos/id/237/200/300"
+                    Category = teamCategories[0] //,
+                    //TeamBannerLink = "https://picsum.photos/id/237/200/300"
                 };
 
                 Team team1 = new Team()
@@ -474,8 +474,8 @@ namespace dropShippingApp.Data
                     PhoneNumber = "541-554-4157",
                     IsTeamInactive = false,
                     IsHostTeam = false,
-                    Category = teamCategories[1],
-                    TeamBannerLink = "https://picsum.photos/id/237/200/300"
+                    Category = teamCategories[1] //,
+                    //TeamBannerLink = "https://picsum.photos/id/237/200/300"
                 };
 
                 Team team2 = new Team()
@@ -492,8 +492,8 @@ namespace dropShippingApp.Data
                     PhoneNumber = "377-849-9071",
                     IsTeamInactive = false,
                     IsHostTeam = false,
-                    Category = teamCategories[2],
-                    TeamBannerLink = "https://picsum.photos/id/237/200/300"
+                    Category = teamCategories[2] //,
+                    //TeamBannerLink = "https://picsum.photos/id/237/200/300"
                 };
 
                 team.AddProductGroup(groupList[0]);

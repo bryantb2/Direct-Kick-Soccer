@@ -8,6 +8,7 @@ namespace dropShippingApp.Data.Repositories
 {
     public interface IImgurRepo
     {
+        ImgurConfig GetConfig { get; }
         Task CreateInitialConfig(ImgurConfig config);
         Task UpdateConfig(ImgurConfig config);
     }

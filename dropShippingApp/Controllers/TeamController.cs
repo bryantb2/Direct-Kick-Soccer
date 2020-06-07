@@ -13,6 +13,7 @@ using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
 using dropShippingApp.APIModels;
 using Microsoft.Extensions.Configuration;
+using Newtonsoft.Json;
 
 namespace dropShippingApp.Controllers
 {
@@ -34,6 +35,7 @@ namespace dropShippingApp.Controllers
         private IPricingRepo pricingRepo;
         private IRosterGroupRepo rosterGroupRepo;
         private IConfiguration configuration;
+        private IImgurRepo imgurConfigRepo;
 
         public TeamController(
             ITeamRepo teamRepo,
@@ -49,7 +51,8 @@ namespace dropShippingApp.Controllers
             ITagRepo tagRepo,
             IPricingRepo pricingRepo,
             IRosterGroupRepo rosterGroupRepo,
-            IConfiguration configuration)
+            IConfiguration configuration,
+            IImgurRepo imgurConfigRepo)
         {
             this.teamRepo = teamRepo;
             this.teamSortRepo = sortRepo;
@@ -65,6 +68,7 @@ namespace dropShippingApp.Controllers
             this.pricingRepo = pricingRepo;
             this.rosterGroupRepo = rosterGroupRepo;
             this.configuration = configuration;
+            this.imgurConfigRepo = imgurConfigRepo;
         }
 
         public async Task<IActionResult> Index()
@@ -222,7 +226,7 @@ namespace dropShippingApp.Controllers
             {
                 // check if imgur ID is in use
                 var teamData = user.ManagedTeam;
-                var bannerData = new ImgurUpload();
+                var bannerData = new ImgurUploadRequest();
                 if (teamData.ImgurImageID != null)
                 {
                     // get imgur data, set link 
@@ -234,15 +238,34 @@ namespace dropShippingApp.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> TeamBannerUpload(ImgurUpload imageData)
+        public async Task<IActionResult> TeamBannerUpload(ImgurUploadRequest imageData)
         {
             if(ModelState.IsValid)
             {
                 // get user data
                 AppUser user = await userRepo.GetUserDataAsync(HttpContext.User);
-                if(user != null)
+                if (user != null)
                 {
-
+                    // delete old image if exists
+                    // upload new image
+                    // get new image ID and set to team in DB
+                    var userTeam = user.ManagedTeam;
+                    var imagurConfig = imgurConfigRepo.GetConfig;
+                    if (userTeam.ImgurImageID != null)
+                    {
+                        var oldPhotoID = user.ManagedTeam.ImgurImageID;
+                        var accessToken = imagurConfig.AccessToken;
+                        ImagurAuth.DeleteImage(oldPhotoID, accessToken);
+                    }
+                    var imageDataResponse = ImagurAuth.AddImage(imageData, configuration["ImgurCredentials:ClientID"]);
+                    var responseBody = JsonConvert.DeserializeObject<ImgurUploadResponse>(imageDataResponse.Content);
+                    userTeam.ImgurImageID = responseBody.data.id;
+                    // update team data
+                    await teamRepo.UpdateTeam(userTeam);
+                }
+                else
+                {
+                    return RedirectToAction("TeamBannerUpload");
                 }
             }
             return RedirectToAction("TeamManagement");

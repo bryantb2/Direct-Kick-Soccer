@@ -16,6 +16,14 @@ namespace dropShippingApp.Data.Repositories.RealRepos
             this.context = context;
         }
 
+        public ImgurConfig GetConfig
+        {
+            get
+            {
+                return this.context.ImgurConfiguration.ToList()[0];
+            }
+        }
+
         public async Task CreateInitialConfig(ImgurConfig config)
         {
             this.context.ImgurConfiguration.Add(config);

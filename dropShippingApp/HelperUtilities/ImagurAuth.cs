@@ -24,7 +24,7 @@ namespace dropShippingApp.HelperUtilities
             return response;
         }
 
-        public static IRestResponse AddImage(ImgurUpload imageData, string clientId)
+        public static IRestResponse AddImage(ImgurUploadRequest imageData, string clientId)
         {
             var client = new RestClient("https://api.imgur.com/3/image");
             client.Timeout = -1;
