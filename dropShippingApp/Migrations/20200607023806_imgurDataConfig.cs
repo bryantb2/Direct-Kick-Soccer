@@ -220,7 +220,7 @@ namespace dropShippingApp.Migrations
                     ZipCode = table.Column<string>(nullable: false),
                     CorporatePageURL = table.Column<string>(nullable: false),
                     BusinessEmail = table.Column<string>(nullable: false),
-                    TeamBannerPNG = table.Column<string>(nullable: false),
+                    TeamBannerLink = table.Column<string>(nullable: false),
                     PhoneNumber = table.Column<string>(nullable: false),
                     IsTeamInactive = table.Column<bool>(nullable: false),
                     IsHostTeam = table.Column<bool>(nullable: false),
@@ -657,7 +657,7 @@ namespace dropShippingApp.Migrations
                 {
                     CustomProductID = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    ProductPNG = table.Column<string>(nullable: false),
+                    ProductPNG = table.Column<string>(nullable: true),
                     IsProductActive = table.Column<bool>(nullable: false),
                     BaseProductRosterProductID = table.Column<int>(nullable: false),
                     AppUserId = table.Column<string>(nullable: true),

@@ -457,7 +457,7 @@ namespace dropShippingApp.Data
                     IsTeamInactive = false,
                     IsHostTeam = true,
                     Category = teamCategories[0],
-                    TeamBannerPNG = "https://picsum.photos/id/237/200/300"
+                    TeamBannerLink = "https://picsum.photos/id/237/200/300"
                 };
 
                 Team team1 = new Team()
@@ -475,7 +475,7 @@ namespace dropShippingApp.Data
                     IsTeamInactive = false,
                     IsHostTeam = false,
                     Category = teamCategories[1],
-                    TeamBannerPNG = "https://picsum.photos/id/237/200/300"
+                    TeamBannerLink = "https://picsum.photos/id/237/200/300"
                 };
 
                 Team team2 = new Team()
@@ -493,7 +493,7 @@ namespace dropShippingApp.Data
                     IsTeamInactive = false,
                     IsHostTeam = false,
                     Category = teamCategories[2],
-                    TeamBannerPNG = "https://picsum.photos/id/237/200/300"
+                    TeamBannerLink = "https://picsum.photos/id/237/200/300"
                 };
 
                 team.AddProductGroup(groupList[0]);

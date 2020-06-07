@@ -340,7 +340,6 @@ namespace dropShippingApp.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("ProductPNG")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("CustomProductID");
@@ -793,7 +792,7 @@ namespace dropShippingApp.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("TeamBannerPNG")
+                    b.Property<string>("TeamBannerLink")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 

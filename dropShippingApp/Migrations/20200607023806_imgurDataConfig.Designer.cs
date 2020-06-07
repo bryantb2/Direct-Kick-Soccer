@@ -10,7 +10,7 @@ using dropShippingApp.Data;
 namespace dropShippingApp.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20200606215617_imgurDataConfig")]
+    [Migration("20200607023806_imgurDataConfig")]
     partial class imgurDataConfig
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -342,7 +342,6 @@ namespace dropShippingApp.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("ProductPNG")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("CustomProductID");
@@ -795,7 +794,7 @@ namespace dropShippingApp.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("TeamBannerPNG")
+                    b.Property<string>("TeamBannerLink")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 

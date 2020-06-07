@@ -11,8 +11,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Identity;
-
+using dropShippingApp.APIModels;
+using Microsoft.Extensions.Configuration;
 
 namespace dropShippingApp.Controllers
 {
@@ -33,6 +33,7 @@ namespace dropShippingApp.Controllers
         private ITagRepo tagRepo;
         private IPricingRepo pricingRepo;
         private IRosterGroupRepo rosterGroupRepo;
+        private IConfiguration configuration;
 
         public TeamController(
             ITeamRepo teamRepo,
@@ -47,7 +48,8 @@ namespace dropShippingApp.Controllers
             ITeamCreationReqRepo teamRequestRepo,
             ITagRepo tagRepo,
             IPricingRepo pricingRepo,
-            IRosterGroupRepo rosterGroupRepo)
+            IRosterGroupRepo rosterGroupRepo,
+            IConfiguration configuration)
         {
             this.teamRepo = teamRepo;
             this.teamSortRepo = sortRepo;
@@ -62,6 +64,7 @@ namespace dropShippingApp.Controllers
             this.tagRepo = tagRepo;
             this.pricingRepo = pricingRepo;
             this.rosterGroupRepo = rosterGroupRepo;
+            this.configuration = configuration;
         }
 
         public async Task<IActionResult> Index()
@@ -209,6 +212,40 @@ namespace dropShippingApp.Controllers
 
             // return list
             return View("Search", browseVM);
+        }
+
+        public async Task<IActionResult> TeamBannerUpload()
+        {
+            // get user data
+            AppUser user = await userRepo.GetUserDataAsync(HttpContext.User);
+            if (user != null)
+            {
+                // check if imgur ID is in use
+                var teamData = user.ManagedTeam;
+                var bannerData = new ImgurUpload();
+                if (teamData.ImgurImageID != null)
+                {
+                    // get imgur data, set link 
+                    bannerData.LinkToImage = "https://api.imgur.com/3/image/" + teamData.ImgurImageID;
+                }
+                return View("UploadBanner", bannerData);
+            }
+            return RedirectToAction("TeamManagement");
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> TeamBannerUpload(ImgurUpload imageData)
+        {
+            if(ModelState.IsValid)
+            {
+                // get user data
+                AppUser user = await userRepo.GetUserDataAsync(HttpContext.User);
+                if(user != null)
+                {
+
+                }
+            }
+            return RedirectToAction("TeamManagement");
         }
 
         public async Task<IActionResult> TeamSettings()
