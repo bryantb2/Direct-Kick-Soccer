@@ -28,6 +28,7 @@ namespace dropShippingApp.Data.Repositories.RealRepos
                     .Include(team => team.TeamTags)
                     .Include(team => team.ProductGroups)
                     .Include(team => team.Country)
+                    .Include(team => team.BannerImageData)
                     // get product group data
                     .Include(team => team.ProductGroups)
                         .ThenInclude(group => group.ProductTags)
@@ -100,6 +101,7 @@ namespace dropShippingApp.Data.Repositories.RealRepos
                 .Include(team => team.TeamTags)
                 .Include(team => team.ProductGroups)
                 .Include(team => team.Country)
+                .Include(team => team.BannerImageData)
                 // get product group data
                 .Include(team => team.ProductGroups)
                     .ThenInclude(group => group.ProductTags)
@@ -149,6 +151,7 @@ namespace dropShippingApp.Data.Repositories.RealRepos
                 .Include(team => team.TeamTags)
                 .Include(team => team.ProductGroups)
                 .Include(team => team.Country)
+                .Include(team => team.BannerImageData)
                 // get product group data
                 .Include(team => team.ProductGroups)
                     .ThenInclude(group => group.ProductTags)
