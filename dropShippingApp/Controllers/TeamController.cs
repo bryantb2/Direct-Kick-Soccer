@@ -229,8 +229,8 @@ namespace dropShippingApp.Controllers
                 var bannerData = new ImgurUploadRequest();
                 if (teamData.ImgurImageID != null)
                 {
-                    // get imgur data, set link 
-                    bannerData.LinkToImage = "https://api.imgur.com/3/image/" + teamData.ImgurImageID;
+                       // get imgur data, set link 
+                       bannerData.LinkToImage = "https://i.imgur.com/" + teamData.ImgurImageID + ".jpg";
                 }
                 return View("UploadBanner", bannerData);
             }

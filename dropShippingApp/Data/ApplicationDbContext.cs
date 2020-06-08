@@ -35,5 +35,6 @@ namespace dropShippingApp.Data
         public DbSet<ProductGroup> ProductGroups { get; set; }
         public DbSet<RosterGroup> RosterGroups { get; set; }
         public DbSet<ImgurConfig> ImgurConfiguration { get; set; }
+        public DbSet<ImgurPhotoData> SavedImgurPhotos { get; set; }
     }   
 }
