@@ -9,9 +9,9 @@
 
 <section>
     <div class="view-team-banner-container">
-        @if (Model.Team.ImgurImageID != null)
+        @if (Model.Team.BannerImageData != null)
         {
-            <img class="view-team-banner-img" src=@string.Concat("https://i.imgur.com/", Model.Team.ImgurImageID,".jpg") />
+            <img class="view-team-banner-img" src=@string.Concat("https://i.imgur.com/", Model.Team.BannerImageData.PhotoID,".jpg") />
         }
         else
         {

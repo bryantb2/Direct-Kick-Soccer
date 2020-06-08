@@ -40,9 +40,9 @@ namespace dropShippingApp.HelperUtilities
             return response;
         }
 
-        public static IRestResponse DeleteImage(string photoId, string accessToken)
+        public static IRestResponse DeleteImage(string deleteHash, string accessToken)
         {
-            var client = new RestClient("https://api.imgur.com/3/image/" + photoId);
+            var client = new RestClient("https://api.imgur.com/3/image/" + deleteHash);
             client.Timeout = -1;
             var request = new RestRequest(Method.DELETE);
             request.AddHeader("Authorization", "Bearer " + accessToken);

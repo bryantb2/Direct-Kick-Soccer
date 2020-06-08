@@ -36,6 +36,7 @@ namespace dropShippingApp.Controllers
         private IRosterGroupRepo rosterGroupRepo;
         private IConfiguration configuration;
         private IImgurRepo imgurConfigRepo;
+        private IImgurPhotoRepo imgurPhotoRepo;
 
         public TeamController(
             ITeamRepo teamRepo,
@@ -52,7 +53,8 @@ namespace dropShippingApp.Controllers
             IPricingRepo pricingRepo,
             IRosterGroupRepo rosterGroupRepo,
             IConfiguration configuration,
-            IImgurRepo imgurConfigRepo)
+            IImgurRepo imgurConfigRepo,
+            IImgurPhotoRepo imgurPhotoRepo)
         {
             this.teamRepo = teamRepo;
             this.teamSortRepo = sortRepo;
@@ -69,6 +71,7 @@ namespace dropShippingApp.Controllers
             this.rosterGroupRepo = rosterGroupRepo;
             this.configuration = configuration;
             this.imgurConfigRepo = imgurConfigRepo;
+            this.imgurPhotoRepo = imgurPhotoRepo;
         }
 
         public async Task<IActionResult> Index()
@@ -227,10 +230,10 @@ namespace dropShippingApp.Controllers
                 // check if imgur ID is in use
                 var teamData = user.ManagedTeam;
                 var bannerData = new ImgurUploadRequest();
-                if (teamData.ImgurImageID != null)
+                if (teamData.BannerImageData != null)
                 {
                        // get imgur data, set link 
-                       bannerData.LinkToImage = "https://i.imgur.com/" + teamData.ImgurImageID + ".jpg";
+                       bannerData.LinkToImage = "https://i.imgur.com/" + teamData.BannerImageData.PhotoID + ".jpg";
                 }
                 return View("UploadBanner", bannerData);
             }
@@ -246,26 +249,53 @@ namespace dropShippingApp.Controllers
                 AppUser user = await userRepo.GetUserDataAsync(HttpContext.User);
                 if (user != null)
                 {
-                    // delete old image if exists
-                    // upload new image
-                    // get new image ID and set to team in DB
                     // setup image data object
                     var userTeam = user.ManagedTeam;
                     var imagurConfig = imgurConfigRepo.GetConfig;
                     imageData.Type = "base64";
                     imageData.Title = userTeam.Name + "_teamBanner";
                     imageData.Description = "Team banner image";
-                    if (userTeam.ImgurImageID != null)
+
+                    // delete old image if exists
+                    if (userTeam.BannerImageData != null)
                     {
-                        var oldPhotoID = user.ManagedTeam.ImgurImageID;
+                        var oldPhotoDeleteHash = user.ManagedTeam.BannerImageData.DeleteHash;
                         var accessToken = imagurConfig.AccessToken;
-                        var imageDeleteData = ImagurAuth.DeleteImage(oldPhotoID, accessToken);
+                        var imageDeleteData = ImagurAuth.DeleteImage(oldPhotoDeleteHash, accessToken);
                         var deleteResponse = JsonConvert.DeserializeObject<ImgurBasicUploadResponse>(imageDeleteData.Content);
                     }
+
+                    // upload new image, parse result
                     var imageDataResponse = ImagurAuth.AddImage(imageData, configuration["ImgurCredentials:ClientID"]);
                     var responseBody = JsonConvert.DeserializeObject<ImgurUploadResponse>(imageDataResponse.Content);
-                    if(responseBody.status == 200)
-                        userTeam.ImgurImageID = responseBody.data.id;
+                    
+                    // get new image ID and set to team in DB
+                    if (responseBody.status == 200)
+                    {
+                        if (userTeam.BannerImageData != null)
+                        {
+                            // update existing image data
+                            var updatedBannerModel = userTeam.BannerImageData;
+                            updatedBannerModel.PhotoID = responseBody.data.id;
+                            updatedBannerModel.DeleteHash = responseBody.data.deletehash;
+
+                            // save to database
+                            await imgurPhotoRepo.UpdatePhoto(updatedBannerModel);
+                        }
+                        else
+                        {
+                            // create and set image data
+                            var newBannerModel = new ImgurPhotoData()
+                            {
+                                PhotoID = responseBody.data.id,
+                                DeleteHash = responseBody.data.deletehash
+                            };
+
+                            // save to database and add to team
+                            await imgurPhotoRepo.AddPhoto(newBannerModel);
+                            userTeam.BannerImageData = newBannerModel;
+                        }
+                    } 
                     else
                         return RedirectToAction("TeamBannerUpload");
                     // update team data
@@ -644,15 +674,6 @@ namespace dropShippingApp.Controllers
             ModelState.AddModelError(nameof(UpdateProductVM.ProductId), "Please make sure to fill out all fields");
             return View("ModifyGroup", updatedProduct);
         }
-
-        public async Task<IActionResult> UploadNewBanner()
-        {
-            // TODO: will take in formdata with an image
-            // shove image into AWS file system
-            // return home management page
-            return View();
-        }
-
 
         public async Task<IActionResult> TeamReq()
         {
