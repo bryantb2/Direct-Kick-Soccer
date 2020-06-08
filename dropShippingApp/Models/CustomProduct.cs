@@ -14,8 +14,7 @@ namespace dropShippingApp.Models
 
         // public properties
         public int CustomProductID { get; set; }
-        public string ProductPNG { get; set; }
-        public string ImgurImageID { get; set; }
+        public ImgurPhotoData ProductPhotoData { get; set; }
         [Required]
         public bool IsProductActive { get; set; }
         [Required]

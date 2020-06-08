@@ -37,6 +37,7 @@ namespace dropShippingApp.Controllers
         private IConfiguration configuration;
         private IImgurRepo imgurConfigRepo;
         private IImgurPhotoRepo imgurPhotoRepo;
+        private IRosterProductRepo rosterProductRepo;
 
         public TeamController(
             ITeamRepo teamRepo,
@@ -54,7 +55,8 @@ namespace dropShippingApp.Controllers
             IRosterGroupRepo rosterGroupRepo,
             IConfiguration configuration,
             IImgurRepo imgurConfigRepo,
-            IImgurPhotoRepo imgurPhotoRepo)
+            IImgurPhotoRepo imgurPhotoRepo,
+            IRosterProductRepo rosterProductRepo)
         {
             this.teamRepo = teamRepo;
             this.teamSortRepo = sortRepo;
@@ -72,6 +74,7 @@ namespace dropShippingApp.Controllers
             this.configuration = configuration;
             this.imgurConfigRepo = imgurConfigRepo;
             this.imgurPhotoRepo = imgurPhotoRepo;
+            this.rosterProductRepo = rosterProductRepo;
         }
 
         public async Task<IActionResult> Index()
@@ -578,7 +581,7 @@ namespace dropShippingApp.Controllers
                         ProductId = selectedProductModel.SelectedProductID,
                         GroupId = selectedProductModel.SelectedGroupID,
                         ProductName = selectedGroup.Title,
-                        ProductImageURL = selectedProduct.ProductPNG,
+                        //ProductImageURL = selectedProduct.ProductPNG, // TODO
                         CurrentPrice = selectedProduct.CurrentPrice
                     };
                     return View("ModifyProduct", modifyProductVM);
@@ -601,7 +604,8 @@ namespace dropShippingApp.Controllers
                         .Find(group => group.ProductGroupID == updatedProduct.GroupId).ChildProducts
                         .Find(product => product.CustomProductID == updatedProduct.ProductId);
                     // set product properties
-                    foundProduct.ProductPNG = updatedProduct.ProductImageURL;
+                    //todo
+                    //foundProduct.ProductPNG = updatedProduct.ProductImageURL;
                     if(updatedProduct.CurrentPrice != null)
                     {
                         var newPricingHistory = new PricingHistory()
@@ -623,28 +627,54 @@ namespace dropShippingApp.Controllers
             return View("ModifyGroup", updatedProduct);
         }
 
-        public async Task<IActionResult> AddTeamProduct(int groupId, CustomProduct customProduct)
+        public async Task<IActionResult> AddTeamProduct(int groupId)
         {
             if(ModelState.IsValid)
             {
-                // redirects to team product management page
+                // get user and team data
                 var user = await userRepo.GetUserDataAsync(HttpContext.User);
-                // get the group
                 var group = user.ManagedTeam.ProductGroups.Find(group => group.ProductGroupID == groupId);
-                // add product to DB
-                // add product to group
-                // update group in DB
-                // update user in DB
-                await customProductRepo.AddCustomProduct(customProduct);
-                group.ChildProducts.Add(customProduct);
-                await productGroupRepo.UpdateProductGroup(group);
-                await userManager.UpdateAsync(user);
+
+                // get all roster products, filter the ones with the group model number passed in by user
+                // note: roster product list does NOT include base roster products that are already in use within the current group
+                var availbleRosterList = rosterProductRepo.GetRosterProducts
+                    .Where(
+                        product => product.RosterGroup.ModelNumber == group.BaseGroupModelNumber &&
+                        !group.ChildProducts.Exists(existingProduct => existingProduct.BaseProduct.RosterProductID == product.RosterProductID))
+                    .Cast<RosterProduct>().ToList();
+
+                // build create product view model
+                var createProductVM = new CreateProductVM
+                {
+                    AvailableBaseProducts = availbleRosterList,
+                    GroupId = groupId
+                };
 
                 // return view
-                throw new NotImplementedException();
+                return View("AddProduct", createProductVM);
             }
-            // add return statement here too
-            throw new NotImplementedException();
+            return RedirectToAction("TeamManagement");
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> AddTeamProduct(CreateProductVM newProductData)
+        {
+            if (ModelState.IsValid)
+            {
+                // get user and team data
+                // upload image to imgur
+                // create new custom product variant, save to DB, add to product group
+
+                // also todo: change custom product system to use imgur photo data
+                var user = await userRepo.GetUserDataAsync(HttpContext.User);
+                var targetGroup = user.ManagedTeam.ProductGroups
+                    .Find(group => group.ProductGroupID == newProductData.GroupId);
+                var newProduct = new CustomProduct()
+                {
+
+                };
+            }
+            return RedirectToAction("TeamManagement");
         }
 
         public async Task<IActionResult> RemoveTeamProduct(UpdateProductVM updatedProduct)
