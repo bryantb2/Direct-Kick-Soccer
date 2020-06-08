@@ -677,6 +677,52 @@ namespace dropShippingApp.Data
                 context.TeamSorts.Add(mostPopular);
                 await context.SaveChangesAsync();
 
+                //////////////////////adding Team Requests///
+                TeamCreationRequest t = new TeamCreationRequest
+                {
+                    BusinessEmail = "email1@1.com",
+                    TeamName = "a Team",
+                    TeamDescription = "a team",
+                    StreetAddress = "123 street",
+                    Providence = oregon,
+                    Country = america,
+                    CorporatePageURL = "www.url.com",
+                    ZipCode = "99999",
+                    PhoneNumber = "8888888888"
+
+                };
+                context.TeamCreationRequests.Add(t);
+                t = new TeamCreationRequest
+                {
+                    BusinessEmail = "email1@1.com",
+                    TeamName = "a Denied Team req",
+                    TeamDescription = "denied",
+                    StreetAddress = "123 street",
+                    Providence = oregon,
+                    Country = america,
+                    CorporatePageURL = "www.url.com",
+                    ZipCode = "99999",
+                    PhoneNumber = "8888888888"
+                };
+                context.TeamCreationRequests.Add(t);
+                t = new TeamCreationRequest
+                {
+                    BusinessEmail = "email1@1.com",
+                    TeamName = "a Denied Team req",
+                    TeamDescription = "denied",
+                    StreetAddress = "123 street",
+                    Providence = oregon,
+                    Country = america,
+                    CorporatePageURL = "www.url.com",
+                    ZipCode = "99999",
+                    PhoneNumber = "8888888888",
+                    IsApproved = false,
+                    IsArchived = true
+
+                };
+                context.TeamCreationRequests.Add(t);
+                await context.SaveChangesAsync();
+
             }
         }
     }

@@ -48,6 +48,11 @@ namespace dropShippingApp.Data.Repositories.FakeRepos
             }
         }
 
+        public Task<TeamCreationRequest> MarkAsApproved(int reqId)
+        {
+            throw new NotImplementedException();
+        }
+
         public Task<TeamCreationRequest> MarkAsRejected(int reqId)
         {
             TeamCreationRequest req = (from r in reqs
@@ -63,6 +68,11 @@ namespace dropShippingApp.Data.Repositories.FakeRepos
             TeamCreationRequest result = reqs.Find(r => r.TeamCreationRequestID == r.TeamCreationRequestID);
             reqs.Remove(result);
             reqs.Add(req);
+        }
+
+        Task<List<TeamCreationRequest>> ITeamCreationReqRepo.GetReqsToCheck()
+        {
+            throw new NotImplementedException();
         }
     }
 }

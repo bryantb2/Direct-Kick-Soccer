@@ -1,20 +1,54 @@
-﻿
+﻿@model IEnumerable<TeamCreationRequest>
 @{
     ViewData["Title"] = "AdminIndex";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h1>AdminIndex</h1>
+<h1>Approve a Team Request</h1>
 
-<div class="grid">
-    <a asp-controller="Admin" asp-action="ApproveTeamRequests">
-        <header class="">
-            <h1 class="">
-                Approve Team Requests
+@if(Model.Count()!=0)
+{
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.TeamCreationRequestID)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.TeamName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.BusinessEmail)
+            </th>
+        </tr>
+    <th></th>
+    </thead>
+    <tbody>
 
-            </h1>
-        </header>
-    </a>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@Html.DisplayFor(modelItem => item.TeamCreationRequestID)</td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.TeamName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.BusinessEmail)
+                </td>
+                <td>
+                    <a asp-action="ViewRequest" asp-route-id="@item.TeamCreationRequestID">View Request</a> |
+
+                </td>
+            </tr>
+        }
+
+    </tbody>
+
+</table>
 
 
-</div>
+}
+else
+{
+            <h1>There is nothing here</h1> 
+}

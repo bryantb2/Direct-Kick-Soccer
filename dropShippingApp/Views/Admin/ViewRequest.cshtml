@@ -1,0 +1,30 @@
+﻿@model TeamCreationRequest 
+@{
+    ViewData["Title"] = "ViewRequest";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@if(Model!=null)
+{
+    <div>
+        <h4>
+            Request ID: @Model.TeamCreationRequestID
+        </h4>
+        <h4>Team Name:@Model.TeamName</h4>
+        <h4>Team Description: @Model.TeamDescription</h4>
+        <h4>Team Address: @Model.StreetAddress</h4>
+        <h4>State @Model.Providence</h4>
+        <h4>Zip @Model.ZipCode</h4>
+        <h4>Team Phone Number: @Model.PhoneNumber</h4>
+        <form method="post">
+            <input type="hidden" name="id"value="@Model.TeamCreationRequestID" />
+            <button name="command" value="approve">Approve</button>
+            <button name="command "value="deny">Deny</button>
+        </form>     
+
+    </div>
+
+    
+
+}
+
