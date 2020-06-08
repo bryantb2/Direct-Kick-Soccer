@@ -333,6 +333,9 @@ namespace dropShippingApp.Migrations
                     b.Property<int>("BaseProductRosterProductID")
                         .HasColumnType("int");
 
+                    b.Property<string>("ImgurImageID")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<bool>("IsProductActive")
                         .HasColumnType("bit");
 
@@ -512,7 +515,9 @@ namespace dropShippingApp.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("GeneralThumbnail")
-                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ImgurImageID")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("PrintDesignPNG")
@@ -771,6 +776,9 @@ namespace dropShippingApp.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("ImgurImageID")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<bool>("IsHostTeam")
                         .HasColumnType("bit");
 
@@ -789,10 +797,6 @@ namespace dropShippingApp.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("StreetAddress")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("TeamBannerLink")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 

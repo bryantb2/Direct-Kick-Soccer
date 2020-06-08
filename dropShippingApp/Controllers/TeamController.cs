@@ -240,7 +240,7 @@ namespace dropShippingApp.Controllers
         [HttpPost]
         public async Task<IActionResult> TeamBannerUpload(ImgurUploadRequest imageData)
         {
-            if(ModelState.IsValid)
+            if(ModelState.IsValid && imageData.Image != null)
             {
                 // get user data
                 AppUser user = await userRepo.GetUserDataAsync(HttpContext.User);
@@ -249,17 +249,25 @@ namespace dropShippingApp.Controllers
                     // delete old image if exists
                     // upload new image
                     // get new image ID and set to team in DB
+                    // setup image data object
                     var userTeam = user.ManagedTeam;
                     var imagurConfig = imgurConfigRepo.GetConfig;
+                    imageData.Type = "base64";
+                    imageData.Title = userTeam.Name + "_teamBanner";
+                    imageData.Description = "Team banner image";
                     if (userTeam.ImgurImageID != null)
                     {
                         var oldPhotoID = user.ManagedTeam.ImgurImageID;
                         var accessToken = imagurConfig.AccessToken;
-                        ImagurAuth.DeleteImage(oldPhotoID, accessToken);
+                        var imageDeleteData = ImagurAuth.DeleteImage(oldPhotoID, accessToken);
+                        var deleteResponse = JsonConvert.DeserializeObject<ImgurBasicUploadResponse>(imageDeleteData.Content);
                     }
                     var imageDataResponse = ImagurAuth.AddImage(imageData, configuration["ImgurCredentials:ClientID"]);
                     var responseBody = JsonConvert.DeserializeObject<ImgurUploadResponse>(imageDataResponse.Content);
-                    userTeam.ImgurImageID = responseBody.data.id;
+                    if(responseBody.status == 200)
+                        userTeam.ImgurImageID = responseBody.data.id;
+                    else
+                        return RedirectToAction("TeamBannerUpload");
                     // update team data
                     await teamRepo.UpdateTeam(userTeam);
                 }

@@ -11,7 +11,7 @@
     <div class="view-team-banner-container">
         @if (Model.Team.ImgurImageID != null)
         {
-            <img class="view-team-banner-img" src="https://api.imgur.com/3/image/" + @Model.Team.ImgurImageID />
+            <img class="view-team-banner-img" src=@string.Concat("https://i.imgur.com/", Model.Team.ImgurImageID,".jpg") />
         }
         else
         {
@@ -40,7 +40,7 @@
         </div>
         <div class="col-6 my-5">
             <partial name="~/Views/Shared/_ButtonCardPartial.cshtml"
-                     model='@new ButtonCardVM { ControllerName="Team", ActionName = "UpdateBanner", ButtonText = "Change Banner", TitleText = "Updated Banner Image" }' />
+                     model='@new ButtonCardVM { ControllerName="Team", ActionName = "TeamBannerUpload", ButtonText = "Change Banner", TitleText = "Updated Banner Image" }' />
         </div>
         <div class="col-6 my-5">
             <partial name="~/Views/Shared/_ButtonCardPartial.cshtml"

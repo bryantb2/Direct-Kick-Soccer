@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace dropShippingApp.Migrations
 {
-    public partial class imgurDataConfig : Migration
+    public partial class initial : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -220,7 +220,7 @@ namespace dropShippingApp.Migrations
                     ZipCode = table.Column<string>(nullable: false),
                     CorporatePageURL = table.Column<string>(nullable: false),
                     BusinessEmail = table.Column<string>(nullable: false),
-                    TeamBannerLink = table.Column<string>(nullable: false),
+                    ImgurImageID = table.Column<string>(nullable: true),
                     PhoneNumber = table.Column<string>(nullable: false),
                     IsTeamInactive = table.Column<bool>(nullable: false),
                     IsHostTeam = table.Column<bool>(nullable: false),
@@ -299,9 +299,10 @@ namespace dropShippingApp.Migrations
                 {
                     ProductGroupID = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
+                    GeneralThumbnail = table.Column<string>(nullable: true),
+                    ImgurImageID = table.Column<string>(nullable: true),
                     Description = table.Column<string>(nullable: false),
                     Title = table.Column<string>(nullable: false),
-                    GeneralThumbnail = table.Column<string>(nullable: false),
                     PrintDesignPNG = table.Column<string>(nullable: false),
                     BaseGroupModelNumber = table.Column<int>(nullable: false),
                     TeamID = table.Column<int>(nullable: true)
@@ -658,6 +659,7 @@ namespace dropShippingApp.Migrations
                     CustomProductID = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     ProductPNG = table.Column<string>(nullable: true),
+                    ImgurImageID = table.Column<string>(nullable: true),
                     IsProductActive = table.Column<bool>(nullable: false),
                     BaseProductRosterProductID = table.Column<int>(nullable: false),
                     AppUserId = table.Column<string>(nullable: true),

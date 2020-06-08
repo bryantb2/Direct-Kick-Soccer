@@ -11,7 +11,7 @@
     <div class="view-team-banner-container">
         @if (Model.ImgurImageID != null)
         {
-            <img class="view-team-banner-img" src="https://api.imgur.com/3/image/" + @Model.ImgurImageID />
+            <img class="view-team-banner-img" src=@string.Concat("https://i.imgur.com/", Model.ImgurImageID, ".jpg") />
         }
         else
         {

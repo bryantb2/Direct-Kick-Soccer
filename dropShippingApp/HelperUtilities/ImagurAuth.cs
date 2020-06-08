@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using dropShippingApp.APIModels;
@@ -31,7 +32,7 @@ namespace dropShippingApp.HelperUtilities
             var request = new RestRequest(Method.POST);
             request.AddHeader("Authorization", "Client-ID " + clientId);
             request.AlwaysMultipartFormData = true;
-            request.AddParameter("image", imageData.Image);
+            request.AddParameter("image", ConvertFileToB64(imageData.Image));
             request.AddParameter("type", imageData.Type);
             request.AddParameter("title", imageData.Title);
             request.AddParameter("description", imageData.Description);
@@ -59,6 +60,19 @@ namespace dropShippingApp.HelperUtilities
             request.AlwaysMultipartFormData = true;
             IRestResponse response = client.Execute(request);
             return response;
+        }
+
+        private static string ConvertFileToB64(IFormFile file)
+        {
+            string encodedFile = null;
+            if (file.Length > 0)
+            {
+                var ms = new MemoryStream();
+                file.CopyTo(ms);
+                var fileBytes = ms.ToArray();
+                encodedFile = Convert.ToBase64String(fileBytes);
+            }
+            return encodedFile;
         }
     }
 }
