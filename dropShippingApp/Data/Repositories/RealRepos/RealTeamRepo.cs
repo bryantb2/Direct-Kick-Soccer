@@ -22,6 +22,7 @@ namespace dropShippingApp.Data.Repositories.RealRepos
             {
                 return this.context.Teams
                     // basic team property objects
+                    .Include(team => team.BannerImageData)
                     .Include(team => team.Providence)
                     .Include(team => team.Category)
                     .Include(team => team.TeamTags)

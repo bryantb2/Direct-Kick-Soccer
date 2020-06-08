@@ -31,6 +31,8 @@ namespace dropShippingApp.Data.Repositories.RealRepos
                     .ThenInclude(team => team.Country)
                 .Include(user => user.ManagedTeam) // get team provence
                     .ThenInclude(team => team.Providence)
+                .Include(user => user.ManagedTeam) // get team banner data
+                    .ThenInclude(team => team.BannerImageData)
 
                 .Include(user => user.UserOrderHistory)
                 .Include(user => user.UserOrderHistory)
@@ -170,6 +172,8 @@ namespace dropShippingApp.Data.Repositories.RealRepos
                     .ThenInclude(team => team.Country)
                 .Include(user => user.ManagedTeam) // get team provence
                     .ThenInclude(team => team.Providence)
+                .Include(user => user.ManagedTeam) // get team banner data
+                    .ThenInclude(team => team.BannerImageData)
 
                 .Include(user => user.UserOrderHistory)
                 .Include(user => user.UserOrderHistory)

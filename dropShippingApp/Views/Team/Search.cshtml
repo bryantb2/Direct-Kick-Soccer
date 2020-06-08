@@ -79,10 +79,10 @@
                         @foreach (var team in Model.Teams)
                         {
                         <tr>
-                            @if (team.ImgurImageID != null)
+                            @if (team.BannerImageData != null)
                             {
                                 <td>
-                                    <img width="100" src="https://api.imgur.com/3/image/" + @team.ImgurImageID />
+                                    <img width="100" src=@string.Concat("https://i.imgur.com/", team.BannerImageData.PhotoID, ".jpg") />
                                 </td>
                             }
                             else

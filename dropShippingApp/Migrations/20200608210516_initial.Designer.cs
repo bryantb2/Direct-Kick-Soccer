@@ -10,7 +10,7 @@ using dropShippingApp.Data;
 namespace dropShippingApp.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20200607191601_initial")]
+    [Migration("20200608210516_initial")]
     partial class initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -374,6 +374,24 @@ namespace dropShippingApp.Migrations
                     b.HasKey("ImgurConfigID");
 
                     b.ToTable("ImgurConfiguration");
+                });
+
+            modelBuilder.Entity("dropShippingApp.Models.ImgurPhotoData", b =>
+                {
+                    b.Property<int>("ImgurPhotoDataID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("DeleteHash")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PhotoID")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("ImgurPhotoDataID");
+
+                    b.ToTable("SavedImgurPhotos");
                 });
 
             modelBuilder.Entity("dropShippingApp.Models.Order", b =>
@@ -757,6 +775,9 @@ namespace dropShippingApp.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+                    b.Property<int?>("BannerImageDataImgurPhotoDataID")
+                        .HasColumnType("int");
+
                     b.Property<string>("BusinessEmail")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -776,9 +797,6 @@ namespace dropShippingApp.Migrations
 
                     b.Property<string>("Description")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("ImgurImageID")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("IsHostTeam")
@@ -807,6 +825,8 @@ namespace dropShippingApp.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("TeamID");
+
+                    b.HasIndex("BannerImageDataImgurPhotoDataID");
 
                     b.HasIndex("CategoryTeamCategoryID");
 
@@ -1113,6 +1133,10 @@ namespace dropShippingApp.Migrations
 
             modelBuilder.Entity("dropShippingApp.Models.Team", b =>
                 {
+                    b.HasOne("dropShippingApp.Models.ImgurPhotoData", "BannerImageData")
+                        .WithMany()
+                        .HasForeignKey("BannerImageDataImgurPhotoDataID");
+
                     b.HasOne("dropShippingApp.Models.TeamCategory", "Category")
                         .WithMany()
                         .HasForeignKey("CategoryTeamCategoryID")

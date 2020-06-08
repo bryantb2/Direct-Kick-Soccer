@@ -116,6 +116,20 @@ namespace dropShippingApp.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "SavedImgurPhotos",
+                columns: table => new
+                {
+                    ImgurPhotoDataID = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    PhotoID = table.Column<string>(nullable: true),
+                    DeleteHash = table.Column<string>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_SavedImgurPhotos", x => x.ImgurPhotoDataID);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "TeamCategories",
                 columns: table => new
                 {
@@ -220,7 +234,7 @@ namespace dropShippingApp.Migrations
                     ZipCode = table.Column<string>(nullable: false),
                     CorporatePageURL = table.Column<string>(nullable: false),
                     BusinessEmail = table.Column<string>(nullable: false),
-                    ImgurImageID = table.Column<string>(nullable: true),
+                    BannerImageDataImgurPhotoDataID = table.Column<int>(nullable: true),
                     PhoneNumber = table.Column<string>(nullable: false),
                     IsTeamInactive = table.Column<bool>(nullable: false),
                     IsHostTeam = table.Column<bool>(nullable: false),
@@ -230,6 +244,12 @@ namespace dropShippingApp.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Teams", x => x.TeamID);
+                    table.ForeignKey(
+                        name: "FK_Teams_SavedImgurPhotos_BannerImageDataImgurPhotoDataID",
+                        column: x => x.BannerImageDataImgurPhotoDataID,
+                        principalTable: "SavedImgurPhotos",
+                        principalColumn: "ImgurPhotoDataID",
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_Teams_TeamCategories_CategoryTeamCategoryID",
                         column: x => x.CategoryTeamCategoryID,
@@ -933,6 +953,11 @@ namespace dropShippingApp.Migrations
                 column: "ProvidenceProvinceID");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Teams_BannerImageDataImgurPhotoDataID",
+                table: "Teams",
+                column: "BannerImageDataImgurPhotoDataID");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Teams_CategoryTeamCategoryID",
                 table: "Teams",
                 column: "CategoryTeamCategoryID");
@@ -1033,6 +1058,9 @@ namespace dropShippingApp.Migrations
 
             migrationBuilder.DropTable(
                 name: "ProductCategories");
+
+            migrationBuilder.DropTable(
+                name: "SavedImgurPhotos");
 
             migrationBuilder.DropTable(
                 name: "TeamCategories");
