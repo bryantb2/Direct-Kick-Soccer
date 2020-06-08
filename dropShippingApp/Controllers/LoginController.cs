@@ -30,7 +30,7 @@ namespace dropShippingApp.Controllers
         public async Task<ViewResult> Index()
         {
             return View();
-        }
+        } 
 
         public async Task<ViewResult> Signup()
         {
