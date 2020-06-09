@@ -7,7 +7,7 @@
     <section>
         <h1>Creating New Product</h1>
 
-        <form class="d-flex flex-column" asp-controller="Team" asp-action="AddTeamProduct" asp-route-GroupId=@Model.GroupId method="post">
+        <form class="d-flex flex-column" asp-controller="Team" asp-action="AddTeamProduct" asp-route-GroupId=@Model.GroupId enctype="multipart/form-data" method="post">
             <div class="p-2 text-center">
                 <select id="productSelection" asp-for=@Model.SelectedBaseProduct>
                     <option selected value="">Choose a Product Group</option>

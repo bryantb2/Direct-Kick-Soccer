@@ -627,27 +627,28 @@ namespace dropShippingApp.Controllers
             return View("ModifyGroup", updatedProduct);
         }
 
-        public async Task<IActionResult> AddTeamProduct(int groupId)
+        public async Task<IActionResult> AddTeamProduct(int SelectedGroupID)
         {
             if(ModelState.IsValid)
             {
                 // get user and team data
                 var user = await userRepo.GetUserDataAsync(HttpContext.User);
-                var group = user.ManagedTeam.ProductGroups.Find(group => group.ProductGroupID == groupId);
+                var group = user.ManagedTeam.ProductGroups.Find(group => group.ProductGroupID == SelectedGroupID);
 
                 // get all roster products, filter the ones with the group model number passed in by user
-                // note: roster product list does NOT include base roster products that are already in use within the current group
-                var availbleRosterList = rosterProductRepo.GetRosterProducts
-                    .Where(
-                        product => product.RosterGroup.ModelNumber == group.BaseGroupModelNumber &&
-                        !group.ChildProducts.Exists(existingProduct => existingProduct.BaseProduct.RosterProductID == product.RosterProductID))
-                    .Cast<RosterProduct>().ToList();
+                var availbleRosterList = new List<RosterProduct>();  
+                foreach(var product in rosterProductRepo.GetRosterProducts)
+                {
+                    // only include if the roster product is in the product family AND is not already a part of the custom group
+                    if (product.RosterGroup.ModelNumber == group.BaseGroupModelNumber && !group.ChildProducts.Exists(existingProduct => existingProduct.BaseProduct.RosterProductID == product.RosterProductID))
+                        availbleRosterList.Add(product);
+                }
 
                 // build create product view model
                 var createProductVM = new CreateProductVM
                 {
                     AvailableBaseProducts = availbleRosterList,
-                    GroupId = groupId
+                    GroupId = SelectedGroupID
                 };
 
                 // return view
@@ -661,8 +662,6 @@ namespace dropShippingApp.Controllers
         {
             if (ModelState.IsValid)
             {
-                // also todo: change custom product system to use imgur photo data
-
                 // get user and team data
                 var user = await userRepo.GetUserDataAsync(HttpContext.User);
                 var targetGroup = user.ManagedTeam.ProductGroups
@@ -722,7 +721,10 @@ namespace dropShippingApp.Controllers
                     targetGroup.ChildProducts = childProducts;
                     await productGroupRepo.UpdateProductGroup(targetGroup);
                 }
-                
+                else
+                    return RedirectToAction("AddTeamProduct",new {
+                        groupId = newProductData.GroupId
+                    });
             }
             return RedirectToAction("TeamManagement");
         }

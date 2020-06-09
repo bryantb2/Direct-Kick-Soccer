@@ -71,10 +71,6 @@
                 </div>
             </article>
         </div>
-        <div class="col-12 my-5">
-            <partial name="~/Views/Shared/_CustomProductSelectionPartial.cshtml"
-                     model='@new CustomProductSelectionCardVM { ProductGroups = Model.Team.ProductGroups, ControllerName = "Team", ActionName = "RemoveProduct", ButtonText = "Remove Product", TitleText = "Add New Product" }' />
-        </div>
         <div class="col-6 my-5">
             <partial name="~/Views/Shared/_CustomProductSelectionPartial.cshtml"
                      model='@new CustomProductSelectionCardVM { ProductGroups = Model.Team.ProductGroups, ControllerName = "Team", ActionName = "UpdateTeamProduct", ButtonText = "Modify Product", TitleText = "Modify Existing Product" }' />
@@ -82,6 +78,10 @@
         <div class="col-6 my-5">
             <partial name="~/Views/Shared/_CustomProductSelectionPartial.cshtml"
                      model='@new CustomProductSelectionCardVM { ProductGroups = Model.Team.ProductGroups, ControllerName = "Team", ActionName = "RemoveTeamProduct", ButtonText = "Remove Product", TitleText = "Remove Existing Product" }' />
+        </div>
+        <div class="col-12 my-5">
+            <partial name="~/Views/Shared/_CustomGroupSelectionPartial.cshtml"
+                     model='@new CustomGroupSelectionCardVM { ProductGroups = Model.Team.ProductGroups, ControllerName = "Team", ActionName = "AddTeamProduct", ButtonText = "Add Product To Group", TitleText = "Add New Product" }' />
         </div>
     </div>
 </section>

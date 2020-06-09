@@ -678,8 +678,7 @@ namespace dropShippingApp.Migrations
                 {
                     CustomProductID = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    ProductPNG = table.Column<string>(nullable: true),
-                    ImgurImageID = table.Column<string>(nullable: true),
+                    ProductPhotoDataImgurPhotoDataID = table.Column<int>(nullable: true),
                     IsProductActive = table.Column<bool>(nullable: false),
                     BaseProductRosterProductID = table.Column<int>(nullable: false),
                     AppUserId = table.Column<string>(nullable: true),
@@ -705,6 +704,12 @@ namespace dropShippingApp.Migrations
                         column: x => x.ProductGroupID,
                         principalTable: "ProductGroups",
                         principalColumn: "ProductGroupID",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_CustomProducts_SavedImgurPhotos_ProductPhotoDataImgurPhotoDataID",
+                        column: x => x.ProductPhotoDataImgurPhotoDataID,
+                        principalTable: "SavedImgurPhotos",
+                        principalColumn: "ImgurPhotoDataID",
                         onDelete: ReferentialAction.Restrict);
                 });
 
@@ -841,6 +846,11 @@ namespace dropShippingApp.Migrations
                 name: "IX_CustomProducts_ProductGroupID",
                 table: "CustomProducts",
                 column: "ProductGroupID");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_CustomProducts_ProductPhotoDataImgurPhotoDataID",
+                table: "CustomProducts",
+                column: "ProductPhotoDataImgurPhotoDataID");
 
             migrationBuilder.CreateIndex(
                 name: "IX_OrderItems_OrderID",

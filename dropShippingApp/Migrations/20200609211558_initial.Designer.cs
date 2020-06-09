@@ -10,7 +10,7 @@ using dropShippingApp.Data;
 namespace dropShippingApp.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20200608210516_initial")]
+    [Migration("20200609211558_initial")]
     partial class initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -335,17 +335,14 @@ namespace dropShippingApp.Migrations
                     b.Property<int>("BaseProductRosterProductID")
                         .HasColumnType("int");
 
-                    b.Property<string>("ImgurImageID")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<bool>("IsProductActive")
                         .HasColumnType("bit");
 
                     b.Property<int?>("ProductGroupID")
                         .HasColumnType("int");
 
-                    b.Property<string>("ProductPNG")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int?>("ProductPhotoDataImgurPhotoDataID")
+                        .HasColumnType("int");
 
                     b.HasKey("CustomProductID");
 
@@ -354,6 +351,8 @@ namespace dropShippingApp.Migrations
                     b.HasIndex("BaseProductRosterProductID");
 
                     b.HasIndex("ProductGroupID");
+
+                    b.HasIndex("ProductPhotoDataImgurPhotoDataID");
 
                     b.ToTable("CustomProducts");
                 });
@@ -1021,6 +1020,10 @@ namespace dropShippingApp.Migrations
                     b.HasOne("dropShippingApp.Models.ProductGroup", null)
                         .WithMany("ChildProducts")
                         .HasForeignKey("ProductGroupID");
+
+                    b.HasOne("dropShippingApp.Models.ImgurPhotoData", "ProductPhotoData")
+                        .WithMany()
+                        .HasForeignKey("ProductPhotoDataImgurPhotoDataID");
                 });
 
             modelBuilder.Entity("dropShippingApp.Models.Order", b =>

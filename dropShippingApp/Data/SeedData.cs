@@ -155,7 +155,7 @@ namespace dropShippingApp.Data
                     SKU = 1,
                     BaseColor = colors[2],
                     BaseSize = sizes[2],
-                    RosterGroup = group2
+                    RosterGroup = group3
                 };
                 PricingHistory pricingHistory5 = new PricingHistory
                 {
@@ -193,6 +193,14 @@ namespace dropShippingApp.Data
                 product4.AddPricingHistory(pricingHistory8);
 
                 // SAVING ROSTER PRODUCTS TO CONTEXT
+                context.PricingHistories.Add(pricingHistory);
+                context.PricingHistories.Add(pricingHistory2);
+                context.PricingHistories.Add(pricingHistory3);
+                context.PricingHistories.Add(pricingHistory4);
+                context.PricingHistories.Add(pricingHistory5);
+                context.PricingHistories.Add(pricingHistory6);
+                context.PricingHistories.Add(pricingHistory7);
+                context.PricingHistories.Add(pricingHistory8);
                 context.RosterGroups.Add(group1);
                 context.RosterGroups.Add(group2);
                 context.RosterGroups.Add(group3);
@@ -201,12 +209,14 @@ namespace dropShippingApp.Data
                 context.RosterProducts.Add(product3);
                 context.RosterProducts.Add(product4);
 
+                await context.SaveChangesAsync();
+
 
                 // ------------------------------------------- ADDING CUSTOM PRODUCTS ------------------------------------------- //
                 CustomProduct customProduct = new CustomProduct
                 {
                     BaseProduct = product1,
-                    ProductPNG = "http://placekitten.com/200/300",
+                    //ProductPNG = "http://placekitten.com/200/300",
                     IsProductActive = true
                 };
                 PricingHistory pricingHistory9 = new PricingHistory
@@ -226,7 +236,7 @@ namespace dropShippingApp.Data
                 CustomProduct customProduct2 = new CustomProduct
                 {
                     BaseProduct = product1,
-                    ProductPNG = "http://placekitten.com/200/300",
+                    //ProductPNG = "http://placekitten.com/200/300",
                     IsProductActive = true
                 };
                 PricingHistory pricingHistory11 = new PricingHistory
@@ -246,7 +256,7 @@ namespace dropShippingApp.Data
                 CustomProduct customProduct3 = new CustomProduct
                 {
                     BaseProduct = product1,
-                    ProductPNG = "http://placekitten.com/200/300",
+                    //ProductPNG = "http://placekitten.com/200/300",
                     IsProductActive = true
                 };
                 PricingHistory pricingHistory13 = new PricingHistory
@@ -266,7 +276,7 @@ namespace dropShippingApp.Data
                 CustomProduct customProduct4 = new CustomProduct
                 {
                     BaseProduct = product2,
-                    ProductPNG = "http://placekitten.com/200/300",
+                    //ProductPNG = "http://placekitten.com/200/300",
                     IsProductActive = true
                 };
                 PricingHistory pricingHistory15 = new PricingHistory
@@ -286,7 +296,7 @@ namespace dropShippingApp.Data
                 CustomProduct customProduct5 = new CustomProduct
                 {
                     BaseProduct = product2,
-                    ProductPNG = "http://placekitten.com/200/300",
+                    //ProductPNG = "http://placekitten.com/200/300",
                     IsProductActive = true
                 };
                 PricingHistory pricingHistory17 = new PricingHistory
@@ -306,7 +316,7 @@ namespace dropShippingApp.Data
                 CustomProduct customProduct6 = new CustomProduct
                 {
                     BaseProduct = product2,
-                    ProductPNG = "http://placekitten.com/200/300",
+                    //ProductPNG = "http://placekitten.com/200/300",
                     IsProductActive = true
                 };
                 PricingHistory pricingHistory19 = new PricingHistory
@@ -326,7 +336,7 @@ namespace dropShippingApp.Data
                 CustomProduct customProduct7 = new CustomProduct
                 {
                     BaseProduct = product2,
-                    ProductPNG = "http://placekitten.com/200/300",
+                    //ProductPNG = "http://placekitten.com/200/300",
                     IsProductActive = true
                 };
                 PricingHistory pricingHistory21 = new PricingHistory
@@ -343,6 +353,20 @@ namespace dropShippingApp.Data
                 customProduct7.AddPricingHistory(pricingHistory22);
 
                 // SAVING CUSTOM PRODUCTS TO CONTEXT
+                context.PricingHistories.Add(pricingHistory9);
+                context.PricingHistories.Add(pricingHistory10);
+                context.PricingHistories.Add(pricingHistory11);
+                context.PricingHistories.Add(pricingHistory12);
+                context.PricingHistories.Add(pricingHistory13);
+                context.PricingHistories.Add(pricingHistory14);
+                context.PricingHistories.Add(pricingHistory15);
+                context.PricingHistories.Add(pricingHistory16);
+                context.PricingHistories.Add(pricingHistory17);
+                context.PricingHistories.Add(pricingHistory18);
+                context.PricingHistories.Add(pricingHistory19);
+                context.PricingHistories.Add(pricingHistory20);
+                context.PricingHistories.Add(pricingHistory21);
+                context.PricingHistories.Add(pricingHistory22);
                 context.CustomProducts.Add(customProduct);
                 context.CustomProducts.Add(customProduct2);
                 context.CustomProducts.Add(customProduct3);
