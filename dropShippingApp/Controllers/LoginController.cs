@@ -82,6 +82,19 @@ namespace dropShippingApp.Controllers
    ;
         }
 
+      
+        public async Task<IActionResult> ForgotPassword(LoginViewModel model)
+        {
+            return View();
+        }
+
+        public async Task<IActionResult> ForgotPasswordCtrl(LoginViewModel model)
+        {
+            var user = await userManager.FindByEmailAsync(model.Email);
+          
+            return View(model.Password);
+        }
+
         [HttpPost]
         public async Task<IActionResult> Signup(CreateUserViewModel model)
         {
