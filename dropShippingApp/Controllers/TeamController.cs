@@ -5,7 +5,6 @@ using Microsoft.AspNetCore.Identity;
 using dropShippingApp.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
-using PayPal.Api;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -729,7 +728,7 @@ namespace dropShippingApp.Controllers
             return RedirectToAction("TeamManagement");
         }
 
-        public async Task<IActionResult> RemoveTeamProduct(UpdateProductVM updatedProduct)
+        public async Task<IActionResult> RemoveTeamProduct(int SelectedGroupID, int SelectedProductID)
         {
             if (ModelState.IsValid)
             {
@@ -737,24 +736,29 @@ namespace dropShippingApp.Controllers
                 var user = await userRepo.GetUserDataAsync(HttpContext.User);
                 if(user != null)
                 {
-                    // get product to be removed
-                    var foundProduct = user.ManagedTeam.ProductGroups
-                        .Find(group => group.ProductGroupID == updatedProduct.GroupId).ChildProducts
-                        .Find(product => product.CustomProductID == updatedProduct.ProductId);
+                    try
+                    {
+                        // get product to be removed
+                        var foundProduct = user.ManagedTeam.ProductGroups
+                            .Find(group => group.ProductGroupID == SelectedGroupID).ChildProducts
+                            .Find(product => product.CustomProductID == SelectedProductID);
 
-                    // remove from group
-                    var foundGroup = user.ManagedTeam.ProductGroups
-                        .Find(group => group.ProductGroupID == updatedProduct.GroupId);
-                    foundGroup.ChildProducts.Remove(foundProduct);
-                    await productGroupRepo.UpdateProductGroup(foundGroup);
+                        // remove from group
+                        var foundGroup = user.ManagedTeam.ProductGroups
+                            .Find(group => group.ProductGroupID == SelectedGroupID);
+                        foundGroup.ChildProducts.Remove(foundProduct);
+                        await productGroupRepo.UpdateProductGroup(foundGroup);
 
-                    // remove product from DB
-                    await customProductRepo.RemoveCustomProduct(foundProduct.CustomProductID);
-                    return RedirectToAction("TeamManagement");
+                        // remove product from DB
+                        await customProductRepo.RemoveCustomProduct(foundProduct.CustomProductID);
+                    }
+                    catch(Exception error)
+                    {
+                        return RedirectToAction("TeamManagement");
+                    }
                 }
             }
-            ModelState.AddModelError(nameof(UpdateProductVM.ProductId), "Please make sure to fill out all fields");
-            return View("ModifyGroup", updatedProduct);
+            return RedirectToAction("TeamManagement");
         }
 
         public async Task<IActionResult> TeamReq()
