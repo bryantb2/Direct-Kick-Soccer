@@ -26,6 +26,11 @@ namespace dropShippingApp.Data.Repositories.FakeRepos
             throw new NotImplementedException();
         }
 
+        public Task<List<TeamCreationRequest>> GetApproved()
+        {
+            throw new NotImplementedException();
+        }
+
         //public async Task<List<TeamCreationRequest>> GetAll()
         //{
         //    List<TeamCreationRequest> teamReq = (from r in reqs
@@ -46,6 +51,11 @@ namespace dropShippingApp.Data.Repositories.FakeRepos
             {
                 return await Task.FromResult<TeamCreationRequest>(null);
             }
+        }
+
+        public Task<List<TeamCreationRequest>> GetDenied()
+        {
+            throw new NotImplementedException();
         }
 
         public Task<TeamCreationRequest> MarkAsApproved(int reqId)

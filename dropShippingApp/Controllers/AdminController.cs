@@ -31,32 +31,35 @@ namespace dropShippingApp.Controllers
             if(command=="approve")
             {
                 requestRepo.MarkAsApproved(id);
-                return View("ApproveTeamRequests");
+                return View("ViewTeamRequests");
             }
             else
             {
                 requestRepo.MarkAsRejected(id);
-                return View("ApproveTeamRequests");
+                return View("ViewTeamRequests");
             }
         }
         [HttpGet]
         public async Task<IActionResult> ApproveTeamRequestsAsync()
         {
             List<TeamCreationRequest> reqs = await requestRepo.GetReqsToCheck();
-            return View(reqs);
+            ViewBag.Status = "Awaiting Approval";
+            return View("ViewTeamRequests",reqs);
                                            
         }
         [HttpGet]
         public async Task<IActionResult> ViewApprovedRequests()
         {
+            ViewBag.Status = "Approved";
             List<TeamCreationRequest> reqs = await requestRepo.GetApproved();
-            return View("Index", reqs);
+            return View("ViewTeamRequests", reqs);
         }
         [HttpGet]
         public async Task<IActionResult> ViewDeniedRequests()
         {
+            ViewBag.Status = "Denied";
             List<TeamCreationRequest> reqs = await requestRepo.GetDenied();
-            return View("Index", reqs);
+            return View("ViewTeamRequests", reqs);
         }
 
 
