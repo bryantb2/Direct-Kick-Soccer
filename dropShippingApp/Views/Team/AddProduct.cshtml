@@ -3,9 +3,10 @@
     ViewData["Title"] = "AddProduct";
 }
 @model CreateProductVM
+@inject IProductGroupRepo groupRepo
 
     <section>
-        @if (Model.AvailableBaseProducts.Count == 0)
+        @if (Model.AvailableBaseProducts.Count != 0)
         {
             <h1>Creating New Product</h1>
 
@@ -32,7 +33,7 @@
         }
         else
         {
-
+            <h1>It Appears that there are no remaining base products, for product family @groupRepo.GetGroupById(Model.GroupId).BaseGroupModelNumber, that are not in use by "@groupRepo.GetGroupById(Model.GroupId).Title"</h1>
         }
     </section>
 
