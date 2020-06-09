@@ -54,5 +54,10 @@ namespace dropShippingApp.Controllers
             }
         
         }
+        [HttpGet]
+        public IActionResult ApproveTeamRequest()
+        {
+            return View();
+        }
     }
 }

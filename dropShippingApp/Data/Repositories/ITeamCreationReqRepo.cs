@@ -13,5 +13,10 @@ namespace dropShippingApp.Data.Repositories
         Task UpdateReq(TeamCreationRequest req);
         Task<List<TeamCreationRequest>> GetAll();
         Task<TeamCreationRequest> GetById(int id);
+        //returns requests that need to be approved
+        Task<List<TeamCreationRequest>> GetReqsToCheck();
+        Task<List<TeamCreationRequest>> GetApproved();
+        Task<List<TeamCreationRequest>> GetDenied();
+        Task<TeamCreationRequest> MarkAsApproved(int reqId);
     }
 }
