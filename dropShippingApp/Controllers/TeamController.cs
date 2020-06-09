@@ -661,18 +661,68 @@ namespace dropShippingApp.Controllers
         {
             if (ModelState.IsValid)
             {
-                // get user and team data
-                // upload image to imgur
-                // create new custom product variant, save to DB, add to product group
-
                 // also todo: change custom product system to use imgur photo data
+
+                // get user and team data
                 var user = await userRepo.GetUserDataAsync(HttpContext.User);
                 var targetGroup = user.ManagedTeam.ProductGroups
                     .Find(group => group.ProductGroupID == newProductData.GroupId);
-                var newProduct = new CustomProduct()
-                {
 
+                // get the selected base product
+                var selectedProduct = await rosterProductRepo.GetRosterProductById(newProductData.SelectedBaseProduct);
+
+                // create imgur upload request view model
+                var imageData = new ImgurUploadRequest
+                {
+                    Image = newProductData.ProductPhoto,
+                    Type = "base64",
+                    Title = user.ManagedTeam.Name + "_ProductVariantImage",
+                    Description = "Product variant image"
                 };
+
+                // upload new image, parse result
+                var imageDataResponse = ImagurAuth.AddImage(imageData, configuration["ImgurCredentials:ClientID"]);
+                var responseBody = JsonConvert.DeserializeObject<ImgurUploadResponse>(imageDataResponse.Content);
+
+                // get new image ID and set to team in DB
+                if (responseBody.status == 200)
+                {
+                    /*
+                    *   Add imgur photo data to DB
+                    *   Create initial pricing history for product
+                    *   Create new custom product, add to DB
+                    *   Add to appropriate group and update
+                    *   Update product group with new custom product
+                    */
+                    var photoData = new ImgurPhotoData
+                    {
+                        PhotoID = responseBody.data.id,
+                        DeleteHash = responseBody.data.deletehash
+                    };
+                    await imgurPhotoRepo.AddPhoto(photoData);
+
+                    var initialPricingHist = new PricingHistory
+                    {
+                        NewPrice = newProductData.InitialPrice,
+                        DateChanged = DateTime.Now
+                    };
+                    await pricingRepo.AddHistory(initialPricingHist);
+
+                    var newProduct = new CustomProduct()
+                    {
+                        BaseProduct = selectedProduct,
+                        ProductPhotoData = photoData,
+                        IsProductActive = true
+                    };
+                    newProduct.AddPricingHistory(initialPricingHist);
+                    await customProductRepo.AddCustomProduct(newProduct);
+
+                    var childProducts = targetGroup.ChildProducts;
+                    childProducts.Add(newProduct);
+                    targetGroup.ChildProducts = childProducts;
+                    await productGroupRepo.UpdateProductGroup(targetGroup);
+                }
+                
             }
             return RedirectToAction("TeamManagement");
         }
