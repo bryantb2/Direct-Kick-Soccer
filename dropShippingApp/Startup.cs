@@ -127,7 +127,6 @@ namespace dropShippingApp
             context.Database.Migrate();
 
             // seed DB
-            //context.Database.Migrate();
             SeedData.Seed(app.ApplicationServices);
         }
     }
