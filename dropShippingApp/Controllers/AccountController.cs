@@ -96,6 +96,7 @@ namespace dropShippingApp.Controllers
                 };
                 userOrderList.Add(invoiceVM);
             }
+            ViewBag.DefaultFooter = false;
             return View("ViewInvoices", userOrderList);
         }
     }

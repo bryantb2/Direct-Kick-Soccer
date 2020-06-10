@@ -1,7 +1,8 @@
 ﻿
-const serverAPIURL = 'https://localhost:44386';
+// build out base API path
+const serverAPIURL = ""; // window.location.replace(window.location.pathname, "");
 
-const renderProductDropdown = (dropdownElement, productData) => {
+const renderProductDropdown = (selectorGroupElement, dropdownElement, productData) => {
     // reset select list
     wipeSelectList(dropdownElement);
     // loop through product data
@@ -15,11 +16,11 @@ const renderProductDropdown = (dropdownElement, productData) => {
         dropdownElement.add(option);
     });
     // show element
-    dropdownElement.style.display = "inline-block";
+    selectorGroupElement.style.display = "inline";
 };
 
-const hideProductDropdown = (dropdownElement) => {
-    dropdownElement.style.display = "none";
+const hideProductDropdown = (selectorGroupElement) => {
+    selectorGroupElement.style.display = "none";
 };
 
 const fetchProductsByGroupId = async (groupId) => {
@@ -33,21 +34,43 @@ const fetchProductsByGroupId = async (groupId) => {
 };
 
 // DOM ELEMENT MANIPULATION FUNCTIONS -------------------->
-const getSiblingElement = (currentElement, targetId) => {
-    // gets a reference to the product selector that is a sibling of the group selector
-    const parent = currentElement.parentElement;
+const getProductSelector = (currentElement, targetId) => {
+    // gets a reference to the product selector that is adjacent to the group selector
+    const grandParent = currentElement.parentElement.parentElement;
     let foundChild;
-    for (let i = 0; i < parent.children.length; i++) {
-        const currentChild = parent.children[i];
-        if (currentChild.id === String(targetId))
-            foundChild = currentChild
+    // get ref to product selector
+    for (let i = 0; i < grandParent.children.length; i++) {
+        const currentChild = grandParent.children[i];
+        if (currentChild.id === "productSelectorGroup") {
+            // look for target element
+            for (let j = 0; j < currentChild.children.length; j++) {
+                if (currentChild.children[j].id == String(targetId))
+                    foundChild = currentChild.children[j];
+            }
+        }
     }
     return foundChild;
 };
 
+const getProductSelectorGroup = (currentElement) => {
+    // gets a reference to the product selector that is adjacent to the group selector
+    const grandParent = currentElement.parentElement.parentElement;
+    let foundChild;
+    // get ref to product selector
+    for (let i = 0; i < grandParent.children.length; i++) {
+        const currentChild = grandParent.children[i];
+        if (currentChild.id === "productSelectorGroup") {
+            foundChild = currentChild;
+        }
+    }
+    return foundChild;
+}
+
 const wipeSelectList = (selectListEl) => {
-    for (let i = 1; i < selectListEl.options.length; i++) {
-        selectListEl.options[i] = null;
+    if (selectListEl.options.length > 1) {
+        for (let i = 1; i < selectListEl.options.length; i++) {
+            selectListEl.options[i] = null;
+        }
     }
 }
 
@@ -57,16 +80,17 @@ const handleGroupSelection = async (e) => {
     const EMPTY = "-100";
     const target = e.target;
     const selectedValue = target.options[target.selectedIndex].value;
-    const productSelector = getSiblingElement(target, "productSelection");
+    const productSelector = getProductSelector(target, "productSelection");
+    const productSelectorGroup = getProductSelectorGroup(target);
     if (selectedValue == EMPTY) {
         // remove product dropdown
-        hideProductDropdown(productSelector);
+        hideProductDropdown(productSelectorGroup);
     }
     else {
         // get the product dropdown
         // get the product JSON data
         // show dropdown with products
         const productData = await fetchProductsByGroupId(selectedValue);
-        renderProductDropdown(productSelector, productData);
+        renderProductDropdown(productSelectorGroup, productSelector, productData);
     }
 };

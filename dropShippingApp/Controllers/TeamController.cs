@@ -509,37 +509,20 @@ namespace dropShippingApp.Controllers
 
         public async Task<IActionResult> TeamManagement()
         {
-            try
+            // display the main management page for teams
+            // verify users role, after roles are set up
+            // get the user's team
+            var user = await userRepo.GetUserDataAsync(HttpContext.User);
+            var teamMangementVM = new TeamManagementVM()
             {
-                // display the main management page for teams
-                var user = await userRepo.GetUserDataAsync(HttpContext.User);
-                if (user != null && user.ManagedTeam != null)
-                {
-                    // verify users role, after roles are set up
-                    // get the users team
-                    var teamMangementVM = new TeamManagementVM()
-                    {
-                        LifeTimeSales = 0,
-                        MonthlySales = 0,
-                        WeeklySales = 0,
-                        Team = user.ManagedTeam,
-                        OfferedProductGroups = null
-                    };
-                    ViewBag.DefaultFooter = false;
-                    return View("TeamManagement", teamMangementVM);
-                }
-                return View("Index");
-            }
-            catch
-            {
-                ErrorViewModel e = new ErrorViewModel
-                {
-                    RequestId = "DKS-0015",
-                    Message = "An error occured while trying to access team managment"
-                };
-                return View("Error", e);
-            }
-   
+                LifeTimeSales = 0,
+                MonthlySales = 0,
+                WeeklySales = 0,
+                Team = user.ManagedTeam,
+                OfferedProductGroups = null
+            };
+            ViewBag.DefaultFooter = false;
+            return View("TeamManagement", teamMangementVM);
         }
 
         public async Task<IActionResult> AddGroup()
@@ -1087,7 +1070,12 @@ namespace dropShippingApp.Controllers
         public async Task<IActionResult> TeamReq()
         {
             ViewBag.DefaultFooter = false;
-            return View();
+            var user = await userRepo.GetUserDataAsync(HttpContext.User);
+            var requestModel = new TeamCreationRequest
+            {
+                AlreadyHasTeam = user.ManagedTeam != null ? true : false
+            };
+            return View(requestModel);
         }
 
         [HttpPost]

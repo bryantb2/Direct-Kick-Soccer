@@ -12,19 +12,26 @@
 
         <form asp-controller=@Model.ControllerName asp-action=@Model.ActionName method="get">
             <div id="groupSelectionWrapper">
-                <select id="groupSelection" asp-for=@Model.SelectedGroupID onchange="handleGroupSelection(event)">
-                    <option selected value="-100">Choose a Product Group</option>
-                    @foreach (var group in Model.ProductGroups)
-                    {
-                        <option value=@group.ProductGroupID>@group.Title</option>
-                    }
-                </select>
-
-                <select id="productSelection" asp-for=@Model.SelectedProductID style="display: none">
-                    <option selected value="-100">Select A Product</option>
-                </select>
+                <div id="groupSelectorGroup" class="form-group">
+                    <label asp-for=@Model.SelectedGroupID>Product Group</label>
+                    <select id="groupSelection" asp-for=@Model.SelectedGroupID onchange="handleGroupSelection(event)" class="form-control">
+                        <option selected value="-100">Choose a Product Group</option>
+                        @foreach (var group in Model.ProductGroups)
+                        {
+                            <option value=@group.ProductGroupID>@group.Title</option>
+                        }
+                    </select>
+                </div>
+                <div id="productSelectorGroup" class="form-group" style="display: none">
+                    <label asp-for=@Model.SelectedProductID>Customized Product</label>
+                    <select id="productSelection" asp-for=@Model.SelectedProductID class="form-control" >
+                        <option selected value="-100">Select A Product</option>
+                    </select>
+                </div>
             </div>
-            <button type="submit" class="d-flex p-2 pageParagraph btn btn-link">@Model.ButtonText</button>
+            <div class="my-2 text-center">
+                <button class="pageParagraph btn btn-primary" type="submit">@Model.ButtonText</button>
+            </div>
         </form>
     </div>
 </article>

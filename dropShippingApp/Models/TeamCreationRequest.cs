@@ -20,6 +20,7 @@ namespace dropShippingApp.Models
         public String PhoneNumber { get; set; }
         public bool IsApproved { get; set; }
         public bool IsArchived { get; set; }
+        public bool AlreadyHasTeam { get; set; }
 
         // methods
         public String GenerateRequestParagraph()
