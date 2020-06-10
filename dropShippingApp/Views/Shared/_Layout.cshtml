@@ -35,7 +35,6 @@
                         <li class="nav-item dropdown">
                             <a class="nav-link text-dark dropdown-toggle" data-toggle="dropdown" asp-controller="Team" asp-action="Index">Teams</a>
                             <ul class="dropdown-menu">
-                                <li><a class="nav-link text-dark" asp-controller="Team" asp-action="Index">Home</a></li>
                                 <li><a class="nav-link text-dark" asp-controller="Team" asp-action="Browse">Search Teams</a></li>
                                 <li><a class="nav-link text-dark" asp-controller="Team" asp-action="TeamReq">Make a new Team</a></li>
                             </ul>
@@ -57,7 +56,6 @@
                         <li class="nav-item dropdown">
                             <a class="nav-link text-dark dropdown-toggle" data-toggle="dropdown" asp-area="" asp-controller="Account" asp-action="Index">Welcome @UserManager.GetUserName(User)</a>
                             <ul class="dropdown-menu">
-                                <li><a class="nav-link text-dark" asp-controller="" asp-action=""><span class="glyphicon" style="padding-right: 5px"></span>Orders (Not Active)</a></li>
                                 @if (User.IsInRole("Manager"))
                                 {
                                     <li><a class="nav-link text-dark" asp-controller="Team" asp-action="TeamSettings"><span class="glyphicon" style="padding-right: 5px"></span>Team Settings</a></li>
@@ -68,6 +66,8 @@
                                 {
                                     <li><a class="nav-link text-dark" asp-controller="RoleAdmin" asp-action="Index"><span class="glyphicon" style="padding-right: 5px"></span>Role Manager</a></li>
                                 }
+
+                                <li><a class="nav-link text-dark" asp-controller="Account" asp-action="Invoices"><span class="glyphicon" style="padding-right: 5px"></span>View Orders</a></li>
                                 <li><a class="nav-link text-dark" asp-controller="Login" asp-action="SignoutUser"><span class="glyphicon glyphicon-log-out" style="padding-right: 5px"></span>Logout</a></li>
                             </ul>
                         </li>

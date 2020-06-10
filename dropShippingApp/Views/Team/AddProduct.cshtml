@@ -1,0 +1,39 @@
+﻿
+@{
+    ViewData["Title"] = "AddProduct";
+}
+@model CreateProductVM
+@inject IProductGroupRepo groupRepo
+
+    <section>
+        @if (Model.AvailableBaseProducts.Count != 0)
+        {
+            <h1>Creating New Product</h1>
+
+            <form class="d-flex flex-column" asp-controller="Team" asp-action="AddTeamProduct" asp-route-GroupId=@Model.GroupId enctype="multipart/form-data" method="post">
+                <div class="p-2 text-center">
+                    <select id="productSelection" asp-for=@Model.SelectedBaseProduct>
+                        <option selected value="">Choose a Product Group</option>
+                        @foreach (var product in Model.AvailableBaseProducts)
+                        {
+                            <option value=@product.RosterProductID>SKU # @product.SKU - @product.BaseSize @product.BaseColor</option>
+                        }
+                    </select>
+                </div>
+                <div class="p-2 text-center">
+                    <label asp-for=@Model.InitialPrice>Set Initial Product Price: </label>
+                    <input type="number" asp-for=@Model.InitialPrice />
+                </div>
+                <div class="p-2 text-center">
+                    <label asp-for=@Model.ProductPhoto>Upload Image File: </label>
+                    <input type="file" asp-for=@Model.ProductPhoto width="48" height="48" />
+                </div>
+                <button type="submit">Submit</button>
+            </form>
+        }
+        else
+        {
+            <h1>It Appears that there are no remaining base products, for product family @groupRepo.GetGroupById(Model.GroupId).BaseGroupModelNumber, that are not in use by "@groupRepo.GetGroupById(Model.GroupId).Title"</h1>
+        }
+    </section>
+

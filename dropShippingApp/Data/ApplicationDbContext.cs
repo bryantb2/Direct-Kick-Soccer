@@ -21,6 +21,7 @@ namespace dropShippingApp.Data
         public DbSet<CustomProduct> CustomProducts { get; set; }
         public DbSet<RosterProduct> RosterProducts { get; set; }
         public DbSet<Order> Orders { get; set; }
+        public DbSet<OrderItem> OrderItems { get; set; }
         public DbSet<PricingHistory> PricingHistories { get; set; }
         public DbSet<ProductColor> ProductColors { get; set; }
         public DbSet<ProductSize> ProductSizes { get; set; }
@@ -37,5 +38,7 @@ namespace dropShippingApp.Data
         public DbSet<TeamSort> TeamSorts { get; set; }
         public DbSet<ProductGroup> ProductGroups { get; set; }
         public DbSet<RosterGroup> RosterGroups { get; set; }
+        public DbSet<ImgurConfig> ImgurConfiguration { get; set; }
+        public DbSet<ImgurPhotoData> SavedImgurPhotos { get; set; }
     }   
 }

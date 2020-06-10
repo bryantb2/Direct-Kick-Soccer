@@ -164,9 +164,14 @@ namespace dropShippingApp.Controllers
 
                     if (quantity > 0)
                     {
-                        // check if product already in cart
-                        var existingCartItem = user.Cart.CartItems.Find(item => item.ProductSelection.CustomProductID == productId);
-                        if (existingCartItem != null)
+                        // add new item
+                        // get product
+                        var foundProduct = customProductRepo.GetCustomProductById((int)productId);
+                        if (foundProduct == null)
+                            return NotFound();
+
+                        // add to DB
+                        var newItem = new CartItem()
                         {
                             // update existing
                             existingCartItem.Quantity += (int)quantity;
@@ -294,25 +299,25 @@ namespace dropShippingApp.Controllers
         {
             try
             {
-                // get user from DB
-                var user = await userManager.GetUserAsync(HttpContext.User);
-                // process paypal order
-                var processedOrder = await PaypalTransaction.ProcessOrder(configuration, order.OrderID);
+            // get user from DB
+            // process paypal order
+            var user = await userRepo.GetUserDataAsync(HttpContext.User);
+            var processedOrder = await PaypalTransaction.ProcessOrder(configuration, order.OrderID);
 
-                // create order log to store in DB
-                // save order to DB
-                var newDatabaseOrder = await PaypalTransaction.BuildDatabaseOrder(groupRepo, teamRepo, user, order.OrderID);
-                await orderRepo.AddOrder(newDatabaseOrder);
+            // create order log to store in DB
+            // save order to DB
+            var newDatabaseOrder = await PaypalTransaction.BuildDatabaseOrder(groupRepo, teamRepo, orderRepo, user, order.OrderID);
+            await orderRepo.AddOrder(newDatabaseOrder);
 
-                // update user in DB
-                user.AddPurchaseOrder(newDatabaseOrder);
-                await userManager.UpdateAsync(user);
+            // update user in DB
+            // clear user cart
+            // update user
+            user.AddPurchaseOrder(newDatabaseOrder);
+            await ClearCart(user.Cart.CartItems.GetRange(0, user.Cart.CartItems.Count));
+            await userManager.UpdateAsync(user);
 
-                // clear user cart
-                await ClearCart(user.Cart);
-
-                // redirect to main cart page
-                return RedirectToAction("Index");
+            // redirect to main cart page
+            return RedirectToAction("Index");
             }
             catch
             {
@@ -323,14 +328,15 @@ namespace dropShippingApp.Controllers
                 };
                 return View("Error", e);
             }
-
         }
 
-        private async Task ClearCart(Cart userCart)
+        private async Task ClearCart(List<CartItem> cartItems)
         {
-            for(var i = 0; i < userCart.CartItems.Count; i++)
+            // loop through cart items
+            for(var i = 0; i < cartItems.Count; i++)
             {
-                var currentCartItem = userCart.CartItems[i];
+                // remove cart items from DB
+                var currentCartItem = cartItems[i];
                 await cartRepo.RemoveCartItem(currentCartItem.CartItemID);
             }
         }

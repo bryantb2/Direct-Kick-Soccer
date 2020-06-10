@@ -13,7 +13,7 @@
         <form asp-controller=@Model.ControllerName asp-action=@Model.ActionName method="get">
             <div id="groupSelectionWrapper">
                 <select id="groupSelection" asp-for=@Model.SelectedGroupID onchange="handleGroupSelection(event)">
-                    <option selected value="-100">Choose a Variant</option>
+                    <option selected value="-100">Choose a Product Group</option>
                     @foreach (var group in Model.ProductGroups)
                     {
                         <option value=@group.ProductGroupID>@group.Title</option>

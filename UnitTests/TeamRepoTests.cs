@@ -1,4 +1,4 @@
-﻿//using System;
+//using System;
 //using System.Collections.Generic;
 //using System.Text;
 //using dropShippingApp.Data.Repositories;
@@ -38,7 +38,6 @@
 //            teamController = new TeamController(teamRepo, teamSortRepo, categoryRepo, orderRepo, userRepo, locationRepo, customProductRepo, productGroupRepo, userManager, teamRequestRepo);
 //            teamRepo = new FakeTeamRepo();
 //        }
-
        
 //        // cleanup and dispose
 //        public void Dispose()
@@ -51,9 +50,6 @@
 //        public async Task TestAddTeam()
 //        {
 //            // arrange 
-           
-
-
 //            var testTeam = new Team()
 //            {
 //                TeamID = 32,

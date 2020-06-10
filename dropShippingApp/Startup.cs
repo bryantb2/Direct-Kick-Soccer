@@ -76,6 +76,8 @@ namespace dropShippingApp
             services.AddTransient<IProductCategoryRepo, RealProductCategoryRepo>();
             services.AddTransient<IProductGroupRepo, RealProductGroupRepo>();
             services.AddTransient<IRosterGroupRepo, RealRosterGroupRepo>();
+            services.AddTransient<IImgurRepo, RealImgurRepo>();
+            services.AddTransient<IImgurPhotoRepo, RealImgurPhotoRepo>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

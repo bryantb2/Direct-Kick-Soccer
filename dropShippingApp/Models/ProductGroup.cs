@@ -9,12 +9,12 @@ namespace dropShippingApp.Models
     public class ProductGroup
     {
         public int ProductGroupID { get; set; }
+        public string GeneralThumbnail { get; set; }
+        public string ImgurImageID { get; set; }
         [Required]
         public string Description { get; set; }
         [Required]
         public string Title { get; set; }
-        [Required]
-        public string GeneralThumbnail { get; set; }
         [Required]
         public string PrintDesignPNG { get; set; }
         public List<CustomProduct> ChildProducts { get; set; }

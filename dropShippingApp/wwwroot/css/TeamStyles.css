@@ -5,9 +5,11 @@
 
 .view-team-banner-text {
     position: absolute;
-    right: 30%;
+    right: 0;
     top: 0px;
     color: white;
+    width: 100%;
+    text-align: center;
 }
 
 .view-team-banner-img {

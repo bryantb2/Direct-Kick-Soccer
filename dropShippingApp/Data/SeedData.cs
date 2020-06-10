@@ -8,6 +8,11 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Web.Helpers;
 using Microsoft.EntityFrameworkCore;
+using RestSharp;
+using Microsoft.Extensions.Configuration;
+using dropShippingApp.HelperUtilities;
+using Newtonsoft.Json;
+using dropShippingApp.APIModels;
 
 namespace dropShippingApp.Data
 {
@@ -16,6 +21,7 @@ namespace dropShippingApp.Data
         public static async void Seed(IServiceProvider prov)
         {
             // get services
+            IConfiguration JSONConfig = prov.GetRequiredService<IConfiguration>();
             UserManager<AppUser> userManager = prov.GetRequiredService<UserManager<AppUser>>();
             RoleManager<IdentityRole> roleManager = prov.GetRequiredService<RoleManager<IdentityRole>>();
             ApplicationDbContext context = prov.GetRequiredService<ApplicationDbContext>();
@@ -149,7 +155,7 @@ namespace dropShippingApp.Data
                     SKU = 1,
                     BaseColor = colors[2],
                     BaseSize = sizes[2],
-                    RosterGroup = group2
+                    RosterGroup = group3
                 };
                 PricingHistory pricingHistory5 = new PricingHistory
                 {
@@ -187,6 +193,14 @@ namespace dropShippingApp.Data
                 product4.AddPricingHistory(pricingHistory8);
 
                 // SAVING ROSTER PRODUCTS TO CONTEXT
+                context.PricingHistories.Add(pricingHistory);
+                context.PricingHistories.Add(pricingHistory2);
+                context.PricingHistories.Add(pricingHistory3);
+                context.PricingHistories.Add(pricingHistory4);
+                context.PricingHistories.Add(pricingHistory5);
+                context.PricingHistories.Add(pricingHistory6);
+                context.PricingHistories.Add(pricingHistory7);
+                context.PricingHistories.Add(pricingHistory8);
                 context.RosterGroups.Add(group1);
                 context.RosterGroups.Add(group2);
                 context.RosterGroups.Add(group3);
@@ -195,12 +209,14 @@ namespace dropShippingApp.Data
                 context.RosterProducts.Add(product3);
                 context.RosterProducts.Add(product4);
 
+                await context.SaveChangesAsync();
+
 
                 // ------------------------------------------- ADDING CUSTOM PRODUCTS ------------------------------------------- //
                 CustomProduct customProduct = new CustomProduct
                 {
                     BaseProduct = product1,
-                    ProductPNG = "http://placekitten.com/200/300",
+                    //ProductPNG = "http://placekitten.com/200/300",
                     IsProductActive = true
                 };
                 PricingHistory pricingHistory9 = new PricingHistory
@@ -220,7 +236,7 @@ namespace dropShippingApp.Data
                 CustomProduct customProduct2 = new CustomProduct
                 {
                     BaseProduct = product1,
-                    ProductPNG = "http://placekitten.com/200/300",
+                    //ProductPNG = "http://placekitten.com/200/300",
                     IsProductActive = true
                 };
                 PricingHistory pricingHistory11 = new PricingHistory
@@ -240,7 +256,7 @@ namespace dropShippingApp.Data
                 CustomProduct customProduct3 = new CustomProduct
                 {
                     BaseProduct = product1,
-                    ProductPNG = "http://placekitten.com/200/300",
+                    //ProductPNG = "http://placekitten.com/200/300",
                     IsProductActive = true
                 };
                 PricingHistory pricingHistory13 = new PricingHistory
@@ -260,7 +276,7 @@ namespace dropShippingApp.Data
                 CustomProduct customProduct4 = new CustomProduct
                 {
                     BaseProduct = product2,
-                    ProductPNG = "http://placekitten.com/200/300",
+                    //ProductPNG = "http://placekitten.com/200/300",
                     IsProductActive = true
                 };
                 PricingHistory pricingHistory15 = new PricingHistory
@@ -280,7 +296,7 @@ namespace dropShippingApp.Data
                 CustomProduct customProduct5 = new CustomProduct
                 {
                     BaseProduct = product2,
-                    ProductPNG = "http://placekitten.com/200/300",
+                    //ProductPNG = "http://placekitten.com/200/300",
                     IsProductActive = true
                 };
                 PricingHistory pricingHistory17 = new PricingHistory
@@ -300,7 +316,7 @@ namespace dropShippingApp.Data
                 CustomProduct customProduct6 = new CustomProduct
                 {
                     BaseProduct = product2,
-                    ProductPNG = "http://placekitten.com/200/300",
+                    //ProductPNG = "http://placekitten.com/200/300",
                     IsProductActive = true
                 };
                 PricingHistory pricingHistory19 = new PricingHistory
@@ -320,7 +336,7 @@ namespace dropShippingApp.Data
                 CustomProduct customProduct7 = new CustomProduct
                 {
                     BaseProduct = product2,
-                    ProductPNG = "http://placekitten.com/200/300",
+                    //ProductPNG = "http://placekitten.com/200/300",
                     IsProductActive = true
                 };
                 PricingHistory pricingHistory21 = new PricingHistory
@@ -337,6 +353,20 @@ namespace dropShippingApp.Data
                 customProduct7.AddPricingHistory(pricingHistory22);
 
                 // SAVING CUSTOM PRODUCTS TO CONTEXT
+                context.PricingHistories.Add(pricingHistory9);
+                context.PricingHistories.Add(pricingHistory10);
+                context.PricingHistories.Add(pricingHistory11);
+                context.PricingHistories.Add(pricingHistory12);
+                context.PricingHistories.Add(pricingHistory13);
+                context.PricingHistories.Add(pricingHistory14);
+                context.PricingHistories.Add(pricingHistory15);
+                context.PricingHistories.Add(pricingHistory16);
+                context.PricingHistories.Add(pricingHistory17);
+                context.PricingHistories.Add(pricingHistory18);
+                context.PricingHistories.Add(pricingHistory19);
+                context.PricingHistories.Add(pricingHistory20);
+                context.PricingHistories.Add(pricingHistory21);
+                context.PricingHistories.Add(pricingHistory22);
                 context.CustomProducts.Add(customProduct);
                 context.CustomProducts.Add(customProduct2);
                 context.CustomProducts.Add(customProduct3);
@@ -450,8 +480,8 @@ namespace dropShippingApp.Data
                     PhoneNumber = "541-234-4040",
                     IsTeamInactive = false,
                     IsHostTeam = true,
-                    Category = teamCategories[0],
-                    TeamBannerPNG = "https://picsum.photos/id/237/200/300"
+                    Category = teamCategories[0] //,
+                    //TeamBannerLink = "https://picsum.photos/id/237/200/300"
                 };
 
                 Team team1 = new Team()
@@ -468,8 +498,8 @@ namespace dropShippingApp.Data
                     PhoneNumber = "541-554-4157",
                     IsTeamInactive = false,
                     IsHostTeam = false,
-                    Category = teamCategories[1],
-                    TeamBannerPNG = "https://picsum.photos/id/237/200/300"
+                    Category = teamCategories[1] //,
+                    //TeamBannerLink = "https://picsum.photos/id/237/200/300"
                 };
 
                 Team team2 = new Team()
@@ -486,8 +516,8 @@ namespace dropShippingApp.Data
                     PhoneNumber = "377-849-9071",
                     IsTeamInactive = false,
                     IsHostTeam = false,
-                    Category = teamCategories[2],
-                    TeamBannerPNG = "https://picsum.photos/id/237/200/300"
+                    Category = teamCategories[2] //,
+                    //TeamBannerLink = "https://picsum.photos/id/237/200/300"
                 };
 
                 team.AddProductGroup(groupList[0]);
@@ -721,6 +751,20 @@ namespace dropShippingApp.Data
 
                 };
                 context.TeamCreationRequests.Add(t);
+
+                // ------------------------------------------- CREATE IMGUR CONFIG DATA ------------------------------------------- //
+                var clientId = JSONConfig["ImgurCredentials:ClientID"];
+                var clientSecret = JSONConfig["ImgurCredentials:Secret"];
+                var responseToken = JSONConfig["ImgurCredentials:RefreshToken"];
+                var requestResponse = ImagurAuth.GetAccessToken(clientId, clientSecret, responseToken);
+                var requestBody = JsonConvert.DeserializeObject<ImgurTokenResponse>(requestResponse.Content);
+                var imgurData = new ImgurConfig
+                { 
+                    // test this
+                    AccessToken = requestBody.access_token,
+                    AccessLastUpdated = DateTime.Now
+                };
+                context.ImgurConfiguration.Add(imgurData);
                 await context.SaveChangesAsync();
 
             }

@@ -22,11 +22,13 @@ namespace dropShippingApp.Data.Repositories.RealRepos
             {
                 return this.context.Teams
                     // basic team property objects
+                    .Include(team => team.BannerImageData)
                     .Include(team => team.Providence)
                     .Include(team => team.Category)
                     .Include(team => team.TeamTags)
                     .Include(team => team.ProductGroups)
                     .Include(team => team.Country)
+                    .Include(team => team.BannerImageData)
                     // get product group data
                     .Include(team => team.ProductGroups)
                         .ThenInclude(group => group.ProductTags)
@@ -36,6 +38,9 @@ namespace dropShippingApp.Data.Repositories.RealRepos
                     .Include(team => team.ProductGroups)
                         .ThenInclude(products => products.ChildProducts)
                         .ThenInclude(product => product.BaseProduct)
+                    .Include(team => team.ProductGroups)
+                        .ThenInclude(products => products.ChildProducts)
+                        .ThenInclude(product => product.ProductPhotoData)
                     // get base product data
                     .Include(team => team.ProductGroups)
                         .ThenInclude(products => products.ChildProducts)
@@ -90,7 +95,7 @@ namespace dropShippingApp.Data.Repositories.RealRepos
 
      
 
-        public async Task<Team> FindTeamById(int teamId)
+        public Team FindTeamById(int teamId)
         {
             return this.context.Teams
                 // basic team property objects
@@ -99,6 +104,7 @@ namespace dropShippingApp.Data.Repositories.RealRepos
                 .Include(team => team.TeamTags)
                 .Include(team => team.ProductGroups)
                 .Include(team => team.Country)
+                .Include(team => team.BannerImageData)
                 // get product group data
                 .Include(team => team.ProductGroups)
                     .ThenInclude(group => group.ProductTags)
@@ -108,6 +114,9 @@ namespace dropShippingApp.Data.Repositories.RealRepos
                 .Include(team => team.ProductGroups)
                     .ThenInclude(products => products.ChildProducts)
                     .ThenInclude(product => product.BaseProduct)
+                .Include(team => team.ProductGroups)
+                    .ThenInclude(products => products.ChildProducts)
+                    .ThenInclude(product => product.ProductPhotoData)
                 // get base product data
                 .Include(team => team.ProductGroups)
                     .ThenInclude(products => products.ChildProducts)
@@ -139,7 +148,7 @@ namespace dropShippingApp.Data.Repositories.RealRepos
                 .Find(team => team.TeamID == teamId);
         }
 
-        public async Task<Team> FindTeamByProductId(int productId)
+        public Team FindTeamByProductId(int productId)
         {
             return this.context.Teams
                 // basic team property objects
@@ -148,6 +157,7 @@ namespace dropShippingApp.Data.Repositories.RealRepos
                 .Include(team => team.TeamTags)
                 .Include(team => team.ProductGroups)
                 .Include(team => team.Country)
+                .Include(team => team.BannerImageData)
                 // get product group data
                 .Include(team => team.ProductGroups)
                     .ThenInclude(group => group.ProductTags)
