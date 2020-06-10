@@ -78,7 +78,11 @@ namespace dropShippingApp.Data.Repositories.RealRepos
                     .ThenInclude(products => products.ChildProducts)
                     .ThenInclude(product => product.BaseProduct)
                     .ThenInclude(baseProduct => baseProduct.PricingHistory)
-                
+                .Include(user => user.ManagedTeam) // get photo data
+                    .ThenInclude(team => team.ProductGroups)
+                    .ThenInclude(products => products.ChildProducts)
+                    .ThenInclude(product => product.ProductPhotoData)
+
                 .Include(user => user.CreatedCustomProducts)
                     .ThenInclude(product => product.BaseProduct)
                 .Include(user => user.CreatedCustomProducts)
@@ -219,6 +223,10 @@ namespace dropShippingApp.Data.Repositories.RealRepos
                     .ThenInclude(products => products.ChildProducts)
                     .ThenInclude(product => product.BaseProduct)
                     .ThenInclude(baseProduct => baseProduct.PricingHistory)
+                .Include(user => user.ManagedTeam) // get photo data
+                    .ThenInclude(team => team.ProductGroups)
+                    .ThenInclude(products => products.ChildProducts)
+                    .ThenInclude(product => product.ProductPhotoData)
 
                 .Include(user => user.CreatedCustomProducts)
                     .ThenInclude(product => product.BaseProduct)

@@ -4,18 +4,36 @@
     Layout = "_Layout";
 }
 @model UpdateProductVM
-
+@inject IProductGroupRepo customGroupRepo
 
     <section>
-        <h1>Change @Model.ProductName Product</h1>
-        <form asp-controller="Team" asp-action="UpdateTeamProduct" method="post" asp-route-GroupId=@Model.GroupId asp-route-ProductId=@Model.ProductId>
-            <div class="d-flex flex-column">
-                <div class="d-flex">
-                    <label>Set New Price: </label><input type="number" asp-for=@Model.CurrentPrice />
-                </div>
-                <div class="d-flex">
-                    <label>Product Image URL: </label><input type="text" asp-for=@Model.ProductImageURL />
-                </div>
+        <h1>Changing Your Custom Product</h1>
+        <b>Product Properties</b>
+        <div class="d-flex flex-column">
+            <div class="p-2">Product Model: @Model.ProductData.BaseProduct.RosterGroup.ModelNumber </div>
+            <div class="p-2">Product SKU: @Model.ProductData.BaseProduct.SKU </div>
+            <div class="p-2">Product Size: @Model.ProductData.BaseProduct.BaseSize.SizeName </div>
+            <div class="p-2">Product Color: @Model.ProductData.BaseProduct.BaseColor.ColorName </div>
+            <div class="p-2">Product Category: @Model.ProductData.BaseProduct.RosterGroup.Category.Name </div>
+            <div class="p-2">Affliated with Custom Product Group "@customGroupRepo.GetGroupById(Model.GroupId).Title"</div>
+        </div>
+        <form class="d-flex flex-column" asp-controller="Team" asp-action="UpdateTeamProduct" asp-route-GroupId=@Model.GroupId asp-route-ProductId=@Model.ProductId enctype="multipart/form-data" method="post">
+            @if (Model.LinkToImage != null)
+            {
+                <h3>Existing Product Image</h3>
+                <img src=@Model.LinkToImage width="400" height="200" />
+            }
+            else
+            {
+                <h3>No Product Image Currently Exists</h3>
+            }
+            <div class="p-2">
+                <label>Upload Image File: </label>
+                <input type="file" asp-for=@Model.PhotoData width="48" height="48" />
+            </div>
+            <div class="p-2">
+                <label>Set New Price: </label>
+                <input type="number" asp-for=@Model.CurrentPrice />
             </div>
             <button class="btn btn-link" type="submit">Update Product</button>
         </form>

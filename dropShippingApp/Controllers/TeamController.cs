@@ -579,9 +579,9 @@ namespace dropShippingApp.Controllers
                     {
                         ProductId = selectedProductModel.SelectedProductID,
                         GroupId = selectedProductModel.SelectedGroupID,
-                        ProductName = selectedGroup.Title,
-                        //ProductImageURL = selectedProduct.ProductPNG, // TODO
-                        CurrentPrice = selectedProduct.CurrentPrice
+                        ProductData = selectedProduct,
+                        CurrentPrice = selectedProduct.CurrentPrice,
+                        LinkToImage = selectedProduct.ProductPhotoData == null ? null : String.Concat("https://i.imgur.com/",selectedProduct.ProductPhotoData.PhotoID, ".jpg")
                     };
                     return View("ModifyProduct", modifyProductVM);
                 }
@@ -598,20 +598,73 @@ namespace dropShippingApp.Controllers
                 var user = await userRepo.GetUserDataAsync(HttpContext.User);
                 if (user != null)
                 {
-                    // get product
+                    // get target product
                     var foundProduct = user.ManagedTeam.ProductGroups
                         .Find(group => group.ProductGroupID == updatedProduct.GroupId).ChildProducts
                         .Find(product => product.CustomProductID == updatedProduct.ProductId);
-                    // set product properties
-                    //todo
-                    //foundProduct.ProductPNG = updatedProduct.ProductImageURL;
-                    if(updatedProduct.CurrentPrice != null)
+
+                    // check and update imgur photo data where appropriate
+                    if(updatedProduct.PhotoData != null)
+                    {
+                        // setup imgur request object
+                        var imagurConfig = imgurConfigRepo.GetConfig;
+                        var imageRequestData = new ImgurUploadRequest
+                        {
+                            Image = updatedProduct.PhotoData,
+                            Type = "base64",
+                            Title = "Product" + foundProduct.CustomProductID.ToString() + "_ProductVariantImage",
+                            Description = "Product variant image"
+                        };
+
+                        if (foundProduct.ProductPhotoData != null)
+                        {
+                            var alreadyHasPhotoData = false;
+
+                            // delete old image if exists
+                            if (foundProduct.ProductPhotoData != null)
+                            {
+                                alreadyHasPhotoData = true;
+                                var oldPhotoDeleteHash = foundProduct.ProductPhotoData.DeleteHash;
+                                var accessToken = imagurConfig.AccessToken;
+                                var imageDeleteData = ImagurAuth.DeleteImage(oldPhotoDeleteHash, accessToken);
+                                var deleteResponse = JsonConvert.DeserializeObject<ImgurBasicUploadResponse>(imageDeleteData.Content);
+                            }
+
+                            // upload new imgur photo, update photo data in DB
+                            var imageDataResponse = ImagurAuth.AddImage(imageRequestData, configuration["ImgurCredentials:ClientID"]);
+                            var responseBody = JsonConvert.DeserializeObject<ImgurUploadResponse>(imageDataResponse.Content);
+
+                            if(alreadyHasPhotoData)
+                            {
+                                // apply changes in DB and update
+                                foundProduct.ProductPhotoData.PhotoID = responseBody.data.id;
+                                foundProduct.ProductPhotoData.DeleteHash = responseBody.data.deletehash;
+                                await imgurPhotoRepo.UpdatePhoto(foundProduct.ProductPhotoData);
+                            }
+                            else
+                            {
+                                // make new photo object
+                                var photoData = new ImgurPhotoData
+                                {
+                                    PhotoID = responseBody.data.id,
+                                    DeleteHash = responseBody.data.deletehash
+                                };
+                                // save to Db, add to found product
+                                await imgurPhotoRepo.AddPhoto(photoData);
+                                foundProduct.ProductPhotoData = photoData;
+                            }
+                        }
+                    }
+                    
+                    // check if pricing has changed
+                    if(updatedProduct.CurrentPrice != null && foundProduct.CurrentPrice != updatedProduct.CurrentPrice)
                     {
                         var newPricingHistory = new PricingHistory()
                         {
                             DateChanged = DateTime.Now,
                             NewPrice = (decimal)updatedProduct.CurrentPrice
                         };
+
                         // save pricing history to DB
                         await pricingRepo.AddHistory(newPricingHistory);
                         foundProduct.AddPricingHistory(newPricingHistory);
@@ -622,7 +675,7 @@ namespace dropShippingApp.Controllers
                     return RedirectToAction("TeamManagement");
                 }
             }
-            ModelState.AddModelError(nameof(UpdateProductVM.ProductName), "Please make sure to fill out all fields");
+            ModelState.AddModelError(nameof(UpdateProductVM.CurrentPrice), "Please make sure to fill fields with appropriate values");
             return View("ModifyGroup", updatedProduct);
         }
 
