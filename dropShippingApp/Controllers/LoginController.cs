@@ -30,7 +30,7 @@ namespace dropShippingApp.Controllers
         public async Task<ViewResult> Index()
         {
             return View();
-        }
+        } 
 
         public async Task<ViewResult> Signup()
         {
@@ -80,6 +80,21 @@ namespace dropShippingApp.Controllers
                 return View("Error", e);
             }
    ;
+        }
+
+      
+        public async Task<IActionResult> ForgotPassword(LoginViewModel model)
+        {
+            return View();
+        }
+
+        public async Task<IActionResult> ForgotPasswordCtrl(LoginViewModel model)
+        {
+            var user = await userManager.FindByEmailAsync(model.Email);
+            //UNFINISHED:  forgot password depends on systems that have not been implemented
+            // this is just a placeholder method and view
+          
+            return RedirectToAction("Index");
         }
 
         [HttpPost]
