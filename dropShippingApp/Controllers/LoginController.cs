@@ -91,8 +91,10 @@ namespace dropShippingApp.Controllers
         public async Task<IActionResult> ForgotPasswordCtrl(LoginViewModel model)
         {
             var user = await userManager.FindByEmailAsync(model.Email);
+            //UNFINISHED:  forgot password depends on systems that have not been implemented
+            // this is just a placeholder method and view
           
-            return View(model.Password);
+            return RedirectToAction("Index");
         }
 
         [HttpPost]
