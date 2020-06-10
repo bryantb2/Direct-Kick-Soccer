@@ -45,37 +45,9 @@ namespace dropShippingApp.Controllers
 
         public async Task<IActionResult> Index()
         {
-            try
-            {
-                if (ModelState.IsValid)
-                {
-                    AppUser user = await userManager.FindByEmailAsync(model.Email);
-                    if (user != null)
-                    {
-                        await signInManager.SignOutAsync();
-                        var result = await signInManager.PasswordSignInAsync(user, model.Password, false, false);
-                        if (result.Succeeded)
-                        {
-                            return Redirect(returnUrl ?? "/");
-                        }
-                    }
-                    ModelState.AddModelError(nameof(LoginViewModel.Email), "Invalid user or password");
-
-                }
-                return View(model);
-            }
-            catch
-            {
-                ErrorViewModel e = new ErrorViewModel
-                {
-                    RequestId = "DKS-0001",
-                    Message = "An error occured while trying to login."
-                };
-                return View("Error", e);
-            }
-        
+            return View("ViewAccount");
         }
-        
+
         public IActionResult ApproveTeamRequest()
         {
             return View();

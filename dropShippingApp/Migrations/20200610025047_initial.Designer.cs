@@ -10,8 +10,8 @@ using dropShippingApp.Data;
 namespace dropShippingApp.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20200609235234_final")]
-    partial class final
+    [Migration("20200610025047_initial")]
+    partial class initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -341,9 +341,8 @@ namespace dropShippingApp.Migrations
                     b.Property<int?>("ProductGroupID")
                         .HasColumnType("int");
 
-                    b.Property<string>("ProductPNG")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int?>("ProductPhotoDataImgurPhotoDataID")
+                        .HasColumnType("int");
 
                     b.HasKey("CustomProductID");
 
@@ -353,7 +352,45 @@ namespace dropShippingApp.Migrations
 
                     b.HasIndex("ProductGroupID");
 
+                    b.HasIndex("ProductPhotoDataImgurPhotoDataID");
+
                     b.ToTable("CustomProducts");
+                });
+
+            modelBuilder.Entity("dropShippingApp.Models.ImgurConfig", b =>
+                {
+                    b.Property<int>("ImgurConfigID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<DateTime>("AccessLastUpdated")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("AccessToken")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("ImgurConfigID");
+
+                    b.ToTable("ImgurConfiguration");
+                });
+
+            modelBuilder.Entity("dropShippingApp.Models.ImgurPhotoData", b =>
+                {
+                    b.Property<int>("ImgurPhotoDataID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("DeleteHash")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PhotoID")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("ImgurPhotoDataID");
+
+                    b.ToTable("SavedImgurPhotos");
                 });
 
             modelBuilder.Entity("dropShippingApp.Models.Order", b =>
@@ -368,6 +405,9 @@ namespace dropShippingApp.Migrations
 
                     b.Property<string>("AppUserId1")
                         .HasColumnType("nvarchar(450)");
+
+                    b.Property<DateTime>("DatePlaced")
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("PaypalOrderId")
                         .HasColumnType("nvarchar(max)");
@@ -388,6 +428,32 @@ namespace dropShippingApp.Migrations
                     b.HasIndex("AppUserId1");
 
                     b.ToTable("Orders");
+                });
+
+            modelBuilder.Entity("dropShippingApp.Models.OrderItem", b =>
+                {
+                    b.Property<int>("OrderItemID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int?>("OrderID")
+                        .HasColumnType("int");
+
+                    b.Property<string>("ProductFamilyID")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ProductID")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("TeamID")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("OrderItemID");
+
+                    b.HasIndex("OrderID");
+
+                    b.ToTable("OrderItems");
                 });
 
             modelBuilder.Entity("dropShippingApp.Models.PricingHistory", b =>
@@ -468,7 +534,9 @@ namespace dropShippingApp.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("GeneralThumbnail")
-                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ImgurImageID")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("PrintDesignPNG")
@@ -706,6 +774,9 @@ namespace dropShippingApp.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+                    b.Property<int?>("BannerImageDataImgurPhotoDataID")
+                        .HasColumnType("int");
+
                     b.Property<string>("BusinessEmail")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -748,15 +819,13 @@ namespace dropShippingApp.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("TeamBannerPNG")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("ZipCode")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("TeamID");
+
+                    b.HasIndex("BannerImageDataImgurPhotoDataID");
 
                     b.HasIndex("CategoryTeamCategoryID");
 
@@ -806,6 +875,9 @@ namespace dropShippingApp.Migrations
                         .HasColumnType("int");
 
                     b.Property<bool>("IsApproved")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsArchived")
                         .HasColumnType("bit");
 
                     b.Property<string>("PhoneNumber")
@@ -951,6 +1023,10 @@ namespace dropShippingApp.Migrations
                     b.HasOne("dropShippingApp.Models.ProductGroup", null)
                         .WithMany("ChildProducts")
                         .HasForeignKey("ProductGroupID");
+
+                    b.HasOne("dropShippingApp.Models.ImgurPhotoData", "ProductPhotoData")
+                        .WithMany()
+                        .HasForeignKey("ProductPhotoDataImgurPhotoDataID");
                 });
 
             modelBuilder.Entity("dropShippingApp.Models.Order", b =>
@@ -962,6 +1038,13 @@ namespace dropShippingApp.Migrations
                     b.HasOne("dropShippingApp.Models.AppUser", null)
                         .WithMany("UserOrderHistory")
                         .HasForeignKey("AppUserId1");
+                });
+
+            modelBuilder.Entity("dropShippingApp.Models.OrderItem", b =>
+                {
+                    b.HasOne("dropShippingApp.Models.Order", null)
+                        .WithMany("OrderedItems")
+                        .HasForeignKey("OrderID");
                 });
 
             modelBuilder.Entity("dropShippingApp.Models.PricingHistory", b =>
@@ -1056,6 +1139,10 @@ namespace dropShippingApp.Migrations
 
             modelBuilder.Entity("dropShippingApp.Models.Team", b =>
                 {
+                    b.HasOne("dropShippingApp.Models.ImgurPhotoData", "BannerImageData")
+                        .WithMany()
+                        .HasForeignKey("BannerImageDataImgurPhotoDataID");
+
                     b.HasOne("dropShippingApp.Models.TeamCategory", "Category")
                         .WithMany()
                         .HasForeignKey("CategoryTeamCategoryID")

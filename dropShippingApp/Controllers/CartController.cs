@@ -154,8 +154,7 @@ namespace dropShippingApp.Controllers
         // add item to cart
         public async Task<IActionResult> AddToCart(int productGroupId, int? productId, int? quantity)
         {
-
-            try 
+            try
             {
                 if (productId != null && quantity != null)
                 {
@@ -164,14 +163,9 @@ namespace dropShippingApp.Controllers
 
                     if (quantity > 0)
                     {
-                        // add new item
-                        // get product
-                        var foundProduct = customProductRepo.GetCustomProductById((int)productId);
-                        if (foundProduct == null)
-                            return NotFound();
-
-                        // add to DB
-                        var newItem = new CartItem()
+                        // check if product already in cart
+                        var existingCartItem = user.Cart.CartItems.Find(item => item.ProductSelection.CustomProductID == productId);
+                        if (existingCartItem != null)
                         {
                             // update existing
                             existingCartItem.Quantity += (int)quantity;
@@ -181,7 +175,7 @@ namespace dropShippingApp.Controllers
                         {
                             // add new item
                             // get product
-                            var foundProduct = await customProductRepo.GetCustomProductById((int)productId);
+                            var foundProduct = customProductRepo.GetCustomProductById((int)productId);
                             if (foundProduct == null)
                                 return NotFound();
 
@@ -217,8 +211,6 @@ namespace dropShippingApp.Controllers
                 };
                 return View("Error", e);
             }
-           
-                   
         }
 
         // update cart contents

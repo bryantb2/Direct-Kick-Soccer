@@ -104,7 +104,7 @@ namespace dropShippingApp.Controllers
         {
             try
             {
-                Team foundTeam = await teamRepo.FindTeamById(teamId);
+                Team foundTeam = teamRepo.FindTeamById(teamId);
                 return View(foundTeam);
             }
             catch
@@ -328,52 +328,6 @@ namespace dropShippingApp.Controllers
            
         }
 
-        public async Task<IActionResult> TeamSettings()
-        {
-            ViewBag.DefaultFooter = false;
-            try
-            {
-                var user = await userRepo.GetUserDataAsync(HttpContext.User);
-                if (user != null && user.ManagedTeam != null)
-                {
-                    // verify users role, after roles are set up
-                    // get the users team
-                    Team usersTeam = user.ManagedTeam;
-                    TeamSettingsViewModel teamSettings = new TeamSettingsViewModel();
-                    teamSettings.TeamID = usersTeam.TeamID;
-                    teamSettings.Name = usersTeam.Name;
-                    teamSettings.Country = usersTeam.Country;
-                    teamSettings.Providence = usersTeam.Providence;
-                    teamSettings.StreetAddress = usersTeam.StreetAddress;
-                    teamSettings.ZipCode = usersTeam.ZipCode;
-                    teamSettings.CorporatePageURL = usersTeam.CorporatePageURL;
-                    teamSettings.BusinessEmail = usersTeam.BusinessEmail;
-                    teamSettings.PhoneNumber = usersTeam.PhoneNumber;
-                    teamSettings.Description = usersTeam.Description;
-
-                    return View("TeamSettings", teamSettings);
-                }
-
-                // If user is null, redirect to a Team/Index
-                //return View("Index");
-                ErrorViewModel e = new ErrorViewModel
-                {
-                    RequestId = "DKS-0014",
-                    Message = "An error occured while trying to get the settings"
-                };
-                return View("Error", e);
-            }
-            catch
-            {
-                ErrorViewModel e = new ErrorViewModel
-                {
-                    RequestId = "DKS-0014",
-                    Message = "An error occured while trying to get the settings"
-                };
-                return View("Error", e);
-            }
-        }
-
         public async Task<IActionResult> TeamBannerUpload()
         {
             // get user data
@@ -464,12 +418,24 @@ namespace dropShippingApp.Controllers
 
         public async Task<IActionResult> TeamSettings()
         {
-            var user = await userRepo.GetUserDataAsync(HttpContext.User);
-            if (user != null && user.ManagedTeam != null)
+            ViewBag.DefaultFooter = false;
+            try
             {
+                var user = await userRepo.GetUserDataAsync(HttpContext.User);
+                Team usersTeam = user.ManagedTeam;
+                if (user == null && user.ManagedTeam == null)
+                {
+                    // If user is null, redirect to a Team/Index
+                    ErrorViewModel e = new ErrorViewModel
+                    {
+                        RequestId = "DKS-0014",
+                        Message = "An error occured while trying to get the settings"
+                    };
+                    return View("Error", e);
+                }
+
                 // verify users role, after roles are set up
                 // get the users team
-                Team usersTeam = user.ManagedTeam;
                 TeamSettingsViewModel teamSettings = new TeamSettingsViewModel();
                 teamSettings.TeamID = usersTeam.TeamID;
                 teamSettings.Name = usersTeam.Name;
@@ -483,10 +449,17 @@ namespace dropShippingApp.Controllers
                 teamSettings.Description = usersTeam.Description;
 
                 return View("TeamSettings", teamSettings);
-            }
 
-            // If user is null, redirect to a Team/Index
-            return View("Index");
+            }
+            catch
+            {
+                ErrorViewModel e = new ErrorViewModel
+                {
+                    RequestId = "DKS-0014",
+                    Message = "An error occured while trying to get the settings"
+                };
+                return View("Error", e);
+            }
         }
 
         [HttpPost]
@@ -497,7 +470,7 @@ namespace dropShippingApp.Controllers
             {
                 if (ModelState.IsValid)
                 {
-                    Team foundTeam = await teamRepo.FindTeamById(id);
+                    Team foundTeam = teamRepo.FindTeamById(id);
                     foundTeam.Name = teamSettings.Name;
                     foundTeam.Country = teamSettings.Country;
                     foundTeam.Providence = teamSettings.Providence;
@@ -833,9 +806,9 @@ namespace dropShippingApp.Controllers
                         {
                             ProductId = selectedProductModel.SelectedProductID,
                             GroupId = selectedProductModel.SelectedGroupID,
-                            ProductName = selectedGroup.Title,
-                            ProductImageURL = selectedProduct.ProductPNG,
-                            CurrentPrice = selectedProduct.CurrentPrice
+                            ProductData = selectedProduct,
+                            CurrentPrice = selectedProduct.CurrentPrice,
+                            LinkToImage = selectedProduct.ProductPhotoData == null ? null : String.Concat("https://i.imgur.com/", selectedProduct.ProductPhotoData.PhotoID, ".jpg")
                         };
                         return View("ModifyProduct", modifyProductVM);
                     }
@@ -851,7 +824,6 @@ namespace dropShippingApp.Controllers
                 };
                 return View("Error", e);
             }
-          
         }
 
         [HttpPost]
@@ -861,80 +833,77 @@ namespace dropShippingApp.Controllers
             {
                 if (ModelState.IsValid)
                 {
-                    // get target product
-                    var foundProduct = user.ManagedTeam.ProductGroups
-                        .Find(group => group.ProductGroupID == updatedProduct.GroupId).ChildProducts
-                        .Find(product => product.CustomProductID == updatedProduct.ProductId);
-
-                    // check and update imgur photo data where appropriate
-                    if(updatedProduct.PhotoData != null)
+                    // redirects to team product management page
+                    var user = await userRepo.GetUserDataAsync(HttpContext.User);
+                    if (user != null)
                     {
-                        // setup imgur request object
-                        var imagurConfig = imgurConfigRepo.GetConfig;
-                        var imageRequestData = new ImgurUploadRequest
-                        {
-                            Image = updatedProduct.PhotoData,
-                            Type = "base64",
-                            Title = "Product" + foundProduct.CustomProductID.ToString() + "_ProductVariantImage",
-                            Description = "Product variant image"
-                        };
-
-                        if (foundProduct.ProductPhotoData != null)
-                        {
-                            var alreadyHasPhotoData = false;
-
-                            // delete old image if exists
-                            if (foundProduct.ProductPhotoData != null)
-                            {
-                                alreadyHasPhotoData = true;
-                                var oldPhotoDeleteHash = foundProduct.ProductPhotoData.DeleteHash;
-                                var accessToken = imagurConfig.AccessToken;
-                                var imageDeleteData = ImagurAuth.DeleteImage(oldPhotoDeleteHash, accessToken);
-                                var deleteResponse = JsonConvert.DeserializeObject<ImgurBasicUploadResponse>(imageDeleteData.Content);
-                            }
-
-                            // upload new imgur photo, update photo data in DB
-                            var imageDataResponse = ImagurAuth.AddImage(imageRequestData, configuration["ImgurCredentials:ClientID"]);
-                            var responseBody = JsonConvert.DeserializeObject<ImgurUploadResponse>(imageDataResponse.Content);
-
-                            if(alreadyHasPhotoData)
-                            {
-                                // apply changes in DB and update
-                                foundProduct.ProductPhotoData.PhotoID = responseBody.data.id;
-                                foundProduct.ProductPhotoData.DeleteHash = responseBody.data.deletehash;
-                                await imgurPhotoRepo.UpdatePhoto(foundProduct.ProductPhotoData);
-                            }
-                            else
-                            {
-                                // make new photo object
-                                var photoData = new ImgurPhotoData
-                                {
-                                    PhotoID = responseBody.data.id,
-                                    DeleteHash = responseBody.data.deletehash
-                                };
-                                // save to Db, add to found product
-                                await imgurPhotoRepo.AddPhoto(photoData);
-                                foundProduct.ProductPhotoData = photoData;
-                            }
-                        }
-                    }
-                    
-                    // check if pricing has changed
-                    if(updatedProduct.CurrentPrice != null && foundProduct.CurrentPrice != updatedProduct.CurrentPrice)
-                    {
-                        // get product
+                        // get target product
                         var foundProduct = user.ManagedTeam.ProductGroups
                             .Find(group => group.ProductGroupID == updatedProduct.GroupId).ChildProducts
                             .Find(product => product.CustomProductID == updatedProduct.ProductId);
-                        // set product properties
-                        foundProduct.ProductPNG = updatedProduct.ProductImageURL;
-                        if (updatedProduct.CurrentPrice != null)
+
+                        // check and update imgur photo data where appropriate
+                        if (updatedProduct.PhotoData != null)
+                        {
+                            // setup imgur request object
+                            var imagurConfig = imgurConfigRepo.GetConfig;
+                            var imageRequestData = new ImgurUploadRequest
+                            {
+                                Image = updatedProduct.PhotoData,
+                                Type = "base64",
+                                Title = "Product" + foundProduct.CustomProductID.ToString() + "_ProductVariantImage",
+                                Description = "Product variant image"
+                            };
+
+                            if (foundProduct.ProductPhotoData != null)
+                            {
+                                var alreadyHasPhotoData = false;
+
+                                // delete old image if exists
+                                if (foundProduct.ProductPhotoData != null)
+                                {
+                                    alreadyHasPhotoData = true;
+                                    var oldPhotoDeleteHash = foundProduct.ProductPhotoData.DeleteHash;
+                                    var accessToken = imagurConfig.AccessToken;
+                                    var imageDeleteData = ImagurAuth.DeleteImage(oldPhotoDeleteHash, accessToken);
+                                    var deleteResponse = JsonConvert.DeserializeObject<ImgurBasicUploadResponse>(imageDeleteData.Content);
+                                }
+
+                                // upload new imgur photo, update photo data in DB
+                                var imageDataResponse = ImagurAuth.AddImage(imageRequestData, configuration["ImgurCredentials:ClientID"]);
+                                var responseBody = JsonConvert.DeserializeObject<ImgurUploadResponse>(imageDataResponse.Content);
+
+                                if (alreadyHasPhotoData)
+                                {
+                                    // apply changes in DB and update
+                                    foundProduct.ProductPhotoData.PhotoID = responseBody.data.id;
+                                    foundProduct.ProductPhotoData.DeleteHash = responseBody.data.deletehash;
+                                    await imgurPhotoRepo.UpdatePhoto(foundProduct.ProductPhotoData);
+                                }
+                                else
+                                {
+                                    // make new photo object
+                                    var photoData = new ImgurPhotoData
+                                    {
+                                        PhotoID = responseBody.data.id,
+                                        DeleteHash = responseBody.data.deletehash
+                                    };
+                                    // save to Db, add to found product
+                                    await imgurPhotoRepo.AddPhoto(photoData);
+                                    foundProduct.ProductPhotoData = photoData;
+                                }
+                            }
+                        }
+
+                        // check if pricing has changed
+                        if (updatedProduct.CurrentPrice != null && foundProduct.CurrentPrice != updatedProduct.CurrentPrice)
                         {
                             var newPricingHistory = new PricingHistory()
                             {
                                 DateChanged = DateTime.Now,
                                 NewPrice = (decimal)updatedProduct.CurrentPrice
                             };
+
                             // save pricing history to DB
                             await pricingRepo.AddHistory(newPricingHistory);
                             foundProduct.AddPricingHistory(newPricingHistory);
@@ -945,7 +914,7 @@ namespace dropShippingApp.Controllers
                         return RedirectToAction("TeamManagement");
                     }
                 }
-                ModelState.AddModelError(nameof(UpdateProductVM.ProductName), "Please make sure to fill out all fields");
+                ModelState.AddModelError(nameof(UpdateProductVM.CurrentPrice), "Please make sure to fill fields with appropriate values");
                 return View("ModifyGroup", updatedProduct);
             }
             catch
@@ -963,39 +932,37 @@ namespace dropShippingApp.Controllers
         {
             try
             {
-                // get user and team data
-                var user = await userRepo.GetUserDataAsync(HttpContext.User);
-                var group = user.ManagedTeam.ProductGroups.Find(group => group.ProductGroupID == SelectedGroupID);
-
-                // get all roster products, filter the ones with the group model number passed in by user
-                var availbleRosterList = new List<RosterProduct>();  
-                foreach(var product in rosterProductRepo.GetRosterProducts)
+                if (ModelState.IsValid)
                 {
-                    // only include if the roster product is in the product family AND is not already a part of the custom group
-                    if (product.RosterGroup.ModelNumber == group.BaseGroupModelNumber && !group.ChildProducts.Exists(existingProduct => existingProduct.BaseProduct.RosterProductID == product.RosterProductID))
-                        availbleRosterList.Add(product);
+                    // get user and team data
+                    var user = await userRepo.GetUserDataAsync(HttpContext.User);
+                    var group = user.ManagedTeam.ProductGroups.Find(group => group.ProductGroupID == SelectedGroupID);
+
+                    // get all roster products, filter the ones with the group model number passed in by user
+                    var availbleRosterList = new List<RosterProduct>();
+                    foreach (var product in rosterProductRepo.GetRosterProducts)
+                    {
+                        // only include if the roster product is in the product family AND is not already a part of the custom group
+                        if (product.RosterGroup.ModelNumber == group.BaseGroupModelNumber && !group.ChildProducts.Exists(existingProduct => existingProduct.BaseProduct.RosterProductID == product.RosterProductID))
+                            availbleRosterList.Add(product);
+                    }
+
+                    // build create product view model
+                    var createProductVM = new CreateProductVM
+                    {
+                        AvailableBaseProducts = availbleRosterList,
+                        GroupId = SelectedGroupID
+                    };
+
+                    // return view
+                    return View("AddProduct", createProductVM);
                 }
-
-                // build create product view model
-                var createProductVM = new CreateProductVM
-                {
-                    AvailableBaseProducts = availbleRosterList,
-                    GroupId = SelectedGroupID
-                };
-
-                // return view
-                return View("AddProduct", createProductVM);
+                return RedirectToAction("TeamManagement");
             }
-            return RedirectToAction("TeamManagement");
-          }
-          catch
+            catch
             {
-                ErrorViewModel e = new ErrorViewModel
-                {
-                    RequestId = "DKS-0020",
-                    Message = "An error occured while trying to add a team product"
-                };
-                return View("Error", e);
+                // todo fix catch logic
+                return RedirectToAction("TeamManagement");
             }
         }
 
@@ -1171,8 +1138,6 @@ namespace dropShippingApp.Controllers
             }
 
         }
-
-
 
         // HEADLESS API METHODS
         public async Task<IActionResult> GetProductsByGroupId(int id)

@@ -557,6 +557,7 @@ namespace dropShippingApp.Migrations
                     BusinessEmail = table.Column<string>(nullable: true),
                     PhoneNumber = table.Column<string>(nullable: true),
                     IsApproved = table.Column<bool>(nullable: false),
+                    IsArchived = table.Column<bool>(nullable: false),
                     AppUserId = table.Column<string>(nullable: true),
                     AppUserId1 = table.Column<string>(nullable: true)
                 },
