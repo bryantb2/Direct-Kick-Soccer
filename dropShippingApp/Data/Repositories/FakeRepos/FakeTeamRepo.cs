@@ -6,7 +6,7 @@ using dropShippingApp.Models;
 
 namespace dropShippingApp.Data.Repositories.FakeRepos
 {
-    public class FakeTeamRepo : ITeamRepo
+    public class FakeTeamRepo //: ITeamRepo
     {
         // private fields
         private List<Team> teams = new List<Team>();

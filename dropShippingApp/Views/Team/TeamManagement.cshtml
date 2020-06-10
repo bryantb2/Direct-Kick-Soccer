@@ -9,9 +9,16 @@
 
 <section>
     <div class="view-team-banner-container">
-        <img class="view-team-banner-img" src=@Model.Team.TeamBannerPNG />
-        <div class="view-team-banner-text">
-            <h1>[Team Image]</h1>
+        @if (Model.Team.BannerImageData != null)
+        {
+            <img class="view-team-banner-img" src=@string.Concat("https://i.imgur.com/", Model.Team.BannerImageData.PhotoID,".jpg") />
+        }
+        else
+        {
+            <img class="view-team-banner-img" src="https://www.hackworks.com/img/account/default-team-avatar.png" />
+        }
+        <div class="view-team-banner-text ">
+            <h1>@Model.Team.Name</h1>
         </div>
     </div>
     <div class="row my-4">
@@ -33,11 +40,11 @@
         </div>
         <div class="col-6 my-5">
             <partial name="~/Views/Shared/_ButtonCardPartial.cshtml"
-                     model='@new ButtonCardVM { ControllerName="Team", ActionName = "UpdateBanner", ButtonText = "Change Banner", TitleText = "Updated Banner Image" }' />
+                     model='@new ButtonCardVM { ControllerName="Team", ActionName = "TeamBannerUpload", ButtonText = "Change Banner", TitleText = "Updated Banner Image" }' />
         </div>
         <div class="col-6 my-5">
             <partial name="~/Views/Shared/_ButtonCardPartial.cshtml"
-                     model='@new ButtonCardVM { ControllerName="Team", ActionName = "ReplaceSettings", ButtonText = "Change Settings", TitleText = "Updated Basic Team Info" }' />
+                     model='@new ButtonCardVM { ControllerName="Team", ActionName = "TeamSettings", ButtonText = "Change Settings", TitleText = "Updated Basic Team Info" }' />
         </div>
         <div class="col-12 my-5">
             <partial name="~/Views/Shared/_InfoCardPartial.cshtml"
@@ -60,13 +67,9 @@
                         </div>
                     </div>
                     <hr class="my-2 border-dark" />
-                    <button asp-controller="Team" asp-action="AddGroup" class="d-flex p-2 pageParagraph btn btn-link">Create New Group</button>
+                    <a asp-controller="Team" asp-action="AddGroup" class="d-flex p-2 pageParagraph btn btn-link">Create New Group</a>
                 </div>
             </article>
-        </div>
-        <div class="col-12 my-5">
-            <partial name="~/Views/Shared/_CustomProductSelectionPartial.cshtml"
-                     model='@new CustomProductSelectionCardVM { ProductGroups = Model.Team.ProductGroups, ControllerName = "Team", ActionName = "RemoveProduct", ButtonText = "Remove Product", TitleText = "Remove Existing Product" }' />
         </div>
         <div class="col-6 my-5">
             <partial name="~/Views/Shared/_CustomProductSelectionPartial.cshtml"
@@ -75,6 +78,10 @@
         <div class="col-6 my-5">
             <partial name="~/Views/Shared/_CustomProductSelectionPartial.cshtml"
                      model='@new CustomProductSelectionCardVM { ProductGroups = Model.Team.ProductGroups, ControllerName = "Team", ActionName = "RemoveTeamProduct", ButtonText = "Remove Product", TitleText = "Remove Existing Product" }' />
+        </div>
+        <div class="col-12 my-5">
+            <partial name="~/Views/Shared/_CustomGroupSelectionPartial.cshtml"
+                     model='@new CustomGroupSelectionCardVM { ProductGroups = Model.Team.ProductGroups, ControllerName = "Team", ActionName = "AddTeamProduct", ButtonText = "Add Product To Group", TitleText = "Add New Product" }' />
         </div>
     </div>
 </section>

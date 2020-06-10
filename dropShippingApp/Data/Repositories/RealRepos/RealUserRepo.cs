@@ -31,8 +31,12 @@ namespace dropShippingApp.Data.Repositories.RealRepos
                     .ThenInclude(team => team.Country)
                 .Include(user => user.ManagedTeam) // get team provence
                     .ThenInclude(team => team.Providence)
+                .Include(user => user.ManagedTeam) // get team banner data
+                    .ThenInclude(team => team.BannerImageData)
 
                 .Include(user => user.UserOrderHistory)
+                .Include(user => user.UserOrderHistory)
+                    .ThenInclude(order => order.OrderedItems)
 
                 .Include(user => user.ManagedTeam) // get product groups
                     .ThenInclude(team => team.ProductGroups)
@@ -74,7 +78,11 @@ namespace dropShippingApp.Data.Repositories.RealRepos
                     .ThenInclude(products => products.ChildProducts)
                     .ThenInclude(product => product.BaseProduct)
                     .ThenInclude(baseProduct => baseProduct.PricingHistory)
-                
+                .Include(user => user.ManagedTeam) // get photo data
+                    .ThenInclude(team => team.ProductGroups)
+                    .ThenInclude(products => products.ChildProducts)
+                    .ThenInclude(product => product.ProductPhotoData)
+
                 .Include(user => user.CreatedCustomProducts)
                     .ThenInclude(product => product.BaseProduct)
                 .Include(user => user.CreatedCustomProducts)
@@ -168,8 +176,12 @@ namespace dropShippingApp.Data.Repositories.RealRepos
                     .ThenInclude(team => team.Country)
                 .Include(user => user.ManagedTeam) // get team provence
                     .ThenInclude(team => team.Providence)
+                .Include(user => user.ManagedTeam) // get team banner data
+                    .ThenInclude(team => team.BannerImageData)
 
                 .Include(user => user.UserOrderHistory)
+                .Include(user => user.UserOrderHistory)
+                    .ThenInclude(order => order.OrderedItems)
 
                 .Include(user => user.ManagedTeam) // get product groups
                     .ThenInclude(team => team.ProductGroups)
@@ -211,6 +223,10 @@ namespace dropShippingApp.Data.Repositories.RealRepos
                     .ThenInclude(products => products.ChildProducts)
                     .ThenInclude(product => product.BaseProduct)
                     .ThenInclude(baseProduct => baseProduct.PricingHistory)
+                .Include(user => user.ManagedTeam) // get photo data
+                    .ThenInclude(team => team.ProductGroups)
+                    .ThenInclude(products => products.ChildProducts)
+                    .ThenInclude(product => product.ProductPhotoData)
 
                 .Include(user => user.CreatedCustomProducts)
                     .ThenInclude(product => product.BaseProduct)

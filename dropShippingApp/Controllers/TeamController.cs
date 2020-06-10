@@ -5,14 +5,14 @@ using Microsoft.AspNetCore.Identity;
 using dropShippingApp.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
-using PayPal.Api;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Identity;
-
+using dropShippingApp.APIModels;
+using Microsoft.Extensions.Configuration;
+using Newtonsoft.Json;
 
 namespace dropShippingApp.Controllers
 {
@@ -33,6 +33,10 @@ namespace dropShippingApp.Controllers
         private ITagRepo tagRepo;
         private IPricingRepo pricingRepo;
         private IRosterGroupRepo rosterGroupRepo;
+        private IConfiguration configuration;
+        private IImgurRepo imgurConfigRepo;
+        private IImgurPhotoRepo imgurPhotoRepo;
+        private IRosterProductRepo rosterProductRepo;
 
         public TeamController(
             ITeamRepo teamRepo,
@@ -47,7 +51,11 @@ namespace dropShippingApp.Controllers
             ITeamCreationReqRepo teamRequestRepo,
             ITagRepo tagRepo,
             IPricingRepo pricingRepo,
-            IRosterGroupRepo rosterGroupRepo)
+            IRosterGroupRepo rosterGroupRepo,
+            IConfiguration configuration,
+            IImgurRepo imgurConfigRepo,
+            IImgurPhotoRepo imgurPhotoRepo,
+            IRosterProductRepo rosterProductRepo)
         {
             this.teamRepo = teamRepo;
             this.teamSortRepo = sortRepo;
@@ -62,6 +70,10 @@ namespace dropShippingApp.Controllers
             this.tagRepo = tagRepo;
             this.pricingRepo = pricingRepo;
             this.rosterGroupRepo = rosterGroupRepo;
+            this.configuration = configuration;
+            this.imgurConfigRepo = imgurConfigRepo;
+            this.imgurPhotoRepo = imgurPhotoRepo;
+            this.rosterProductRepo = rosterProductRepo;
         }
 
         public async Task<IActionResult> Index()
@@ -92,7 +104,7 @@ namespace dropShippingApp.Controllers
         {
             try
             {
-                Team foundTeam = await teamRepo.FindTeamById(teamId);
+                Team foundTeam = teamRepo.FindTeamById(teamId);
                 return View(foundTeam);
             }
             catch
@@ -104,7 +116,6 @@ namespace dropShippingApp.Controllers
                 };
                 return View("Error", e);
             }
-
         }
 
         public async Task<IActionResult> BackToFirstPage(int categoryId = -1, string searchTerm = null)
@@ -317,40 +328,128 @@ namespace dropShippingApp.Controllers
            
         }
 
+        public async Task<IActionResult> TeamBannerUpload()
+        {
+            // get user data
+            AppUser user = await userRepo.GetUserDataAsync(HttpContext.User);
+            if (user != null)
+            {
+                // check if imgur ID is in use
+                var teamData = user.ManagedTeam;
+                var bannerData = new ImgurUploadRequest();
+                if (teamData.BannerImageData != null)
+                {
+                       // get imgur data, set link 
+                       bannerData.LinkToImage = "https://i.imgur.com/" + teamData.BannerImageData.PhotoID + ".jpg";
+                }
+                return View("UploadBanner", bannerData);
+            }
+            return RedirectToAction("TeamManagement");
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> TeamBannerUpload(ImgurUploadRequest imageData)
+        {
+            if(ModelState.IsValid && imageData.Image != null)
+            {
+                // get user data
+                AppUser user = await userRepo.GetUserDataAsync(HttpContext.User);
+                if (user != null)
+                {
+                    // setup image data object
+                    var userTeam = user.ManagedTeam;
+                    var imagurConfig = imgurConfigRepo.GetConfig;
+                    imageData.Type = "base64";
+                    imageData.Title = userTeam.Name + "_teamBanner";
+                    imageData.Description = "Team banner image";
+
+                    // delete old image if exists
+                    if (userTeam.BannerImageData != null)
+                    {
+                        var oldPhotoDeleteHash = user.ManagedTeam.BannerImageData.DeleteHash;
+                        var accessToken = imagurConfig.AccessToken;
+                        var imageDeleteData = ImagurAuth.DeleteImage(oldPhotoDeleteHash, accessToken);
+                        var deleteResponse = JsonConvert.DeserializeObject<ImgurBasicUploadResponse>(imageDeleteData.Content);
+                    }
+
+                    // upload new image, parse result
+                    var imageDataResponse = ImagurAuth.AddImage(imageData, configuration["ImgurCredentials:ClientID"]);
+                    var responseBody = JsonConvert.DeserializeObject<ImgurUploadResponse>(imageDataResponse.Content);
+                    
+                    // get new image ID and set to team in DB
+                    if (responseBody.status == 200)
+                    {
+                        if (userTeam.BannerImageData != null)
+                        {
+                            // update existing image data
+                            var updatedBannerModel = userTeam.BannerImageData;
+                            updatedBannerModel.PhotoID = responseBody.data.id;
+                            updatedBannerModel.DeleteHash = responseBody.data.deletehash;
+
+                            // save to database
+                            await imgurPhotoRepo.UpdatePhoto(updatedBannerModel);
+                        }
+                        else
+                        {
+                            // create and set image data
+                            var newBannerModel = new ImgurPhotoData()
+                            {
+                                PhotoID = responseBody.data.id,
+                                DeleteHash = responseBody.data.deletehash
+                            };
+
+                            // save to database and add to team
+                            await imgurPhotoRepo.AddPhoto(newBannerModel);
+                            userTeam.BannerImageData = newBannerModel;
+                        }
+                    } 
+                    else
+                        return RedirectToAction("TeamBannerUpload");
+                    // update team data
+                    await teamRepo.UpdateTeam(userTeam);
+                }
+                else
+                {
+                    return RedirectToAction("TeamBannerUpload");
+                }
+            }
+            return RedirectToAction("TeamManagement");
+        }
+
         public async Task<IActionResult> TeamSettings()
         {
             ViewBag.DefaultFooter = false;
             try
             {
                 var user = await userRepo.GetUserDataAsync(HttpContext.User);
-                if (user != null && user.ManagedTeam != null)
+                Team usersTeam = user.ManagedTeam;
+                if (user == null && user.ManagedTeam == null)
                 {
-                    // verify users role, after roles are set up
-                    // get the users team
-                    Team usersTeam = user.ManagedTeam;
-                    TeamSettingsViewModel teamSettings = new TeamSettingsViewModel();
-                    teamSettings.TeamID = usersTeam.TeamID;
-                    teamSettings.Name = usersTeam.Name;
-                    teamSettings.Country = usersTeam.Country;
-                    teamSettings.Providence = usersTeam.Providence;
-                    teamSettings.StreetAddress = usersTeam.StreetAddress;
-                    teamSettings.ZipCode = usersTeam.ZipCode;
-                    teamSettings.CorporatePageURL = usersTeam.CorporatePageURL;
-                    teamSettings.BusinessEmail = usersTeam.BusinessEmail;
-                    teamSettings.PhoneNumber = usersTeam.PhoneNumber;
-                    teamSettings.Description = usersTeam.Description;
-
-                    return View("TeamSettings", teamSettings);
+                    // If user is null, redirect to a Team/Index
+                    ErrorViewModel e = new ErrorViewModel
+                    {
+                        RequestId = "DKS-0014",
+                        Message = "An error occured while trying to get the settings"
+                    };
+                    return View("Error", e);
                 }
 
-                // If user is null, redirect to a Team/Index
-                //return View("Index");
-                ErrorViewModel e = new ErrorViewModel
-                {
-                    RequestId = "DKS-0014",
-                    Message = "An error occured while trying to get the settings"
-                };
-                return View("Error", e);
+                // verify users role, after roles are set up
+                // get the users team
+                TeamSettingsViewModel teamSettings = new TeamSettingsViewModel();
+                teamSettings.TeamID = usersTeam.TeamID;
+                teamSettings.Name = usersTeam.Name;
+                teamSettings.Country = usersTeam.Country;
+                teamSettings.Providence = usersTeam.Providence;
+                teamSettings.StreetAddress = usersTeam.StreetAddress;
+                teamSettings.ZipCode = usersTeam.ZipCode;
+                teamSettings.CorporatePageURL = usersTeam.CorporatePageURL;
+                teamSettings.BusinessEmail = usersTeam.BusinessEmail;
+                teamSettings.PhoneNumber = usersTeam.PhoneNumber;
+                teamSettings.Description = usersTeam.Description;
+
+                return View("TeamSettings", teamSettings);
+
             }
             catch
             {
@@ -361,7 +460,6 @@ namespace dropShippingApp.Controllers
                 };
                 return View("Error", e);
             }
-
         }
 
         [HttpPost]
@@ -372,7 +470,7 @@ namespace dropShippingApp.Controllers
             {
                 if (ModelState.IsValid)
                 {
-                    Team foundTeam = await teamRepo.FindTeamById(id);
+                    Team foundTeam = teamRepo.FindTeamById(id);
                     foundTeam.Name = teamSettings.Name;
                     foundTeam.Country = teamSettings.Country;
                     foundTeam.Providence = teamSettings.Providence;
@@ -411,37 +509,20 @@ namespace dropShippingApp.Controllers
 
         public async Task<IActionResult> TeamManagement()
         {
-            try
+            // display the main management page for teams
+            // verify users role, after roles are set up
+            // get the user's team
+            var user = await userRepo.GetUserDataAsync(HttpContext.User);
+            var teamMangementVM = new TeamManagementVM()
             {
-                // display the main management page for teams
-                var user = await userRepo.GetUserDataAsync(HttpContext.User);
-                if (user != null && user.ManagedTeam != null)
-                {
-                    // verify users role, after roles are set up
-                    // get the users team
-                    var teamMangementVM = new TeamManagementVM()
-                    {
-                        LifeTimeSales = 0,
-                        MonthlySales = 0,
-                        WeeklySales = 0,
-                        Team = user.ManagedTeam,
-                        OfferedProductGroups = null
-                    };
-                    ViewBag.DefaultFooter = false;
-                    return View("TeamManagement", teamMangementVM);
-                }
-                return View("Index");
-            }
-            catch
-            {
-                ErrorViewModel e = new ErrorViewModel
-                {
-                    RequestId = "DKS-0015",
-                    Message = "An error occured while trying to access team managment"
-                };
-                return View("Error", e);
-            }
-   
+                LifeTimeSales = 0,
+                MonthlySales = 0,
+                WeeklySales = 0,
+                Team = user.ManagedTeam,
+                OfferedProductGroups = null
+            };
+            ViewBag.DefaultFooter = false;
+            return View("TeamManagement", teamMangementVM);
         }
 
         public async Task<IActionResult> AddGroup()
@@ -708,9 +789,9 @@ namespace dropShippingApp.Controllers
                         {
                             ProductId = selectedProductModel.SelectedProductID,
                             GroupId = selectedProductModel.SelectedGroupID,
-                            ProductName = selectedGroup.Title,
-                            ProductImageURL = selectedProduct.ProductPNG,
-                            CurrentPrice = selectedProduct.CurrentPrice
+                            ProductData = selectedProduct,
+                            CurrentPrice = selectedProduct.CurrentPrice,
+                            LinkToImage = selectedProduct.ProductPhotoData == null ? null : String.Concat("https://i.imgur.com/", selectedProduct.ProductPhotoData.PhotoID, ".jpg")
                         };
                         return View("ModifyProduct", modifyProductVM);
                     }
@@ -726,7 +807,6 @@ namespace dropShippingApp.Controllers
                 };
                 return View("Error", e);
             }
-          
         }
 
         [HttpPost]
@@ -740,19 +820,73 @@ namespace dropShippingApp.Controllers
                     var user = await userRepo.GetUserDataAsync(HttpContext.User);
                     if (user != null)
                     {
-                        // get product
+                        // get target product
                         var foundProduct = user.ManagedTeam.ProductGroups
                             .Find(group => group.ProductGroupID == updatedProduct.GroupId).ChildProducts
                             .Find(product => product.CustomProductID == updatedProduct.ProductId);
-                        // set product properties
-                        foundProduct.ProductPNG = updatedProduct.ProductImageURL;
-                        if (updatedProduct.CurrentPrice != null)
+
+                        // check and update imgur photo data where appropriate
+                        if (updatedProduct.PhotoData != null)
+                        {
+                            // setup imgur request object
+                            var imagurConfig = imgurConfigRepo.GetConfig;
+                            var imageRequestData = new ImgurUploadRequest
+                            {
+                                Image = updatedProduct.PhotoData,
+                                Type = "base64",
+                                Title = "Product" + foundProduct.CustomProductID.ToString() + "_ProductVariantImage",
+                                Description = "Product variant image"
+                            };
+
+                            if (foundProduct.ProductPhotoData != null)
+                            {
+                                var alreadyHasPhotoData = false;
+
+                                // delete old image if exists
+                                if (foundProduct.ProductPhotoData != null)
+                                {
+                                    alreadyHasPhotoData = true;
+                                    var oldPhotoDeleteHash = foundProduct.ProductPhotoData.DeleteHash;
+                                    var accessToken = imagurConfig.AccessToken;
+                                    var imageDeleteData = ImagurAuth.DeleteImage(oldPhotoDeleteHash, accessToken);
+                                    var deleteResponse = JsonConvert.DeserializeObject<ImgurBasicUploadResponse>(imageDeleteData.Content);
+                                }
+
+                                // upload new imgur photo, update photo data in DB
+                                var imageDataResponse = ImagurAuth.AddImage(imageRequestData, configuration["ImgurCredentials:ClientID"]);
+                                var responseBody = JsonConvert.DeserializeObject<ImgurUploadResponse>(imageDataResponse.Content);
+
+                                if (alreadyHasPhotoData)
+                                {
+                                    // apply changes in DB and update
+                                    foundProduct.ProductPhotoData.PhotoID = responseBody.data.id;
+                                    foundProduct.ProductPhotoData.DeleteHash = responseBody.data.deletehash;
+                                    await imgurPhotoRepo.UpdatePhoto(foundProduct.ProductPhotoData);
+                                }
+                                else
+                                {
+                                    // make new photo object
+                                    var photoData = new ImgurPhotoData
+                                    {
+                                        PhotoID = responseBody.data.id,
+                                        DeleteHash = responseBody.data.deletehash
+                                    };
+                                    // save to Db, add to found product
+                                    await imgurPhotoRepo.AddPhoto(photoData);
+                                    foundProduct.ProductPhotoData = photoData;
+                                }
+                            }
+                        }
+
+                        // check if pricing has changed
+                        if (updatedProduct.CurrentPrice != null && foundProduct.CurrentPrice != updatedProduct.CurrentPrice)
                         {
                             var newPricingHistory = new PricingHistory()
                             {
                                 DateChanged = DateTime.Now,
                                 NewPrice = (decimal)updatedProduct.CurrentPrice
                             };
+
                             // save pricing history to DB
                             await pricingRepo.AddHistory(newPricingHistory);
                             foundProduct.AddPricingHistory(newPricingHistory);
@@ -763,7 +897,7 @@ namespace dropShippingApp.Controllers
                         return RedirectToAction("TeamManagement");
                     }
                 }
-                ModelState.AddModelError(nameof(UpdateProductVM.ProductName), "Please make sure to fill out all fields");
+                ModelState.AddModelError(nameof(UpdateProductVM.CurrentPrice), "Please make sure to fill fields with appropriate values");
                 return View("ModifyGroup", updatedProduct);
             }
             catch
@@ -775,75 +909,120 @@ namespace dropShippingApp.Controllers
                 };
                 return View("Error", e);
             }
-            
         }
 
-        public async Task<IActionResult> AddTeamProduct(int groupId, CustomProduct customProduct)
+        public async Task<IActionResult> AddTeamProduct(int SelectedGroupID)
         {
             try
             {
                 if (ModelState.IsValid)
                 {
-                    // redirects to team product management page
+                    // get user and team data
                     var user = await userRepo.GetUserDataAsync(HttpContext.User);
-                    // get the group
-                    var group = user.ManagedTeam.ProductGroups.Find(group => group.ProductGroupID == groupId);
-                    // add product to DB
-                    // add product to group
-                    // update group in DB
-                    // update user in DB
-                    await customProductRepo.AddCustomProduct(customProduct);
-                    group.ChildProducts.Add(customProduct);
-                    await productGroupRepo.UpdateProductGroup(group);
-                    await userManager.UpdateAsync(user);
+                    var group = user.ManagedTeam.ProductGroups.Find(group => group.ProductGroupID == SelectedGroupID);
+
+                    // get all roster products, filter the ones with the group model number passed in by user
+                    var availbleRosterList = new List<RosterProduct>();
+                    foreach (var product in rosterProductRepo.GetRosterProducts)
+                    {
+                        // only include if the roster product is in the product family AND is not already a part of the custom group
+                        if (product.RosterGroup.ModelNumber == group.BaseGroupModelNumber && !group.ChildProducts.Exists(existingProduct => existingProduct.BaseProduct.RosterProductID == product.RosterProductID))
+                            availbleRosterList.Add(product);
+                    }
+
+                    // build create product view model
+                    var createProductVM = new CreateProductVM
+                    {
+                        AvailableBaseProducts = availbleRosterList,
+                        GroupId = SelectedGroupID
+                    };
 
                     // return view
-                    throw new NotImplementedException();
+                    return View("AddProduct", createProductVM);
                 }
-                // add return statement here too
-                throw new NotImplementedException();
+                return RedirectToAction("TeamManagement");
             }
             catch
             {
-                ErrorViewModel e = new ErrorViewModel
-                {
-                    RequestId = "DKS-0020",
-                    Message = "An error occured while trying to add a team product"
-                };
-                return View("Error", e);
+                // todo fix catch logic
+                return RedirectToAction("TeamManagement");
             }
- 
         }
 
-        public async Task<IActionResult> RemoveTeamProduct(UpdateProductVM updatedProduct)
+        [HttpPost]
+        public async Task<IActionResult> AddTeamProduct(CreateProductVM newProductData)
         {
             try
             {
                 if (ModelState.IsValid)
                 {
-                    // redirects to team product management page
+                    // get user and team data
                     var user = await userRepo.GetUserDataAsync(HttpContext.User);
-                    if (user != null)
+                    var targetGroup = user.ManagedTeam.ProductGroups
+                        .Find(group => group.ProductGroupID == newProductData.GroupId);
+
+                    // get the selected base product
+                    var selectedProduct = await rosterProductRepo.GetRosterProductById(newProductData.SelectedBaseProduct);
+
+                    // create imgur upload request view model
+                    var imageData = new ImgurUploadRequest
                     {
-                        // get product to be removed
-                        var foundProduct = user.ManagedTeam.ProductGroups
-                            .Find(group => group.ProductGroupID == updatedProduct.GroupId).ChildProducts
-                            .Find(product => product.CustomProductID == updatedProduct.ProductId);
+                        Image = newProductData.ProductPhoto,
+                        Type = "base64",
+                        Title = user.ManagedTeam.Name + "_ProductVariantImage",
+                        Description = "Product variant image"
+                    };
 
-                        // remove from group
-                        var foundGroup = user.ManagedTeam.ProductGroups
-                            .Find(group => group.ProductGroupID == updatedProduct.GroupId);
-                        foundGroup.ChildProducts.Remove(foundProduct);
-                        await productGroupRepo.UpdateProductGroup(foundGroup);
+                    // upload new image, parse result
+                    var imageDataResponse = ImagurAuth.AddImage(imageData, configuration["ImgurCredentials:ClientID"]);
+                    var responseBody = JsonConvert.DeserializeObject<ImgurUploadResponse>(imageDataResponse.Content);
 
-                        // remove product from DB
-                        await customProductRepo.RemoveCustomProduct(foundProduct.CustomProductID);
-                        return RedirectToAction("TeamManagement");
+                    // get new image ID and set to team in DB
+                    if (responseBody.status == 200)
+                    {
+                        /*
+                        *   Add imgur photo data to DB
+                        *   Create initial pricing history for product
+                        *   Create new custom product, add to DB
+                        *   Add to appropriate group and update
+                        *   Update product group with new custom product
+                        */
+                        var photoData = new ImgurPhotoData
+                        {
+                            PhotoID = responseBody.data.id,
+                            DeleteHash = responseBody.data.deletehash
+                        };
+                        await imgurPhotoRepo.AddPhoto(photoData);
+
+                        var initialPricingHist = new PricingHistory
+                        {
+                            NewPrice = newProductData.InitialPrice,
+                            DateChanged = DateTime.Now
+                        };
+                        await pricingRepo.AddHistory(initialPricingHist);
+
+                        var newProduct = new CustomProduct()
+                        {
+                            BaseProduct = selectedProduct,
+                            ProductPhotoData = photoData,
+                            IsProductActive = true
+                        };
+                        newProduct.AddPricingHistory(initialPricingHist);
+                        await customProductRepo.AddCustomProduct(newProduct);
+
+                        var childProducts = targetGroup.ChildProducts;
+                        childProducts.Add(newProduct);
+                        targetGroup.ChildProducts = childProducts;
+                        await productGroupRepo.UpdateProductGroup(targetGroup);
                     }
+                    else
+                        return RedirectToAction("AddTeamProduct",new {
+                            groupId = newProductData.GroupId
+                        });
                 }
-                ModelState.AddModelError(nameof(UpdateProductVM.ProductId), "Please make sure to fill out all fields");
-                return View("ModifyGroup", updatedProduct);
+              return RedirectToAction("TeamManagement");
             }
+          
             catch
             {
                 ErrorViewModel e = new ErrorViewModel
@@ -853,22 +1032,50 @@ namespace dropShippingApp.Controllers
                 };
                 return View("Error", e);
             }
-          
         }
 
-        public async Task<IActionResult> UploadNewBanner()
+        public async Task<IActionResult> RemoveTeamProduct(int SelectedGroupID, int SelectedProductID)
         {
-            // TODO: will take in formdata with an image
-            // shove image into AWS file system
-            // return home management page
-            return View();
-        }
+            if (ModelState.IsValid)
+            {
+                // redirects to team product management page
+                var user = await userRepo.GetUserDataAsync(HttpContext.User);
+                if(user != null)
+                {
+                    try
+                    {
+                        // get product to be removed
+                        var foundProduct = user.ManagedTeam.ProductGroups
+                            .Find(group => group.ProductGroupID == SelectedGroupID).ChildProducts
+                            .Find(product => product.CustomProductID == SelectedProductID);
 
+                        // remove from group
+                        var foundGroup = user.ManagedTeam.ProductGroups
+                            .Find(group => group.ProductGroupID == SelectedGroupID);
+                        foundGroup.ChildProducts.Remove(foundProduct);
+                        await productGroupRepo.UpdateProductGroup(foundGroup);
+
+                        // remove product from DB
+                        await customProductRepo.RemoveCustomProduct(foundProduct.CustomProductID);
+                    }
+                    catch(Exception error)
+                    {
+                        return RedirectToAction("TeamManagement");
+                    }
+                }
+            }
+            return RedirectToAction("TeamManagement");
+        }
 
         public async Task<IActionResult> TeamReq()
         {
             ViewBag.DefaultFooter = false;
-            return View();
+            var user = await userRepo.GetUserDataAsync(HttpContext.User);
+            var requestModel = new TeamCreationRequest
+            {
+                AlreadyHasTeam = user.ManagedTeam != null ? true : false
+            };
+            return View(requestModel);
         }
 
         [HttpPost]
@@ -919,8 +1126,6 @@ namespace dropShippingApp.Controllers
             }
 
         }
-
-
 
         // HEADLESS API METHODS
         public async Task<IActionResult> GetProductsByGroupId(int id)

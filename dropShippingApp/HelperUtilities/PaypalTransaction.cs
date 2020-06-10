@@ -26,11 +26,11 @@ namespace dropShippingApp.HelperUtilities
          * 
          */
 
-        public async static Task<HttpResponse> GetOrder(IConfiguration configuration, string orderId)
+        public async static Task<PayPalCheckoutSdk.Orders.Order> GetOrder(IConfiguration configuration, string orderId)
         {
             var request = new OrdersGetRequest(orderId);
             var response = await PayPalClient.Client(configuration).Execute(request);
-            return response;
+            return response.Result<PayPalCheckoutSdk.Orders.Order>();
         }
 
         public async static Task<PayPalCheckoutSdk.Orders.Order> ProcessOrder(IConfiguration configuration, string orderId)
@@ -50,36 +50,38 @@ namespace dropShippingApp.HelperUtilities
         public async static Task<dropShippingApp.Models.Order> BuildDatabaseOrder(
             IProductGroupRepo groupRepo,
             ITeamRepo teamRepo,
+            IOrderRepo orderRepo,
             AppUser purchaser,
             string paypalOrderID)
         {
+            var orderItems = new List<OrderItem>();
             var cartItems = purchaser.Cart.CartItems;
-            // get all: team, product family, product ids from user's cart items
-            var teamIdsList = new List<string>();
-            var productIdsList = new List<string>();
-            var groupIdsList = new List<string>();
-            for(var i = 0; i < cartItems.Count; i++)
+            // loop through cart items, since they were the objects the purchase data was derived from
+            for (var i = 0; i < cartItems.Count; i++)
             {
+                // setup order and item loop data
                 var currentItem = cartItems[i];
-                // check product id
-                if (!productIdsList.Contains(currentItem.CartItemID.ToString()))
-                    productIdsList.Add(currentItem.CartItemID.ToString());
-                // get and check group id
-                var groupId = groupRepo.GetGroupByProductId(currentItem.CartItemID);
-                if (!groupIdsList.Contains(groupId.ToString()))
-                    groupIdsList.Add(groupId.ToString());
-                // get and check team id
-                var teamid = await teamRepo.FindTeamByProductId(currentItem.CartItemID);
-                if (!teamIdsList.Contains(teamid.ToString()))
-                    teamIdsList.Add(teamid.ToString());
+                var currentItemId = currentItem.ProductSelection.CustomProductID;
+
+                // build order item
+                var orderItem = new OrderItem()
+                {
+                    ProductID = currentItemId.ToString(),
+                    ProductFamilyID = groupRepo.GetGroupByProductId(currentItemId).ProductGroupID.ToString(),
+                    TeamID = teamRepo.FindTeamByProductId(currentItemId).TeamID.ToString()
+                };
+
+                // save item to DB
+                // add to list
+                await orderRepo.AddOrderItem(orderItem);
+                orderItems.Add(orderItem);
             }
 
             dropShippingApp.Models.Order newDBOrder = new dropShippingApp.Models.Order()
             {
                 PaypalOrderId = paypalOrderID,
-                ProductFamilyIDs = groupIdsList.ToArray(),
-                ProductIDs = productIdsList.ToArray(),
-                TeamIDs = teamIdsList.ToArray()
+                DatePlaced = DateTime.Now,
+                OrderedItems = orderItems
             };
             return newDBOrder;
         }

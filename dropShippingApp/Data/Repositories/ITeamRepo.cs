@@ -12,8 +12,8 @@ namespace dropShippingApp.Data.Repositories
         Task AddTeam(Team team);
         Task<Team> RemoveTeam(int teamId);
         Task UpdateTeam(Team team);
-        Task<Team> FindTeamById(int teamId);
-        Task<Team> FindTeamByProductId(int productId);
+        Team FindTeamById(int teamId);
+        Team FindTeamByProductId(int productId);
         Task MarkInactiveById(int teamId);
     }
 }

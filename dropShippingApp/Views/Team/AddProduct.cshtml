@@ -1,0 +1,52 @@
+﻿
+@{
+    ViewData["Title"] = "AddProduct";
+}
+@model CreateProductVM
+@inject IProductGroupRepo groupRepo
+
+    <section>
+        @if (Model.AvailableBaseProducts.Count != 0)
+        {
+            <div class="mb-3 text-center">
+                <h1>Creating New Product</h1>
+            </div>
+
+            <form class="jumbotron" asp-controller="Team" asp-action="AddTeamProduct" asp-route-GroupId=@Model.GroupId enctype="multipart/form-data" method="post">
+                <div class="form-group">
+                    <label asp-for=@Model.InitialPrice>Set Product Price</label>
+                    <input type="number" asp-for=@Model.InitialPrice class="form-control" placeholder="$0.00" />
+                </div>
+                <div class="form-group">
+                    <label asp-for=@Model.SelectedBaseProduct>Select Base Product to Customize</label>
+                    <select asp-for=@Model.SelectedBaseProduct class="form-control">
+                        <option selected value="">Choose a Product Group</option>
+                        @foreach (var product in Model.AvailableBaseProducts)
+                        {
+                            <option value=@product.RosterProductID>SKU # @product.SKU - @product.BaseSize.SizeName @product.BaseColor.ColorName</option>
+                        }
+                    </select>
+                </div>
+                <div class="custom-file">
+                    <input type="file" asp-for=@Model.ProductPhoto class="custom-file-input" />
+                    <label asp-for=@Model.ProductPhoto class="custom-file-label">Upload Image File</label>
+                </div>
+                <div class="my-4">
+                    <button type="submit" class="btn btn-primary">Create Product</button>
+                </div>
+            </form>
+        }
+        else
+        {
+            <h1>It Appears that there are no remaining base products, for product family @groupRepo.GetGroupById(Model.GroupId).BaseGroupModelNumber, that are not in use by "@groupRepo.GetGroupById(Model.GroupId).Title"</h1>
+        }
+    </section>
+
+    <script>
+// Add the following code if you want the name of the file appear on select
+$(".custom-file-input").on("change", function() {
+  var fileName = $(this).val().split("\\").pop();
+  $(this).siblings(".custom-file-label").addClass("selected").html(fileName);
+});
+    </script>
+

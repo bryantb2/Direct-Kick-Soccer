@@ -22,11 +22,14 @@ namespace dropShippingApp.Data.Repositories
         {
             get
             {
-                return this.context.RosterProducts.ToList();
+                return this.context.RosterProducts
+                    .Include(product => product.BaseColor)
+                    .Include(product => product.BaseSize)
+                    .Include(product => product.PricingHistory)
+                    .Include(product => product.RosterGroup)
+                    .ToList();
             }
         }
-
-        public IQueryable<RosterProduct> RosterProducts => throw new NotImplementedException();
 
         // methods
         public async Task AddRosterProduct(RosterProduct newProduct)
@@ -38,9 +41,12 @@ namespace dropShippingApp.Data.Repositories
         public async Task<RosterProduct> GetRosterProductById(int rosterProductId)
         {
             return this.context.RosterProducts
-                .Include(p => p.PricingHistory)
+                .Include(product => product.BaseColor)
+                .Include(product => product.BaseSize)
+                .Include(product => product.PricingHistory)
+                .Include(product => product.RosterGroup)
                 .ToList()
-                    .Find(id => id.RosterProductID == rosterProductId);
+                .Find(id => id.RosterProductID == rosterProductId);
         }
 
         public async Task UpdateRosterProduct(RosterProduct updatedProduct)

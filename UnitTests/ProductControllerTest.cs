@@ -13,15 +13,16 @@ using Xunit;
 
 namespace UnitTests
 {
-    public class ProductControllerTest 
-    { }
-     //   private IRosterProductRepo rosterRepo;
-     //   private ProductController controller;
-     //   //private ICustomProductRepo customProductRepo;
-     //   //private IProductSortRepo sortRepo;
-     //   //private IProductCategoryRepo categoryRepo;
-     //   private IProductGroupRepo productGroupRepo;
-     //   private ITeamRepo teamRepo;
+    public class ProductControllerTest: IDisposable
+     {
+        private IRosterProductRepo rosterRepo;
+        private ProductController controller;
+        //private ICustomProductRepo customProductRepo;
+        //private IProductSortRepo sortRepo;
+        //private IProductCategoryRepo categoryRepo;
+        private IProductGroupRepo productGroupRepo;
+        private ITeamRepo teamRepo;
+
 
      //   //setup
      //   public ProductControllerTest()
@@ -251,7 +252,5 @@ namespace UnitTests
      //       Assert.Equal(t.Name, teamResult.Name);
 
      //   }
-        
-        
-     //}
+      }
 }

@@ -10,7 +10,7 @@ namespace dropShippingApp.Data.Repositories
 	{
 		List<CustomProduct> CustomProducts { get; }
 		Task AddCustomProduct(CustomProduct newProduct);
-		Task<CustomProduct> GetCustomProductById(int customProductId);
+		CustomProduct GetCustomProductById(int customProductId);
  		Task UpdateCustomProduct(CustomProduct updatedProduct);
 		Task<CustomProduct> RemoveCustomProduct(int productId);
 	}

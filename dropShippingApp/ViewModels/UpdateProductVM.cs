@@ -1,4 +1,7 @@
-﻿using System;
+﻿using dropShippingApp.APIModels;
+using dropShippingApp.Models;
+using Microsoft.AspNetCore.Http;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -12,10 +15,9 @@ namespace dropShippingApp.ViewModels
         public int ProductId { get; set; }
         [Required]
         public int GroupId { get; set; }
-        public string ProductName { get; set; }
+        public IFormFile PhotoData { get; set; }
+        public CustomProduct ProductData { get; set; }
         public decimal? CurrentPrice { get; set; }
-        [Required]
-        [MinLength(5)]
-        public string ProductImageURL { get; set; }
+        public string LinkToImage { get; set; }
     }
 }

@@ -274,13 +274,23 @@ namespace dropShippingApp.HelperUtilities
             Type productGroup = typeof(ProductGroup);
 
             var purchaseCount = 0;
+            // loop through each order
             foreach (var order in orderList)
             {
-                foreach (var itemId in typeof(T) == team ? 
-                    order.TeamIDs : order.ProductIDs)
+                // loop through each item in order
+                foreach (var item in order.OrderedItems)
                 {
-                    if (itemId == itemIdArg.ToString())
-                        purchaseCount++;
+                    // check type to determine comparison behaviors
+                    if (typeof(T) == team)
+                    {
+                        if (item.TeamID == itemIdArg.ToString())
+                            purchaseCount++;
+                    }
+                    else if(typeof(T) == productGroup)
+                    {
+                        if (item.ProductID == itemIdArg.ToString())
+                            purchaseCount++;
+                    }
                 }
             }
             return purchaseCount;

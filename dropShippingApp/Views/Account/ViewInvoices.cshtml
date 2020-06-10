@@ -2,3 +2,40 @@
     Layout = "_Layout";
     ViewData["Title"] = "Invoices";
 }
+@model List<InvoiceVM>
+
+    <section>
+        @if (Model.Count == 0)
+        {
+            <div class="panel-heading text-center">
+                <h1>It Appears You Have no Order History</h1>
+            </div>
+        }
+        else
+        {
+            <h1>Your Previous Orders</h1>
+            <br />
+            <article class="d-flex flex-column">
+                @foreach (var order in Model)
+                {
+                    <div class="p-2">
+                        <h2 class="mb-2">Order ID: @order.BaseOrder.OrderID</h2>
+                        <div class="mb-2">Date Placed: @order.BaseOrder.DatePlaced.ToString()</div>
+                        <div class="d-flex flex-column">
+                            <h3>Ordered Items</h3>
+                            <div class="p-2 bg-secondary">
+                                @foreach (var item in order.PurchasedProducts)
+                                {
+                                    <div class="mb-2 text-light">Product Name: @item.Title</div>
+                                    <div class="mb-2 text-light">Price At Purchase: @item.UnitPrice.ToString("0.##")</div>
+                                    <div class="mb-2 text-light">Color: @item.Color.ColorName</div>
+                                    <div class="mb-2 text-light">Size: @item.Size.SizeName</div>
+                                    <a asp-controller="Product" asp-action="ViewProduct" asp-route-productGroupId=@item.ProductGroupId>Go To Product</a>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                }
+            </article>
+        }
+    </section>

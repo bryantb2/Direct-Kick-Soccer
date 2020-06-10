@@ -79,18 +79,27 @@
                     <tbody>
                         @foreach (var team in Model.Teams)
                         {
-                            <tr>
+                        <tr>
+                            @if (team.BannerImageData != null)
+                            {
                                 <td>
-                                    <img width="100" src=@team.TeamBannerPNG />
+                                    <img width="100" src=@string.Concat("https://i.imgur.com/", team.BannerImageData.PhotoID, ".jpg") />
                                 </td>
-                                <td>@team.Name</td>
-                                <td>@team.Category.Name</td>
-                                <td>@team.Description</td>
+                            }
+                            else
+                            {
                                 <td>
-                                    <a class="btn btn-link" style="display:inline-block" asp-controller="Team" asp-action="ViewTeam" asp-route-teamId="@team.TeamID">View Team</a>
+                                    <img width="100" src="https://www.hackworks.com/img/account/default-team-avatar.png" />
                                 </td>
-                            </tr>
-                        }
+                            }
+                            <td>@team.Name</td>
+                            <td>@team.Category.Name</td>
+                            <td>@team.Description</td>
+                            <td>
+                                <a class="btn btn-link" style="display:inline-block" asp-controller="Team" asp-action="ViewTeam" asp-route-teamId="@team.TeamID">View Team</a>
+                            </td>
+                        </tr>
+                        }   
                     </tbody>
                 </table>
                 <br />

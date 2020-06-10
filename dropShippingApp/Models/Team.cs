@@ -30,9 +30,7 @@ namespace dropShippingApp.Models
         public String CorporatePageURL { get; set; }
         [Required]
         public String BusinessEmail { get; set; }
-        [Required]
-        public String TeamBannerPNG { get; set; }
-        
+        public ImgurPhotoData BannerImageData { get; set; }
         [Required]
         public string PhoneNumber { get; set; }
 

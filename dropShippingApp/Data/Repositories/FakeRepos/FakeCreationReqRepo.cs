@@ -26,6 +26,11 @@ namespace dropShippingApp.Data.Repositories.FakeRepos
             throw new NotImplementedException();
         }
 
+        public Task<List<TeamCreationRequest>> GetApproved()
+        {
+            throw new NotImplementedException();
+        }
+
         //public async Task<List<TeamCreationRequest>> GetAll()
         //{
         //    List<TeamCreationRequest> teamReq = (from r in reqs
@@ -48,6 +53,16 @@ namespace dropShippingApp.Data.Repositories.FakeRepos
             }
         }
 
+        public Task<List<TeamCreationRequest>> GetDenied()
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<TeamCreationRequest> MarkAsApproved(int reqId)
+        {
+            throw new NotImplementedException();
+        }
+
         public Task<TeamCreationRequest> MarkAsRejected(int reqId)
         {
             TeamCreationRequest req = (from r in reqs
@@ -63,6 +78,11 @@ namespace dropShippingApp.Data.Repositories.FakeRepos
             TeamCreationRequest result = reqs.Find(r => r.TeamCreationRequestID == r.TeamCreationRequestID);
             reqs.Remove(result);
             reqs.Add(req);
+        }
+
+        Task<List<TeamCreationRequest>> ITeamCreationReqRepo.GetReqsToCheck()
+        {
+            throw new NotImplementedException();
         }
     }
 }

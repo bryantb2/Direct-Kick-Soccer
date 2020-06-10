@@ -1,0 +1,55 @@
+﻿
+@{
+    ViewData["Title"] = "UploadBanner";
+}
+@model ImgurUploadRequest
+
+<section>
+    <h1>Team Banner Upload</h1>
+    <form class="d-flex flex-column" asp-controller="Team" asp-action="TeamBannerUpload" enctype="multipart/form-data" method="post">
+        @*<div class="p-2">
+            <label>Image Title: </label>
+            @if (Model.Description != null)
+            {
+                <input type="text" asp-for=@Model.Title />
+            }
+            else
+            {
+                <input type="text" asp-for=@Model.Title placeholder="Enter Title" />
+            }
+        </div>
+        <div class="p-2">
+            <label>Image Description: </label>
+            @if (Model.Description != null)
+            {
+                <input type="text" asp-for=@Model.Description />
+            }
+            else
+            {
+                <input type="text" asp-for=@Model.Description placeholder="Enter Brief Description" />
+            }
+        </div>*@
+        <div class="p-2 text-center">
+            @if (Model.LinkToImage != null)
+            {
+                <h3>Existing Banner Image</h3>
+                <img src=@Model.LinkToImage width="400" height="200" />
+            }
+            else
+            {
+                <h3>Banner Does Not Exist </h3>
+            }
+        </div>
+        <div class="p-2">
+            <label asp-for=@Model.Image>Upload Image File: </label>
+            <input type="file" asp-for=@Model.Image width="48" height="48" />
+        </div>
+        @*<div class="p-2">Or</div>
+        <div class="p-2">
+            <label>Image URL</label>
+            <input type="text" asp-for=@Model.LinkToImage width="48" height="48" />
+        </div>*@
+        <button type="submit" class="btn btn-link">Upload Image</button>
+    </form>
+</section>
+

@@ -11,10 +11,10 @@ namespace dropShippingApp.Models
         // private fields
         private List<PricingHistory> pricingHistory = new List<PricingHistory>();
         private List<Tag> tags = new List<Tag>();
+
         // public properties
         public int CustomProductID { get; set; }
-        [Required]
-        public string ProductPNG { get; set; }
+        public ImgurPhotoData ProductPhotoData { get; set; }
         [Required]
         public bool IsProductActive { get; set; }
         [Required]
@@ -38,6 +38,17 @@ namespace dropShippingApp.Models
                 }
                 return highestDate.NewPrice;
             }
+        }
+
+        public decimal GetPriceAtTimeOfSale(DateTime saleDate)
+        {
+            for (var i = PricingHistory.Count - 1; i >= 0; i++)
+            {
+                var currentHistory = pricingHistory[i];
+                if (saleDate >= currentHistory.DateChanged)
+                    return currentHistory.NewPrice;
+            }
+            return 0m;
         }
 
         // methods

@@ -17,7 +17,7 @@ namespace dropShippingApp.Data.Repositories.RealRepos
         }
         public IQueryable<TeamCreationRequest>Reqs
         {
-            get { return context.TeamCreationRequests.Include("Countries").Include("Providences"); }
+            get { return context.TeamCreationRequests.Include(req=>req.Providence); }
         }
 
 
@@ -49,7 +49,21 @@ namespace dropShippingApp.Data.Repositories.RealRepos
             }
         }
 
-      
+        public async Task<List<TeamCreationRequest>> GetReqsToCheck()
+        {
+            try
+            {
+                List<TeamCreationRequest> reqs = (from r in Reqs
+                                                  where r.IsArchived == false
+                                                  && r.IsApproved == false
+                                                  select r).ToList();
+                return reqs;
+            }
+            catch
+            {
+                return null;
+            }
+        }
 
         public async Task<TeamCreationRequest> MarkAsRejected(int reqId)
         {
@@ -68,11 +82,60 @@ namespace dropShippingApp.Data.Repositories.RealRepos
                 return null;
             }
         }
+        public async Task<TeamCreationRequest>MarkAsApproved(int reqId)
+        {
+            try
+            {
+                TeamCreationRequest req = (from r in Reqs
+                                           where r.TeamCreationRequestID == reqId
+                                           select r).First();
+                req.IsApproved = true;
+                context.Update(req);
+                await context.SaveChangesAsync();
+                return req;
+            }
+            catch
+            {
+                return null;
+            }
+        }
 
         public async Task UpdateReq(TeamCreationRequest req)
         {
             context.Update(req);
             await context.SaveChangesAsync();
+        }
+
+        public async Task<List<TeamCreationRequest>> GetApproved()
+        {
+            try
+            {
+                List<TeamCreationRequest> reqs = (from r in Reqs
+                                                  where r.IsArchived == false
+                                                  && r.IsApproved == true
+                                                  select r).ToList();
+                return reqs;
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
+        public async Task<List<TeamCreationRequest>> GetDenied()
+        {
+            try
+            {
+                List<TeamCreationRequest> reqs = (from r in Reqs
+                                                  where r.IsArchived == true
+                                                  && r.IsApproved == false
+                                                  select r).ToList();
+                return reqs;
+            }
+            catch
+            {
+                return null;
+            }
         }
     }
 }
