@@ -10,8 +10,8 @@ using dropShippingApp.Data;
 namespace dropShippingApp.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20200610025047_initial")]
-    partial class initial
+    [Migration("20200610220153_Master")]
+    partial class Master
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -858,6 +858,9 @@ namespace dropShippingApp.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<bool>("AlreadyHasTeam")
+                        .HasColumnType("bit");
 
                     b.Property<string>("AppUserId")
                         .HasColumnType("nvarchar(450)");

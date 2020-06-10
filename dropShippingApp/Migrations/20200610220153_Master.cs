@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace dropShippingApp.Migrations
 {
-    public partial class PreProduction : Migration
+    public partial class Master : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -45,6 +45,20 @@ namespace dropShippingApp.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Countries", x => x.CountryID);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "ImgurConfiguration",
+                columns: table => new
+                {
+                    ImgurConfigID = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    AccessToken = table.Column<string>(nullable: true),
+                    AccessLastUpdated = table.Column<DateTime>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ImgurConfiguration", x => x.ImgurConfigID);
                 });
 
             migrationBuilder.CreateTable(
@@ -99,6 +113,20 @@ namespace dropShippingApp.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_ProductSorts", x => x.SortID);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "SavedImgurPhotos",
+                columns: table => new
+                {
+                    ImgurPhotoDataID = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    PhotoID = table.Column<string>(nullable: true),
+                    DeleteHash = table.Column<string>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_SavedImgurPhotos", x => x.ImgurPhotoDataID);
                 });
 
             migrationBuilder.CreateTable(
@@ -206,7 +234,7 @@ namespace dropShippingApp.Migrations
                     ZipCode = table.Column<string>(nullable: false),
                     CorporatePageURL = table.Column<string>(nullable: false),
                     BusinessEmail = table.Column<string>(nullable: false),
-                    TeamBannerPNG = table.Column<string>(nullable: false),
+                    BannerImageDataImgurPhotoDataID = table.Column<int>(nullable: true),
                     PhoneNumber = table.Column<string>(nullable: false),
                     IsTeamInactive = table.Column<bool>(nullable: false),
                     IsHostTeam = table.Column<bool>(nullable: false),
@@ -216,6 +244,12 @@ namespace dropShippingApp.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Teams", x => x.TeamID);
+                    table.ForeignKey(
+                        name: "FK_Teams_SavedImgurPhotos_BannerImageDataImgurPhotoDataID",
+                        column: x => x.BannerImageDataImgurPhotoDataID,
+                        principalTable: "SavedImgurPhotos",
+                        principalColumn: "ImgurPhotoDataID",
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_Teams_TeamCategories_CategoryTeamCategoryID",
                         column: x => x.CategoryTeamCategoryID,
@@ -285,9 +319,10 @@ namespace dropShippingApp.Migrations
                 {
                     ProductGroupID = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
+                    GeneralThumbnail = table.Column<string>(nullable: true),
+                    ImgurImageID = table.Column<string>(nullable: true),
                     Description = table.Column<string>(nullable: false),
                     Title = table.Column<string>(nullable: false),
-                    GeneralThumbnail = table.Column<string>(nullable: false),
                     PrintDesignPNG = table.Column<string>(nullable: false),
                     BaseGroupModelNumber = table.Column<int>(nullable: false),
                     TeamID = table.Column<int>(nullable: true)
@@ -416,6 +451,7 @@ namespace dropShippingApp.Migrations
                 {
                     OrderID = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
+                    DatePlaced = table.Column<DateTime>(nullable: false),
                     PaypalOrderId = table.Column<string>(nullable: true),
                     SETrackingId = table.Column<string>(nullable: true),
                     SEReturnTrackingId = table.Column<string>(nullable: true),
@@ -522,6 +558,7 @@ namespace dropShippingApp.Migrations
                     PhoneNumber = table.Column<string>(nullable: true),
                     IsApproved = table.Column<bool>(nullable: false),
                     IsArchived = table.Column<bool>(nullable: false),
+                    AlreadyHasTeam = table.Column<bool>(nullable: false),
                     AppUserId = table.Column<string>(nullable: true),
                     AppUserId1 = table.Column<string>(nullable: true)
                 },
@@ -589,6 +626,28 @@ namespace dropShippingApp.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "OrderItems",
+                columns: table => new
+                {
+                    OrderItemID = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    ProductFamilyID = table.Column<string>(nullable: true),
+                    ProductID = table.Column<string>(nullable: true),
+                    TeamID = table.Column<string>(nullable: true),
+                    OrderID = table.Column<int>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_OrderItems", x => x.OrderItemID);
+                    table.ForeignKey(
+                        name: "FK_OrderItems_Orders_OrderID",
+                        column: x => x.OrderID,
+                        principalTable: "Orders",
+                        principalColumn: "OrderID",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "QuestionResponses",
                 columns: table => new
                 {
@@ -621,7 +680,7 @@ namespace dropShippingApp.Migrations
                 {
                     CustomProductID = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    ProductPNG = table.Column<string>(nullable: false),
+                    ProductPhotoDataImgurPhotoDataID = table.Column<int>(nullable: true),
                     IsProductActive = table.Column<bool>(nullable: false),
                     BaseProductRosterProductID = table.Column<int>(nullable: false),
                     AppUserId = table.Column<string>(nullable: true),
@@ -647,6 +706,12 @@ namespace dropShippingApp.Migrations
                         column: x => x.ProductGroupID,
                         principalTable: "ProductGroups",
                         principalColumn: "ProductGroupID",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_CustomProducts_SavedImgurPhotos_ProductPhotoDataImgurPhotoDataID",
+                        column: x => x.ProductPhotoDataImgurPhotoDataID,
+                        principalTable: "SavedImgurPhotos",
+                        principalColumn: "ImgurPhotoDataID",
                         onDelete: ReferentialAction.Restrict);
                 });
 
@@ -785,6 +850,16 @@ namespace dropShippingApp.Migrations
                 column: "ProductGroupID");
 
             migrationBuilder.CreateIndex(
+                name: "IX_CustomProducts_ProductPhotoDataImgurPhotoDataID",
+                table: "CustomProducts",
+                column: "ProductPhotoDataImgurPhotoDataID");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_OrderItems_OrderID",
+                table: "OrderItems",
+                column: "OrderID");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Orders_AppUserId",
                 table: "Orders",
                 column: "AppUserId");
@@ -890,6 +965,11 @@ namespace dropShippingApp.Migrations
                 column: "ProvidenceProvinceID");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Teams_BannerImageDataImgurPhotoDataID",
+                table: "Teams",
+                column: "BannerImageDataImgurPhotoDataID");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Teams_CategoryTeamCategoryID",
                 table: "Teams",
                 column: "CategoryTeamCategoryID");
@@ -929,7 +1009,10 @@ namespace dropShippingApp.Migrations
                 name: "CartItems");
 
             migrationBuilder.DropTable(
-                name: "Orders");
+                name: "ImgurConfiguration");
+
+            migrationBuilder.DropTable(
+                name: "OrderItems");
 
             migrationBuilder.DropTable(
                 name: "PricingHistories");
@@ -951,6 +1034,9 @@ namespace dropShippingApp.Migrations
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");
+
+            migrationBuilder.DropTable(
+                name: "Orders");
 
             migrationBuilder.DropTable(
                 name: "CustomProducts");
@@ -984,6 +1070,9 @@ namespace dropShippingApp.Migrations
 
             migrationBuilder.DropTable(
                 name: "ProductCategories");
+
+            migrationBuilder.DropTable(
+                name: "SavedImgurPhotos");
 
             migrationBuilder.DropTable(
                 name: "TeamCategories");
