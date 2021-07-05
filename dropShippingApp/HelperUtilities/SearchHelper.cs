@@ -179,53 +179,61 @@ namespace dropShippingApp.HelperUtilities
 
         private static List<object> SearchProductGroups(List<ProductGroup> searchableGroups, string searchString)
         {
-            var foundGroups = new List<object>();
-            if (searchString.Length >= 2)
+            try
             {
-                var cleanedSearchTerm = searchString.Trim().Split(' ');
-                var hasMatch = false;
-                foreach (var group in searchableGroups)
+                var foundGroups = new List<object>();
+                if (searchString.Length >= 2)
                 {
-                    // clean search term
-                    // checks product tags, title, color, size, SKU, model number, and category
-                    if (DoesQueryContainString(cleanedSearchTerm, group.Description))
-                        hasMatch = true;
-                    else if (DoesQueryContainString(cleanedSearchTerm, group.Title))
-                        hasMatch = true;
-                    else if (DoesQueryContainString(cleanedSearchTerm, group.ProductTags))
-                        hasMatch = true;
-                    if (!hasMatch)
+                    var cleanedSearchTerm = searchString.Trim().Split(' ');
+                    var hasMatch = false;
+                    foreach (var group in searchableGroups)
                     {
-                        foreach (var product in group.ChildProducts)
+                        // clean search term
+                        // checks product tags, title, color, size, SKU, model number, and category
+                        if (DoesQueryContainString(cleanedSearchTerm, group.Description))
+                            hasMatch = true;
+                        else if (DoesQueryContainString(cleanedSearchTerm, group.Title))
+                            hasMatch = true;
+                        else if (DoesQueryContainString(cleanedSearchTerm, group.ProductTags))
+                            hasMatch = true;
+                        if (!hasMatch)
                         {
-                            if (DoesQueryContainString(cleanedSearchTerm, product.BaseProduct.RosterGroup.ProductTags))
-                                hasMatch = true;
-                            else if (DoesQueryContainString(cleanedSearchTerm, product.BaseProduct.RosterGroup.ModelNumber.ToString()))
-                                hasMatch = true;
-                            else if (DoesQueryContainString(cleanedSearchTerm, product.BaseProduct.SKU.ToString()))
-                                hasMatch = true;
-                            else if (DoesQueryContainString(cleanedSearchTerm, product.BaseProduct.BaseColor.ColorName))
-                                hasMatch = true;
-                            else if (DoesQueryContainString(cleanedSearchTerm, product.BaseProduct.BaseSize.SizeName))
-                                hasMatch = true;
-                            else if (DoesQueryContainString(cleanedSearchTerm, product.BaseProduct.RosterGroup.ProductTags))
-                                hasMatch = true;
-                            else if (DoesQueryContainString(cleanedSearchTerm, product.BaseProduct.RosterGroup.Category.Name))
-                                hasMatch = true;
-                            // no need to keep searching if we already have one match
-                            if (hasMatch)
-                                break;
+                            foreach (var product in group.ChildProducts)
+                            {
+                                if (DoesQueryContainString(cleanedSearchTerm, product.BaseProduct.RosterGroup.ProductTags))
+                                    hasMatch = true;
+                                else if (DoesQueryContainString(cleanedSearchTerm, product.BaseProduct.RosterGroup.ModelNumber.ToString()))
+                                    hasMatch = true;
+                                else if (DoesQueryContainString(cleanedSearchTerm, product.BaseProduct.SKU.ToString()))
+                                    hasMatch = true;
+                                else if (DoesQueryContainString(cleanedSearchTerm, product.BaseProduct.BaseColor.ColorName))
+                                    hasMatch = true;
+                                else if (DoesQueryContainString(cleanedSearchTerm, product.BaseProduct.BaseSize.SizeName))
+                                    hasMatch = true;
+                                else if (DoesQueryContainString(cleanedSearchTerm, product.BaseProduct.RosterGroup.ProductTags))
+                                    hasMatch = true;
+                                else if (DoesQueryContainString(cleanedSearchTerm, product.BaseProduct.RosterGroup.Category.Name))
+                                    hasMatch = true;
+                                // no need to keep searching if we already have one match
+                                if (hasMatch)
+                                    break;
+                            }
+                        }
+                        if (hasMatch)
+                        {
+                            foundGroups.Add(group);
+                            hasMatch = false;
                         }
                     }
-                    if (hasMatch)
-                    {
-                        foundGroups.Add(group);
-                        hasMatch = false;
-                    } 
+                    return foundGroups;
                 }
                 return foundGroups;
             }
-            return foundGroups;
+            catch
+            {
+                return null;
+            }
+           
         }
 
         private static bool DoesQueryContainString(string[] query, string stringToCheck)

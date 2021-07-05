@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace dropShippingApp.Migrations
 {
-    public partial class initial : Migration
+    public partial class Pre_Production : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -557,6 +557,8 @@ namespace dropShippingApp.Migrations
                     BusinessEmail = table.Column<string>(nullable: true),
                     PhoneNumber = table.Column<string>(nullable: true),
                     IsApproved = table.Column<bool>(nullable: false),
+                    IsArchived = table.Column<bool>(nullable: false),
+                    AlreadyHasTeam = table.Column<bool>(nullable: false),
                     AppUserId = table.Column<string>(nullable: true),
                     AppUserId1 = table.Column<string>(nullable: true)
                 },

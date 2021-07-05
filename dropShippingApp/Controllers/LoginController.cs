@@ -30,7 +30,7 @@ namespace dropShippingApp.Controllers
         public async Task<ViewResult> Index()
         {
             return View();
-        }
+        } 
 
         public async Task<ViewResult> Signup()
         {
@@ -52,88 +52,142 @@ namespace dropShippingApp.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Login(LoginViewModel model, string returnUrl)
         {
-            if (ModelState.IsValid)
+            try
             {
-                AppUser user = await userManager.FindByEmailAsync(model.Email);
-                if (user != null)
+                if (ModelState.IsValid)
                 {
-                    await signInManager.SignOutAsync();
-                    var result = await signInManager.PasswordSignInAsync(user, model.Password, false, false);
-                    if (result.Succeeded)
+                    AppUser user = await userManager.FindByEmailAsync(model.Email);
+                    if (user != null)
                     {
-                        return Redirect(returnUrl ?? "/Home/Index");
+                        await signInManager.SignOutAsync();
+                        var result = await signInManager.PasswordSignInAsync(user, model.Password, false, false);
+                        if (result.Succeeded)
+                        {
+                            return Redirect(returnUrl ?? "/Home/Index");
+                        }
                     }
+                    ModelState.AddModelError(nameof(LoginViewModel.Email), "Invalid email or password");
                 }
-                ModelState.AddModelError(nameof(LoginViewModel.Email), "Invalid email or password");
+                return View("Index", model);
             }
-            return View("Index", model);
+            catch
+            {
+                ErrorViewModel e = new ErrorViewModel
+                {
+                    RequestId = "DKS-0001",
+                    Message = "An error occured while trying to login."
+                };
+                return View("Error", e);
+            }
+   ;
+        }
+
+      
+        public async Task<IActionResult> ForgotPassword(LoginViewModel model)
+        {
+            return View();
+        }
+
+        public async Task<IActionResult> ForgotPasswordCtrl(LoginViewModel model)
+        {
+            var user = await userManager.FindByEmailAsync(model.Email);
+            //UNFINISHED:  forgot password depends on systems that have not been implemented
+            // this is just a placeholder method and view
+          
+            return RedirectToAction("Index");
         }
 
         [HttpPost]
         public async Task<IActionResult> Signup(CreateUserViewModel model)
         {
-            if (ModelState.IsValid)
+            try
             {
-                if (model.ConfirmPassword == model.Password)
+                if (ModelState.IsValid)
                 {
-                    // ensuring unique username
-                    var userSearchByName = await userManager.FindByNameAsync(model.Username);
-                    var userSearchByEmail = await userManager.FindByEmailAsync(model.Email);
-                    if (userSearchByName == null && userSearchByEmail == null)
+                    if (model.ConfirmPassword == model.Password)
                     {
-                        // create user cart
-                        // save cart
-                        Cart newUserCart = new Cart();
-                        await cartRepo.AddCart(newUserCart);
-
-                        AppUser user = new AppUser
+                        // ensuring unique username
+                        var userSearchByName = await userManager.FindByNameAsync(model.Username);
+                        var userSearchByEmail = await userManager.FindByEmailAsync(model.Email);
+                        if (userSearchByName == null && userSearchByEmail == null)
                         {
-                            UserName = model.Username,
-                            Email = model.Email,
-                            FirstName = model.FName,
-                            LastName = model.LName,
-                            Cart = newUserCart
-                        };
-                        IdentityResult result
-                            = await userManager.CreateAsync(user, model.Password);
+                            // create user cart
+                            // save cart
+                            Cart newUserCart = new Cart();
+                            await cartRepo.AddCart(newUserCart);
 
-                        if (result.Succeeded)
-                        {
-                            var newUser = await userManager.FindByNameAsync(user.UserName);
-                            await userManager.AddToRoleAsync(user, "standard");
-                            return RedirectToAction("Index");
+                            AppUser user = new AppUser
+                            {
+                                UserName = model.Username,
+                                Email = model.Email,
+                                FirstName = model.FName,
+                                LastName = model.LName,
+                                Cart = newUserCart
+                            };
+                            IdentityResult result
+                                = await userManager.CreateAsync(user, model.Password);
+
+                            if (result.Succeeded)
+                            {
+                                var newUser = await userManager.FindByNameAsync(user.UserName);
+                                await userManager.AddToRoleAsync(user, "standard");
+                                return RedirectToAction("Index");
+                            }
+                            else
+                            {
+                                await cartRepo.RemoveCartById(newUserCart.CartID);
+                                foreach (IdentityError error in result.Errors)
+                                {
+                                    ModelState.AddModelError("", error.Description);
+                                }
+                            }
                         }
                         else
                         {
-                            await cartRepo.RemoveCartById(newUserCart.CartID);
-                            foreach (IdentityError error in result.Errors)
-                            {
-                                ModelState.AddModelError("", error.Description);
-                            }
+                            ModelState.AddModelError(nameof(CreateUserViewModel.Username), "Username must be unique");
                         }
                     }
                     else
                     {
-                        ModelState.AddModelError(nameof(CreateUserViewModel.Username), "Username must be unique");
+                        ModelState.AddModelError(nameof(CreateUserViewModel.ConfirmPassword), "Passwords must match");
                     }
                 }
-                else
-                {
-                    ModelState.AddModelError(nameof(CreateUserViewModel.ConfirmPassword), "Passwords must match");
-                }
+                return View(model);
             }
-            return View(model);
+            catch
+            {
+                ErrorViewModel e = new ErrorViewModel
+                {
+                    RequestId = "DKS-008",
+                    Message = "An error occured while getting signed up."
+                };
+                return View("Error", e);
+            }
+           
         }
 
         [HttpGet]
         public async Task<IActionResult> SignoutUser()
         {
-            var currentUser = userManager.GetUserAsync(HttpContext.User);
-            if (currentUser != null)
+            try
             {
-                await signInManager.SignOutAsync();
+                var currentUser = userManager.GetUserAsync(HttpContext.User);
+                if (currentUser != null)
+                {
+                    await signInManager.SignOutAsync();
+                }
+                return RedirectToAction("Index", "Home", new { area = "" });
             }
-            return RedirectToAction("Index", "Home", new { area = "" });
+            catch
+            {
+                ErrorViewModel e = new ErrorViewModel
+                {
+                    RequestId = "DKS-009",
+                    Message = "An error occured while singing out."
+                };
+                return View("Error", e);
+            }
+
         }
     }
 }

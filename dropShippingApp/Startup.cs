@@ -85,12 +85,16 @@ namespace dropShippingApp
         {
             if (env.IsDevelopment())
             {
+
+                //app.UseStatusCodePages();
                 app.UseDeveloperExceptionPage();
                 //app.UseDatabaseErrorPage();
             }
             else
             {
-                //app.UseExceptionHandler("/Home/Error");
+                //placeholder recieves status code
+                app.UseStatusCodePagesWithReExecute("/Error/{0}");
+               // app.UseExceptionHandler("/Error");
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
@@ -104,14 +108,23 @@ namespace dropShippingApp
 
             app.UseCookiePolicy();
 
+ 
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
                 endpoints.MapControllerRoute(
                     name: "default",
                     pattern: "{controller=Home}/{action=Index}/{id?}");
+                endpoints.MapControllerRoute(
+                    name: "error",
+                    pattern: "/Error/{errorCode}", 
+                    defaults: new { controller = "Error", action = "HttpStatusCodeHandler" });
+                
                 endpoints.MapRazorPages();
             });
+
+            // Ensure that the database has been created and the latest migration applied
+            context.Database.Migrate();
 
             // seed DB
             SeedData.Seed(app.ApplicationServices);

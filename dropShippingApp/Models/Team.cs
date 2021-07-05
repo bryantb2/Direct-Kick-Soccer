@@ -33,6 +33,7 @@ namespace dropShippingApp.Models
         public ImgurPhotoData BannerImageData { get; set; }
         [Required]
         public string PhoneNumber { get; set; }
+
         public List<Tag> TeamTags { get { return teamTags; } }
         [Required]
         public bool IsTeamInactive { get; set; }

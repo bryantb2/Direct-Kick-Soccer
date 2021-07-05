@@ -53,145 +53,237 @@ namespace dropShippingApp.Controllers
 
         public async Task<IActionResult> ViewProduct(int productGroupId)
         {
-            // get product group
-            var foundGroup = productGroupRepo.GetGroupById(productGroupId);
-
-            // setup view model
-            var viewProductVM = new ProductSelectionViewModel()
+            try
             {
-                ProductGroup = foundGroup
-            };
+                // get product group
+                var foundGroup = productGroupRepo.GetGroupById(productGroupId);
 
-            // send to view
-            return View(viewProductVM);
+                // setup view model
+                var viewProductVM = new ProductSelectionViewModel()
+                {
+                    ProductGroup = foundGroup
+                };
+
+                // send to view
+                return View(viewProductVM);
+            }
+            catch
+            {
+                ErrorViewModel e = new ErrorViewModel
+                {
+                    RequestId = "DKS-0010",
+                    Message = "An error occured while trying to view a product."
+                };
+                return View("Error", e);
+            }
+
         }
 
         public async Task<IActionResult> BackToFirstPage(int categoryId = -1, string searchTerm = null)
         {
-            if (searchTerm != null)
-                return RedirectToAction("Search", new
+            try
+            {
+                if (searchTerm != null)
+                    return RedirectToAction("Search", new
+                    {
+                        searchString = searchTerm,
+                        currentPage = 0
+                    });
+                else
+                    return RedirectToAction("DisplayByCategory", new
+                    {
+                        categoryId = categoryId,
+                        currentPage = 0
+                    });
+            }
+            catch
+            {
+                ErrorViewModel e = new ErrorViewModel
                 {
-                    searchString = searchTerm,
-                    currentPage = 0
-                });
-            else
-                return RedirectToAction("DisplayByCategory", new
-                {
-                    categoryId = categoryId,
-                    currentPage = 0
-                });
+                    RequestId = "DKS-0011",
+                    Message = "An error occured while trying to return to get the page."
+                };
+                return View("Error", e);
+            }
+       
         }
 
         public async Task<IActionResult> NextPage(int currentPage, int categoryId = -1, string searchTerm = null)
         {
-            if (searchTerm != null)
-                return RedirectToAction("Search", new
+            try
+            {
+                if (searchTerm != null)
+                    return RedirectToAction("Search", new
+                    {
+                        searchString = searchTerm,
+                        currentPage = currentPage + 1
+                    });
+                else
+                    return RedirectToAction("DisplayByCategory", new
+                    {
+                        categoryId = categoryId,
+                        currentPage = currentPage + 1
+                    });
+            }
+            catch
+            {
+                ErrorViewModel e = new ErrorViewModel
                 {
-                    searchString = searchTerm,
-                    currentPage = currentPage + 1
-                });
-            else
-                return RedirectToAction("DisplayByCategory", new
-                {
-                    categoryId = categoryId,
-                    currentPage = currentPage + 1
-                });
+                    RequestId = "DKS-0011",
+                    Message = "An error occured while trying to return to get the page."
+                };
+                return View("Error", e);
+            }
+ 
         }
 
         public async Task<IActionResult> PreviousPage(int currentPage, int categoryId = -1, string searchTerm = null)
         {
-            if (searchTerm != null)
-                return RedirectToAction("Search", new
+            try
+            {
+                if (searchTerm != null)
+                    return RedirectToAction("Search", new
+                    {
+                        searchString = searchTerm,
+                        currentPage = currentPage - 1
+                    });
+                else
+                    return RedirectToAction("DisplayByCategory", new
+                    {
+                        categoryId = categoryId,
+                        currentPage = currentPage - 1
+                    });
+            }
+            catch
+            {
+                ErrorViewModel e = new ErrorViewModel
                 {
-                    searchString = searchTerm,
-                    currentPage = currentPage - 1
-                });
-            else
-                return RedirectToAction("DisplayByCategory", new
-                {
-                    categoryId = categoryId,
-                    currentPage = currentPage - 1
-                });
+                    RequestId = "DKS-0011",
+                    Message = "An error occured while trying to return to get the page."
+                };
+                return View("Error", e);
+            }
+
         }
 
         public async Task<IActionResult> Search(string searchString, int currentPage = -1)
         {
-            // search for products
-            var foundGroups = SearchHelper.SearchByString<ProductGroup>(productGroupRepo.Groups, searchString);
+            try
+            {
+                // search for products
+                var foundGroups = SearchHelper.SearchByString<ProductGroup>(productGroupRepo.Groups, searchString);
 
-            // create browse view model
-            var browseVM = SearchHelper.CreateBrowseObject<ProductGroup>(
-                    currentPage == -1 ? 0 : currentPage,
-                    searchTerm: searchString,
-                    queriedGroups: foundGroups);
+                // create browse view model
+                var browseVM = SearchHelper.CreateBrowseObject<ProductGroup>(
+                        currentPage == -1 ? 0 : currentPage,
+                        searchTerm: searchString,
+                        queriedGroups: foundGroups);
 
-            // return view
-            return View("Search", browseVM);
+                // return view
+                return View("Search", browseVM);
+            }
+            catch
+            {
+                ErrorViewModel e = new ErrorViewModel
+                {
+                    RequestId = "DKS-0020",
+                    Message = "An error occured while trying to search."
+                };
+                return View("Error", e);
+            }
+
         }
 
         public async Task<IActionResult> DisplayByCategory(int categoryId, int currentPage = -1)
         {
-            // get products by category
-            var categoryGroups = SearchHelper.FilterByCategory<ProductGroup>(productGroupRepo.Groups, categoryId);
+            try
+            {
+                // get products by category
+                var categoryGroups = SearchHelper.FilterByCategory<ProductGroup>(productGroupRepo.Groups, categoryId);
 
-            // get current category
-            var category = categoryRepo.GetCategoryById(categoryId);
+                // get current category
+                var category = categoryRepo.GetCategoryById(categoryId);
 
-            // create browse view model
-            var browseVM = SearchHelper.CreateBrowseObject<ProductGroup>(
-                currentPage == -1 ? 0 : currentPage,
-                productCategory: category,
-                queriedGroups: categoryGroups);
+                // create browse view model
+                var browseVM = SearchHelper.CreateBrowseObject<ProductGroup>(
+                    currentPage == -1 ? 0 : currentPage,
+                    productCategory: category,
+                    queriedGroups: categoryGroups);
 
-            // return view
-            return View("Search", browseVM);
+                // return view
+                return View("Search", browseVM);
+            }
+            catch
+            {
+                ErrorViewModel e = new ErrorViewModel
+                {
+                    RequestId = "DKS-0012",
+                    Message = "An error occured while trying to get the categories."
+                };
+                return View("Error", e);
+            }
+
         }
 
         public async Task<IActionResult> SortProductGroups(int sortId, int categoryId = -1, string searchTerm = null, int currentPage = -1)
         {
-            // IMPORTANT: at no point will the user be allowed to search AND browse by category AT THE SAME TIME
-
-            // get products by appropriate query
-            var searchableList = productGroupRepo.Groups;
-            var filteredGroups = categoryId != -1 ?
-                SearchHelper.FilterByCategory<ProductGroup>(searchableList, categoryId)
-                    : SearchHelper.SearchByString<ProductGroup>(searchableList, searchTerm);
-
-            // get sort and check sort type
-            var foundSort = sortRepo.GetSortById(sortId);
-            var productGroupSortArgument = 0;
-            if (foundSort.SortName.ToUpper() == "LOWEST PRICE")
+            try
             {
-                productGroupSortArgument = -1;
-            }
-            else if (foundSort.SortName.ToUpper() == "HIGHEST PRICE")
-            {
-                productGroupSortArgument = 1;
-            }
-            SearchHelper.SortGroupsByPrice(ref filteredGroups, sortBy: productGroupSortArgument);
+                // IMPORTANT: at no point will the user be allowed to search AND browse by category AT THE SAME TIME
 
-            // create browse view model
-            BrowseViewModel browseVM = null;
-            if (categoryId != -1)
-            {
-                // means user is browsing by category
-                var foundCategory = categoryRepo.GetCategoryById(categoryId);
-                browseVM = SearchHelper.CreateBrowseObject<ProductGroup>(
-                    currentPage == -1 ? 0 : currentPage,
-                    productCategory: foundCategory,
-                    queriedGroups: filteredGroups);
-            }
-            else
-            {
-                // user is browsing products THEY searched
-                browseVM = SearchHelper.CreateBrowseObject<ProductGroup>(
-                    currentPage == -1 ? 0 : currentPage,
-                    searchTerm: searchTerm,
-                    queriedGroups: filteredGroups);
-            }
+                // get products by appropriate query
+                var searchableList = productGroupRepo.Groups;
+                var filteredGroups = categoryId != -1 ?
+                    SearchHelper.FilterByCategory<ProductGroup>(searchableList, categoryId)
+                        : SearchHelper.SearchByString<ProductGroup>(searchableList, searchTerm);
 
-            // return list
-            return View("Search", browseVM);
+                // get sort and check sort type
+                var foundSort = sortRepo.GetSortById(sortId);
+                var productGroupSortArgument = 0;
+                if (foundSort.SortName.ToUpper() == "LOWEST PRICE")
+                {
+                    productGroupSortArgument = -1;
+                }
+                else if (foundSort.SortName.ToUpper() == "HIGHEST PRICE")
+                {
+                    productGroupSortArgument = 1;
+                }
+                SearchHelper.SortGroupsByPrice(ref filteredGroups, sortBy: productGroupSortArgument);
+
+                // create browse view model
+                BrowseViewModel browseVM = null;
+                if (categoryId != -1)
+                {
+                    // means user is browsing by category
+                    var foundCategory = categoryRepo.GetCategoryById(categoryId);
+                    browseVM = SearchHelper.CreateBrowseObject<ProductGroup>(
+                        currentPage == -1 ? 0 : currentPage,
+                        productCategory: foundCategory,
+                        queriedGroups: filteredGroups);
+                }
+                else
+                {
+                    // user is browsing products THEY searched
+                    browseVM = SearchHelper.CreateBrowseObject<ProductGroup>(
+                        currentPage == -1 ? 0 : currentPage,
+                        searchTerm: searchTerm,
+                        queriedGroups: filteredGroups);
+                }
+
+                // return list
+                return View("Search", browseVM);
+            }
+            catch
+            {
+
+                ErrorViewModel e = new ErrorViewModel
+                {
+                    RequestId = "DKS-0013",
+                    Message = "An error occured while trying to sort."
+                };
+                return View("Error", e);
+            }
+          
         }
     }
 }

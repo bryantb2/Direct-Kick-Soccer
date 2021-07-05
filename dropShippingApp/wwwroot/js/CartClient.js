@@ -28,7 +28,9 @@ const updateOnServer = async (apiString, cartItems) => {
     location.reload();
 }
 
-const updateCartCallback = (apiString) => {
+const updateCartCallback = () => {
+    // get api URL
+    const apiURL = window.location + "/UpdateCart";
     const cartItems = bundleCartItems();
-    updateOnServer(apiString, cartItems);
+    updateOnServer(apiURL, cartItems);
 }

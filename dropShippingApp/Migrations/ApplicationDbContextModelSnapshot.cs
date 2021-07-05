@@ -857,6 +857,9 @@ namespace dropShippingApp.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+                    b.Property<bool>("AlreadyHasTeam")
+                        .HasColumnType("bit");
+
                     b.Property<string>("AppUserId")
                         .HasColumnType("nvarchar(450)");
 
@@ -873,6 +876,9 @@ namespace dropShippingApp.Migrations
                         .HasColumnType("int");
 
                     b.Property<bool>("IsApproved")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsArchived")
                         .HasColumnType("bit");
 
                     b.Property<string>("PhoneNumber")

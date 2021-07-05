@@ -10,8 +10,8 @@ using dropShippingApp.Data;
 namespace dropShippingApp.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20200609211558_initial")]
-    partial class initial
+    [Migration("20200610221456_Pre_Production")]
+    partial class Pre_Production
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -859,6 +859,9 @@ namespace dropShippingApp.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+                    b.Property<bool>("AlreadyHasTeam")
+                        .HasColumnType("bit");
+
                     b.Property<string>("AppUserId")
                         .HasColumnType("nvarchar(450)");
 
@@ -875,6 +878,9 @@ namespace dropShippingApp.Migrations
                         .HasColumnType("int");
 
                     b.Property<bool>("IsApproved")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsArchived")
                         .HasColumnType("bit");
 
                     b.Property<string>("PhoneNumber")

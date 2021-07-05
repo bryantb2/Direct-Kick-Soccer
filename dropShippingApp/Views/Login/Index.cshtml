@@ -4,15 +4,29 @@
     ViewData["Title"] = "Login";
 }
 
-<h1>Login</h1>
+    <div class="panel-heading text-center">
+        <h1>Login</h1>
+    </div>
 
-<form asp-controller="Login" asp-action="Login" method="post">
-    <label>Email</label>
-    <input type="email" placeholder="Enter Email" asp-for=@Model.Email required />
 
-    <br />
+<div id="wrapper">
+    <div class="panel panel-success">
+        <div class="panel-body">
+            <form class="p-a-1" asp-controller="Login" asp-action="Login" method="post">
+                <div asp-validation-summary="All">
+                    <div class="form-group">
+                        <label>Email</label>
+                        <input type="email" class="form-control" placeholder="Enter Email" asp-for=@Model.Email required />
+                    </div>
+                    <div class="form-group">
+                        <label>Password</label>
+                        <input type="password" class="form-control" placeholder="Enter Password" asp-for=@Model.Password required /><br />
+                        <button class="btn btn-primary" type="submit">Login</button>
+                    </div>
+                </div>
+            </form>
+            <p><em>forgot your <a asp-action="ForgotPassword">password?</a></em></p>
+        </div>
+    </div>
+</div>
 
-    <label>Password</label>
-    <input type="password" placeholder="Enter Password" asp-for=@Model.Password required />
-    <button type="submit">Login</button>
-</form>

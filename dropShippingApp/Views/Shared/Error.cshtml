@@ -1,0 +1,20 @@
+﻿@model ErrorViewModel
+@{
+    ViewData["Title"] = "Error";
+}
+
+<h1 class="text-danger">Error.</h1>
+<h2 class="text-danger">An error occurred while processing your request.</h2>
+
+@if (Model.ShowRequestId)
+{
+    <p>
+        <strong>Request ID:</strong> <code>@Model.RequestId</code>
+    </p>
+    <p>
+        <strong>Message:@Model.Message </strong><code> </code>
+    </p>
+}
+Please try again later. If this persists please contact us with the Request ID, message, and any information about what you did before the error occcured.
+
+

@@ -4,14 +4,15 @@
 
 
 
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - dropShippingApp</title>
-    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" />
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css" />
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
@@ -41,7 +42,6 @@
                         <li class="nav-item dropdown">
                             <a class="nav-link text-dark dropdown-toggle" data-toggle="dropdown" asp-area="" asp-controller="Product" asp-action="Index">Apparel</a>
                             <ul class="dropdown-menu">
-                                <li><a class="nav-link text-dark" asp-controller="Product" asp-action="Search">Search Products - Not Live</a></li>
                                 @foreach (var category in categoryRepo.GetCategories)
                                 {
                                     <li><a class="nav-link text-dark" asp-controller="Product" asp-action="DisplayByCategory" asp-route-categoryID="@category.ProductCategoryID">@category.Name</a></li>
@@ -56,8 +56,18 @@
                         <li class="nav-item dropdown">
                             <a class="nav-link text-dark dropdown-toggle" data-toggle="dropdown" asp-area="" asp-controller="Account" asp-action="Index">Welcome @UserManager.GetUserName(User)</a>
                             <ul class="dropdown-menu">
+                                @if (User.IsInRole("Manager"))
+                                {
+                                    <li><a class="nav-link text-dark" asp-controller="Team" asp-action="TeamSettings"><span class="glyphicon" style="padding-right: 5px"></span>Team Settings</a></li>
+                                    <li><a class="nav-link text-dark" asp-controller="Team" asp-action="TeamManagement"><span class="glyphicon" style="padding-right: 5px"></span>Team Manager</a></li>
+                                }
+
+                                @if (User.IsInRole("Admin"))
+                                {
+                                    <li><a class="nav-link text-dark" asp-controller="RoleAdmin" asp-action="Index"><span class="glyphicon" style="padding-right: 5px"></span>Role Manager</a></li>
+                                }
+
                                 <li><a class="nav-link text-dark" asp-controller="Account" asp-action="Invoices"><span class="glyphicon" style="padding-right: 5px"></span>View Orders</a></li>
-                                <li><a class="nav-link text-dark" asp-controller="Team" asp-action="TeamManagement"><span class="glyphicon" style="padding-right: 5px"></span>Team Manager</a></li>
                                 <li><a class="nav-link text-dark" asp-controller="Login" asp-action="SignoutUser"><span class="glyphicon glyphicon-log-out" style="padding-right: 5px"></span>Logout</a></li>
                             </ul>
                         </li>

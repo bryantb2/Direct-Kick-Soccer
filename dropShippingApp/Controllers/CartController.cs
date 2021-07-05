@@ -70,160 +70,227 @@ namespace dropShippingApp.Controllers
         // view cart
         public async Task<IActionResult> Index()
         {
-            // get user
-            var user = await userRepo.GetUserDataAsync(HttpContext.User);
-            if (user != null)
+            try
             {
-                // build cart item VM objects
-                var totalCartPrice = 0m;
-                var cartItemVMList = new List<CartItemVM>();
-                for(var i = 0; i < user.Cart.CartItems.Count; i++)
+                // get user
+                var user = await userRepo.GetUserDataAsync(HttpContext.User);
+                if (user != null)
                 {
-                    // get the actual cart item
-                    // add to running cart total
-                    var currentCartitem = user.Cart.CartItems[i];
-                    totalCartPrice += (currentCartitem.Quantity * currentCartitem.ProductSelection.CurrentPrice);
-
-                    // get the product group item belongs to
-                    var productGroup = groupRepo.GetGroupByProductId(currentCartitem.ProductSelection.CustomProductID);
-
-                    // build cart item VM object and add to list
-                    var newCartItemVM = new CartItemVM()
+                    // build cart item VM objects
+                    var totalCartPrice = 0m;
+                    var cartItemVMList = new List<CartItemVM>();
+                    for (var i = 0; i < user.Cart.CartItems.Count; i++)
                     {
-                        CartItem = currentCartitem,
-                        ProductTitle = productGroup.Title,
-                        ProductDescription = productGroup.Description,
-                        GeneralThumbnail = productGroup.GeneralThumbnail
+                        // get the actual cart item
+                        // add to running cart total
+                        var currentCartitem = user.Cart.CartItems[i];
+                        totalCartPrice += (currentCartitem.Quantity * currentCartitem.ProductSelection.CurrentPrice);
+
+                        // get the product group item belongs to
+                        var productGroup = groupRepo.GetGroupByProductId(currentCartitem.ProductSelection.CustomProductID);
+
+                        // build cart item VM object and add to list
+                        var newCartItemVM = new CartItemVM()
+                        {
+                            CartItem = currentCartitem,
+                            ProductTitle = productGroup.Title,
+                            ProductDescription = productGroup.Description,
+                            GeneralThumbnail = productGroup.GeneralThumbnail
+                        };
+                        cartItemVMList.Add(newCartItemVM);
+                    }
+                    // create cart view model
+                    CartViewModel cartVM = new CartViewModel()
+                    {
+                        CartPrice = totalCartPrice,
+                        CartItemVMs = cartItemVMList
                     };
-                    cartItemVMList.Add(newCartItemVM);
+                    return View(cartVM);
                 }
-                // create cart view model
-                CartViewModel cartVM = new CartViewModel()
+
+                return View("");
+            }
+            catch
+            {
+                ErrorViewModel e = new ErrorViewModel
                 {
-                    CartPrice = totalCartPrice,
-                    CartItemVMs = cartItemVMList
+                    RequestId = "DKS-002",
+                    Message = "An error occured while returning the page."
                 };
-                return View(cartVM);
+                return View("Error", e);
+                
             }
             
-            return View("");
         }
 
         // remove item from cart
         public async Task<IActionResult> RemoveFromCart(int cartItemId)
         {
-            // get user
-            var user = await userRepo.GetUserDataAsync(HttpContext.User);
+            try
+            {
+                // get user
+                var user = await userRepo.GetUserDataAsync(HttpContext.User);
 
-            // verify they havae the cartItemId
-            var foundItem = user.Cart.CartItems.Find(item => item.CartItemID == cartItemId);
+                // verify they havae the cartItemId
+                var foundItem = user.Cart.CartItems.Find(item => item.CartItemID == cartItemId);
 
-            // remove cart item
-            if(foundItem != null)
-                await cartRepo.RemoveCartItem(cartItemId);
-            return RedirectToAction("Index");
+                // remove cart item
+                if (foundItem != null)
+                    await cartRepo.RemoveCartItem(cartItemId);
+                return RedirectToAction("Index");
+            }
+            catch
+            {
+                ErrorViewModel e = new ErrorViewModel
+                {
+                    RequestId = "DKS-003",
+                    Message = "An error occured removing the item from the cart."
+                };
+                return View("Error", e);
+            }
+
         }
 
         // add item to cart
         public async Task<IActionResult> AddToCart(int productGroupId, int? productId, int? quantity)
         {
-            if(productId != null && quantity != null)
+            try
             {
-                // get user
-                var user = await userRepo.GetUserDataAsync(HttpContext.User);
-
-                if (quantity > 0)
+                if (productId != null && quantity != null)
                 {
-                    // check if product already in cart
-                    var existingCartItem = user.Cart.CartItems.Find(item => item.ProductSelection.CustomProductID == productId);
-                    if (existingCartItem != null)
-                    {
-                        // update existing
-                        existingCartItem.Quantity += (int)quantity;
-                        await cartRepo.UpdateCartItem(existingCartItem);
-                    }
-                    else
-                    {
-                        // add new item
-                        // get product
-                        var foundProduct = customProductRepo.GetCustomProductById((int)productId);
-                        if (foundProduct == null)
-                            return NotFound();
+                    // get user
+                    var user = await userRepo.GetUserDataAsync(HttpContext.User);
 
-                        // add to DB
-                        var newItem = new CartItem()
+                    if (quantity > 0)
+                    {
+                        // check if product already in cart
+                        var existingCartItem = user.Cart.CartItems.Find(item => item.ProductSelection.CustomProductID == productId);
+                        if (existingCartItem != null)
                         {
-                            Quantity = (int)quantity,
-                            ProductSelection = foundProduct
-                        };
-                        await cartRepo.AddCartItem(newItem);
+                            // update existing
+                            existingCartItem.Quantity += (int)quantity;
+                            await cartRepo.UpdateCartItem(existingCartItem);
+                        }
+                        else
+                        {
+                            // add new item
+                            // get product
+                            var foundProduct = customProductRepo.GetCustomProductById((int)productId);
+                            if (foundProduct == null)
+                                return NotFound();
 
-                        // add to cart and user
-                        user.Cart.AddItem(newItem);
-                        await userManager.UpdateAsync(user);
+                            // add to DB
+                            var newItem = new CartItem()
+                            {
+                                Quantity = (int)quantity,
+                                ProductSelection = foundProduct
+                            };
+                            await cartRepo.AddCartItem(newItem);
+
+                            // add to cart and user
+                            user.Cart.AddItem(newItem);
+                            await userManager.UpdateAsync(user);
+                        }
+
+                        // redirect to cart
+                        return RedirectToAction("Index");
                     }
-
-                    // redirect to cart
-                    return RedirectToAction("Index");
                 }
-            }
 
-            return RedirectToAction("ViewProduct", "Product", new
+                return RedirectToAction("ViewProduct", "Product", new
+                {
+                    productGroupId
+                });
+            }
+            catch
             {
-                productGroupId
-            });
+                ErrorViewModel e = new ErrorViewModel
+                {
+                    RequestId = "DKS-004",
+                    Message = "An error occured adding the item to the cart."
+                };
+                return View("Error", e);
+            }
         }
 
         // update cart contents
         [HttpPost]
         public async Task<IActionResult> UpdateCart([FromBody] List<UpdateCartItemVM> cartItems)
         {
-            // change cart items quantities
-            var user = await userManager.GetUserAsync(HttpContext.User);
-
-            // update cart items
-            for (var i = 0; i < cartItems.Count; i++)
+            try
             {
-                // find item and update
-                var currentItem = cartItems[i];
-                if(currentItem.Quantity > 0)
+                // change cart items quantities
+                var user = await userManager.GetUserAsync(HttpContext.User);
+
+                // update cart items
+                for (var i = 0; i < cartItems.Count; i++)
                 {
-                    // update if greater than 0
-                    var foundItem = await cartRepo.GetCartItemById(currentItem.ItemID);
-                    if (foundItem != null)
+                    // find item and update
+                    var currentItem = cartItems[i];
+                    if (currentItem.Quantity > 0)
                     {
-                        foundItem.Quantity = currentItem.Quantity;
-                        await cartRepo.UpdateCartItem(foundItem);
+                        // update if greater than 0
+                        var foundItem = await cartRepo.GetCartItemById(currentItem.ItemID);
+                        if (foundItem != null)
+                        {
+                            foundItem.Quantity = currentItem.Quantity;
+                            await cartRepo.UpdateCartItem(foundItem);
+                        }
+                    }
+                    else
+                    {
+                        // remove item (less than or equal to 0 in quantity)
+                        await cartRepo.RemoveCartItem(currentItem.ItemID);
                     }
                 }
-                else
-                {
-                    // remove item (less than or equal to 0 in quantity)
-                    await cartRepo.RemoveCartItem(currentItem.ItemID);
-                }
-            }
 
-            // return refreshed cart page
-            return RedirectToAction("Index");
+                // return refreshed cart page
+                return RedirectToAction("Index");
+            }
+            catch
+            {
+                ErrorViewModel e = new ErrorViewModel
+                {
+                    RequestId = "DKS-005",
+                    Message = "An error occured updating the item in the cart."
+                };
+                return View("Error", e);
+            }
+          
         }
 
         [HttpPost]
         public async Task<IActionResult> CreateOrder()
         {
-            // get user from DB
-            var user = await userRepo.GetUserDataAsync(HttpContext.User);
-            // create custom order provider
-            var orderProvider = new PaypalOrder(configuration, teamRepo, groupRepo, user);
-            // get order from provider
-            var paypalOrder = await orderProvider.GetOrder();
-            // serialize order and return
-            var orderJSON = JsonConvert.SerializeObject(paypalOrder);
-            return Ok(orderJSON);
+            try
+            {
+                // get user from DB
+                var user = await userRepo.GetUserDataAsync(HttpContext.User);
+                // create custom order provider
+                var orderProvider = new PaypalOrder(configuration, teamRepo, groupRepo, user);
+                // get order from provider
+                var paypalOrder = await orderProvider.GetOrder();
+                // serialize order and return
+                var orderJSON = JsonConvert.SerializeObject(paypalOrder);
+                return Ok(orderJSON);
+            }
+            catch
+            {
+                ErrorViewModel e = new ErrorViewModel
+                {
+                    RequestId = "DKS-006",
+                    Message = "An error occured creating the order"
+                };
+                return View("Error", e);
+            }
+ 
         }
 
         [HttpPost]
         public async Task<IActionResult> GetAndSaveOrder([FromBody] OrderResponse order)
         {
+            try
+            {
             // get user from DB
             // process paypal order
             var user = await userRepo.GetUserDataAsync(HttpContext.User);
@@ -243,6 +310,16 @@ namespace dropShippingApp.Controllers
 
             // redirect to main cart page
             return RedirectToAction("Index");
+            }
+            catch
+            {
+                ErrorViewModel e = new ErrorViewModel
+                {
+                    RequestId = "DKS-007",
+                    Message = "An error occured while getting the order"
+                };
+                return View("Error", e);
+            }
         }
 
         private async Task ClearCart(List<CartItem> cartItems)

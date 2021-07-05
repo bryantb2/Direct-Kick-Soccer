@@ -2,6 +2,7 @@
 using dropShippingApp.ViewModels;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using PayPal.Api;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -47,6 +48,11 @@ namespace dropShippingApp.Controllers
             return View("ViewAccount");
         }
 
+        public IActionResult ApproveTeamRequest()
+        {
+            return View();
+        }
+
         public async Task<IActionResult> Invoices()
         {
             // get user data
@@ -90,6 +96,7 @@ namespace dropShippingApp.Controllers
                 };
                 userOrderList.Add(invoiceVM);
             }
+            ViewBag.DefaultFooter = false;
             return View("ViewInvoices", userOrderList);
         }
     }

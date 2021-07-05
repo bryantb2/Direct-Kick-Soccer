@@ -379,7 +379,7 @@ namespace dropShippingApp.Data
                 
                 // ------------------------------------------- ADDING PRODUCT FAMILIES ------------------------------------------- //
                 var groupNames = new string[] { "Best Socks", "Lazy Pants", "Bedazzled Shirts" };
-                var groupDesc = new string[] { "Mhmmmm tasty", "For the morbidly obese", "Extremely gay" };
+                var groupDesc = new string[] { "Mhmmmm tasty", "For the morbidly obese", "Extremely cool" };
                 var groupList = new List<ProductGroup>();
 
                 for (var i = 0; i < 3; i++)
@@ -593,8 +593,8 @@ namespace dropShippingApp.Data
                     LastName = "Of Assguard",
                     UserName = "NoobSlayer",
                     NormalizedUserName = "NOOBSLAYER",
-                    Email = "abc123@gmail.com",
-                    NormalizedEmail = "ABC123@GMAIL.COM",
+                    Email = "standard@test.com",
+                    NormalizedEmail = "STANDARD@TEST.COM",
                     DateJoined = DateTimeOffset.UtcNow.ToUnixTimeSeconds(),
                     Cart = carts[0]
                 };
@@ -604,10 +604,11 @@ namespace dropShippingApp.Data
                     LastName = "Fire",
                     UserName = "Kalashnikov",
                     NormalizedUserName = "KALASHNIKOV",
-                    Email = "ak47@yahoo.com",
-                    NormalizedEmail = "AK47@YAHOO.COM",
+                    Email = "manager@test.com",
+                    NormalizedEmail = "MANAGER@TEST.COM",
                     DateJoined = DateTimeOffset.UtcNow.ToUnixTimeSeconds(),
-                    Cart = carts[1]
+                    Cart = carts[1],
+                    ManagedTeam = team
                 };
                 var user3 = new AppUser
                 {
@@ -615,18 +616,17 @@ namespace dropShippingApp.Data
                     LastName = "Gangsta",
                     UserName = "ItalianCowboy",
                     NormalizedUserName = "ITALIANCOWBODY",
-                    Email = "cowboy@gmail.com",
-                    NormalizedEmail = "COWBOY@GMAIL.COM",
+                    Email = "admin@test.com",
+                    NormalizedEmail = "ADMIN@TEST.COM",
                     DateJoined = DateTimeOffset.UtcNow.ToUnixTimeSeconds(),
                     Cart = carts[2],
-                    ManagedTeam = team
                 };
 
                 
 
                 var userArr = new AppUser[3] { user1, user2, user3 };
                 var userPasswordArr = new String[3] { "WhoaDude123!", "MotherRussia123!", "MeatBallRevolver123!" };
-                var roles = new string[3] { "standard", "manager", "admin" };
+                var roles = new string[3] { "Standard", "Manager", "Admin" };
 
                 // assign passwords and add users to DB
                 for (var i = 0; i < userPasswordArr.Length; i++)
@@ -707,6 +707,50 @@ namespace dropShippingApp.Data
                 context.TeamSorts.Add(mostPopular);
                 await context.SaveChangesAsync();
 
+                //////////////////////adding Team Requests///
+                TeamCreationRequest t = new TeamCreationRequest
+                {
+                    BusinessEmail = "email1@1.com",
+                    TeamName = "a Team",
+                    TeamDescription = "a team",
+                    StreetAddress = "123 street",
+                    Providence = oregon,
+                    Country = america,
+                    CorporatePageURL = "www.url.com",
+                    ZipCode = "99999",
+                    PhoneNumber = "8888888888"
+
+                };
+                context.TeamCreationRequests.Add(t);
+                t = new TeamCreationRequest
+                {
+                    BusinessEmail = "email1@1.com",
+                    TeamName = "a Denied Team req",
+                    TeamDescription = "denied",
+                    StreetAddress = "123 street",
+                    Providence = oregon,
+                    Country = america,
+                    CorporatePageURL = "www.url.com",
+                    ZipCode = "99999",
+                    PhoneNumber = "8888888888"
+                };
+                context.TeamCreationRequests.Add(t);
+                t = new TeamCreationRequest
+                {
+                    BusinessEmail = "email1@1.com",
+                    TeamName = "a Denied Team req",
+                    TeamDescription = "denied",
+                    StreetAddress = "123 street",
+                    Providence = oregon,
+                    Country = america,
+                    CorporatePageURL = "www.url.com",
+                    ZipCode = "99999",
+                    PhoneNumber = "8888888888",
+                    IsApproved = false,
+                    IsArchived = true
+
+                };
+                context.TeamCreationRequests.Add(t);
 
                 // ------------------------------------------- CREATE IMGUR CONFIG DATA ------------------------------------------- //
                 var clientId = JSONConfig["ImgurCredentials:ClientID"];

@@ -1,0 +1,41 @@
+﻿
+@{
+    ViewData["Title"] = "AdminIndex";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>AdminIndex</h1>
+
+<div class="grid">
+    <article class="card admin-item">
+        <a asp-controller="Admin" asp-action="ApproveTeamRequests">
+            <header class="card_header">
+                <h1 class="card_title center">
+                    Approve Team Requests
+
+                </h1>
+            </header>
+        </a>
+    </article>
+    <article class="card admin-item">
+        <a asp-controller="Admin" asp-action="ViewApprovedRequests">
+            <header class="card_header">
+                <h1 class="card_title center">
+                    View Approved Requests
+
+                </h1>
+            </header>
+        </a>
+    </article>
+    <article class="card admin-item">
+        <a asp-controller="Admin" asp-action="ViewDeniedRequests">
+            <header class="card_header">
+                <h1 class="card_title center">
+                    View Denied Requests
+
+                </h1>
+            </header>
+        </a>
+    </article>
+
+</div>

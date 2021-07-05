@@ -5,24 +5,40 @@
 @model ProductSelectionViewModel;
 
 <section>
-    <h1>@Model.ProductGroup.Title</h1>
+    <div class="col-3">
+        <h1>@Model.ProductGroup.Title</h1>
+    </div>
     <form asp-controller="Cart" asp-action="AddToCart" method="post" asp-route-productGroupId=@Model.ProductGroup.ProductGroupID>
         <div class="d-flex flex-column">
-            <div class="p-2">
+            <div class="col-2">
                 <img src=@Model.ProductGroup.GeneralThumbnail width="300" />
             </div>
-            <select id="variantSelection" asp-for=@Model.ProductId>
-                <option selected value="">Choose a Variant</option>
-                @foreach (var product in Model.ProductGroup.ChildProducts)
-                {
-                    <option value=@product.CustomProductID>Size - @product.BaseProduct.BaseSize.SizeName && Color - @product.BaseProduct.BaseColor.ColorName</option>
-                }
-            </select>
-            <div class="p-2">
-                Price - @Model.ProductGroup.GetHighestPrice.ToString("c")
+            <br />
+            <div class="col-2">
+                <label>Description</label>
+                <p>@Model.ProductGroup.Description</p>
             </div>
-            <div class="p-2">
-                Quantity - <input class="qnty_input" type="number" asp-for="Quantity" min="1" value=@Model.Quantity />
+
+            <br />
+            <div class="col-1">
+                <label>Price: </label>
+                @Model.ProductGroup.GetHighestPrice.ToString("c")
+            </div>
+            <br />
+            <div class="col-3">
+                <label>Select a Size and Color</label>
+                <select class="form-control" id="variantSelection" asp-for=@Model.ProductId>
+                    <option selected disabled hidden value=""></option>
+                    @foreach (var product in Model.ProductGroup.ChildProducts)
+                    {
+                        <option value=@product.CustomProductID>Size - @product.BaseProduct.BaseSize.SizeName && Color - @product.BaseProduct.BaseColor.ColorName</option>
+                    }
+                </select>
+            </div>
+            <br />
+            <div class="col-1">
+                <label>Quantity</label>
+                <input class="qnty_input form-control" type="number" asp-for="Quantity" min="1" value=@Model.Quantity />
             </div>
             <div class="p-2">
                 @foreach (var tag in Model.ProductGroup.ProductTags)
@@ -32,8 +48,10 @@
             </div>
         </div>
         <br />
-        <p>@Model.ProductGroup.Description</p>
+        
         <br />
-        <button type="submit">Add to Cart</button>
+        <div style="text-align:center">
+            <button class="btn btn-success" type="submit">Add to Cart</button>
+        </div>
     </form>
 </section>
